@@ -1,0 +1,85 @@
+Login
+  [Aluno, Professor, Admin]
+
+Home
+  Aluno
+  Professor
+  Admin
+
+Aula
+  Criacao*
+    Professor, Admin
+  Edicao*
+    Professor, Admin
+  View
+    Aluno
+    Professor
+
+Turma
+  Criacao*
+    Professor, Admin
+  Edicao*
+    Professor, Admin
+  View
+    Aluno
+    Professor
+
+Prova
+  Criacao*
+    Professor, Admin
+  Edicao*
+    Professor, Admin
+  View
+    Aluno
+    Professor
+
+Trabalho
+  Criacao*
+    Professor, Admin
+  Edicao*
+    Professor, Admin
+  View
+    Aluno
+    Professor
+
+Atividade
+  Criacao*
+    Professor, Admin
+  Edicao*
+    Professor, Admin
+  View
+    Aluno
+    Professor
+
+Boletim
+  View
+    Aluno
+
+Admin
+  Criacao*
+    Professor, Admin
+  Edicao*
+    Professor, Admin
+  View
+    Professor, Admin
+
+Professor
+  Criacao*
+    Professor, Admin
+  Edicao*
+    Professor, Admin
+  View
+    Professor, Admin
+
+Aluno
+  Criacao*
+    Professor, Admin
+  Edicao*
+    Professor, Admin
+  View
+    Professor, Admin, Aluno
+
+----------------------------------------------------------
+
+[] Tab
+* Tela Flutuante
