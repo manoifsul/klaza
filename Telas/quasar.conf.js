@@ -32,14 +32,14 @@ module.exports = configure(function (/* ctx */) {
 
     // https://v1.quasar.dev/quasar-cli/quasar-conf-js#Property%3A-css
     css: [
-      'app.scss'
+      'app.scss',
     ],
 
     // https://github.com/quasarframework/quasar/tree/dev/extras
     extras: [
       // 'ionicons-v4',
       // 'mdi-v5',
-      // 'fontawesome-v5',
+      'fontawesome-v5',
       // 'eva-icons',
       // 'themify',
       // 'line-awesome',
@@ -51,7 +51,7 @@ module.exports = configure(function (/* ctx */) {
 
     // Full list of options: https://v1.quasar.dev/quasar-cli/quasar-conf-js#Property%3A-build
     build: {
-      vueRouterMode: 'hash', // available values: 'hash', 'history'
+      vueRouterMode: 'history', // available values: 'hash', 'history'
 
       // transpile: false,
 
@@ -87,7 +87,26 @@ module.exports = configure(function (/* ctx */) {
     framework: {
       iconSet: 'fontawesome-v5', // Quasar icon set
       lang: 'pt-br', // Quasar language pack
-      config: {},
+      config: {
+
+        brand: {
+            primary: '#3b8c2e',
+            secondary: '#42a626',
+            accent: '#5bd948',
+    
+            dark: '#1d1d1d',
+    
+            positive: '#21BA45',
+            negative: '#C10015',
+            info: '#6c9f64',
+            warning: '#F2C037',
+
+            white: '#fff',
+            black: '#000'
+
+        }
+
+      },
 
       // Possible values for "importStrategy":
       // * 'auto' - (DEFAULT) Auto-import needed Quasar components & directives
