@@ -1,8 +1,17 @@
-export interface Todo {
-  id: number;
-  content: string;
+export interface Day {
+
+    day: string
+    events: Event[]
+    id: number
+
 }
 
-export interface Meta {
-  totalCount: number;
+export interface Event {
+
+    type: "Aula" | "Trabalho" | "Prova" | "Atividade"
+    time: string
+    name: string
+    materia: string
+    id: number
+
 }

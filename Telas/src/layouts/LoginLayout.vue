@@ -12,20 +12,7 @@
 
 import { Vue, Component } from 'vue-property-decorator'
 
-@Component({
-
-    data() {
-
-        return {
-
-            menu: false
-
-        }
-
-    }
-
-
-})
+@Component({})
 export default class App extends Vue {}
 
 </script>

@@ -1,21 +1,21 @@
 <template>
   <q-page class="fit row wrap justify-center items-center content-center">
-    
+
     <div class="q-pa-xl fit row wrap justify-between items-center content-center w-75 text-center gt-sm">
 
         <div class="q-pa-md box row wrap justify-center items-center content-center q-pa-xl col-7">
 
             <span class="text-bold text-h3 q-mb-xl">Login {{tipoLogin}}</span>
 
-            <q-input filled outlined label="Matricula" placeholder="Digite a sua matricula" label-color="black" bg-color="white" class="br-10 w-80 q-mb-xl"/>
+            <q-input filled outlined label="Matricula" v-model="login" placeholder="Digite a sua matricula" label-color="black" bg-color="white" class="br-10 w-80 q-mb-xl"/>
 
-            <q-input filled outlined label="Senha" placeholder="Digite a sua senha" label-color="black" bg-color="white" class="br-10 w-80 q-mb-md"/>
+            <q-input filled outlined label="Senha" v-model="senha" placeholder="Digite a sua senha" label-color="black" bg-color="white" class="br-10 w-80 q-mb-md"/>
 
             <div class="q-mx-auto column">
 
                 <q-btn flat class="text-bold text-underline q-mx-auto q-mb-xl">Esqueci minha senha</q-btn>
 
-                <q-btn color="white" text-color="black" class="br-10 w-60 q-mx-auto" dense>Entrar</q-btn>
+                <q-btn color="white" text-color="black" class="br-10 w-60 q-mx-auto" dense @click="Login()">Entrar</q-btn>
 
             </div>
 
@@ -40,15 +40,15 @@
             <span class="text-bold text-h4 q-mb-xl text-center" v-show="tipoLogin == 'Professor'">Login {{tipoLogin}}</span>
             <span class="text-bold text-h5 q-mb-xl text-center" v-show="tipoLogin == 'Administrator'">Login {{tipoLogin}}</span>
 
-            <q-input filled outlined label="Matricula" placeholder="Digite a sua matricula" label-color="black" bg-color="white" class="br-10 w-80 q-mb-xl"/>
+            <q-input filled outlined label="Matricula" v-model="login" placeholder="Digite a sua matricula" label-color="black" bg-color="white" class="br-10 w-80 q-mb-xl"/>
 
-            <q-input filled outlined label="Senha" placeholder="Digite a sua senha" label-color="black" bg-color="white" class="br-10 w-80 q-mb-md"/>
+            <q-input filled outlined label="Senha" v-model="senha" placeholder="Digite a sua senha" label-color="black" bg-color="white" class="br-10 w-80 q-mb-md"/>
 
             <div class="q-mx-auto column">
 
                 <q-btn flat class="text-bold text-underline q-mx-auto q-mb-xl">Esqueci minha senha</q-btn>
 
-                <q-btn color="white" text-color="black" class="br-10 w-60 q-mx-auto" dense>Entrar</q-btn>
+                <q-btn color="white" text-color="black" class="br-10 w-60 q-mx-auto" dense @click="Login()">Entrar</q-btn>
 
             </div>
 
@@ -65,7 +65,7 @@
 
     </div>
 
-    <div class="fit column wrap justify-between items-center content-center text-center w-100 xs">
+    <div class="fit column wrap justify-between items-center content-center w-100 text-center xs">
 
         <div class="q-pa-md box row wrap justify-center items-center content-center q-pa-xl col-7">
 
@@ -82,15 +82,15 @@
             <span class="text-bold text-h4 q-mb-xl gt-xs">Login {{tipoLogin}}</span>
             <span class="text-bold text-h5 q-mb-xl lt-xs">Login {{tipoLogin}}</span>
 
-            <q-input filled outlined label="Matricula" placeholder="Digite a sua matricula" label-color="black" bg-color="white" class="br-10 w-80 q-mb-xl"/>
+            <q-input filled outlined label="Matricula" v-model="login" placeholder="Digite a sua matricula" label-color="black" bg-color="white" class="br-10 w-80 q-mb-xl"/>
 
-            <q-input filled outlined label="Senha" placeholder="Digite a sua senha" label-color="black" bg-color="white" class="br-10 w-80 q-mb-md"/>
+            <q-input filled outlined label="Senha" v-model="senha" placeholder="Digite a sua senha" label-color="black" bg-color="white" class="br-10 w-80 q-mb-md"/>
 
             <div class="q-mx-auto column">
 
                 <q-btn flat class="text-bold text-underline q-mx-auto q-mb-xl">Esqueci minha senha</q-btn>
 
-                <q-btn color="white" text-color="black" class="br-10 w-60 q-mx-auto" dense>Entrar</q-btn>
+                <q-btn color="white" text-color="black" class="br-10 w-60 q-mx-auto" dense @click="Login()">Entrar</q-btn>
 
             </div>
 
@@ -110,8 +110,24 @@ import { Vue, Component } from 'vue-property-decorator';
 
         return {
 
-            tipoLogin: 'Aluno'
+            tipoLogin: 'Aluno',
+            login: '',
+            senha: ''
 
+        }
+
+    },
+
+    methods: {
+
+        Login() { 
+        
+            const login = { login: this.$data.login, password: this.$data.senha }
+
+            console.log(login)
+
+            return this.$router.push('home') 
+            
         }
 
     }
@@ -127,18 +143,6 @@ body {
 
     background-image: url("../assets/Fundo Login.png");
     background-size: cover;
-
-}
-
-.box {
-
-    background-color: rgba(255, 255, 255, 0.1);
-    box-shadow: 0px 3px 5px #00000029;
-    border: 1px solid #707070;
-    border-radius: 20px;
-    opacity: 1;
-    backdrop-filter: blur(15px);
-    -webkit-backdrop-filter: blur(15px);
 
 }
 
