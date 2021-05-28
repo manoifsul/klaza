@@ -1,33 +1,30 @@
 import { store } from 'quasar/wrappers';
+import { Materia } from 'src/@types/DB';
 import Vuex from 'vuex';
 
-// import example from './module-example';
-// import { ExampleStateInterface } from './module-example/state';
-
-/*
- * If not building with SSR mode, you can
- * directly export the Store instantiation
- */
-
 export interface StateInterface {
-  // Define your own store structure, using submodules if needed
-  // example: ExampleStateInterface;
-  // Declared as unknown to avoid linting issue. Best to strongly type as per the line above.
-  example: unknown;
+
+    idUser: number,
+    typeUser: "Aluno" | "Professor" | "Administrador",
+    materias: Materia[],
+    materiasProfessor: Materia[]
 }
 
 export default store(function ({ Vue }) {
-  Vue.use(Vuex);
+    Vue.use(Vuex);
 
-  const Store = new Vuex.Store<StateInterface>({
-    modules: {
-      // example
-    },
+    const Store = new Vuex.Store<StateInterface>({
+        
+        state: {
 
-    // enable strict mode (adds overhead!)
-    // for dev mode only
-    strict: !!process.env.DEBUGGING
-  });
+            idUser: 123,
+            typeUser: "Professor",
+            materias: [{id: 95, name: "Historia"}, {id: 12, name: "Ingles"}],
+            materiasProfessor: [{id: 95, name: "Historia"}, {id: 12, name: "Ingles"}]
 
-  return Store;
+        }
+
+    });
+
+    return Store;
 });

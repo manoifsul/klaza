@@ -9,9 +9,10 @@
         </div>
         <div class="box q-pa-lg br-t-0 br-b-10 text-center">
 
-            <div v-if="events.length == 0" :class="sizeTextNull">Nenhum evento encontrado para esse dia </div>
+            <div v-if="aulas.length == 0 && atividades.length == 0 && trabalhos.length == 0 && provas.length == 0" :class="sizeTextNull">Nenhum evento encontrado para esse dia </div>
 
-            <EventCard v-for="e in events" :event="e" :key="`${e.type}/${e.id}`"/>
+            <AulaCard v-for="e in aulas" :event="e" :key="`Aula/${uid()}/${e.id}`"/>
+            <TrabalhoCard v-for="e in trabalhos" :event="e" :key="`Trabalho/${uid()}/${e.id}`"/>
 
         </div>
 
@@ -21,21 +22,30 @@
 </template>
 
 <script lang="ts">
+import { uid } from 'quasar'
 import { Vue, Component, Prop,  } from 'vue-property-decorator';
 
-import EventCard from 'components/EventCard.vue'
+import { AtividadeCardType, AulaCardType, ProvaCardType, TrabalhoCardType } from 'components/models'
 
-import { Event } from './models';
+import AulaCard from 'src/components/AulaCard.vue'
+import TrabalhoCard from 'src/components/TrabalhoCard.vue'
+
 
 @Component({
 
-    components: { EventCard }
+    components: { AulaCard, TrabalhoCard }
 
 })
 export default class Day extends Vue {
 
     @Prop() day!: string
-    @Prop() events!: Event[]
+    @Prop() aulas!: AulaCardType[] 
+    @Prop() atividades!: AtividadeCardType[] 
+    @Prop() provas!: ProvaCardType[] 
+    @Prop() trabalhos!: TrabalhoCardType[] 
+
+
+    uid() { return uid() }
 
     get sizeTextNull() { return (this.$q.screen.gt.xs ? 'text-h4 text-bold text-white' : 'text-h5 text-bold text-white') }
 

@@ -3,6 +3,7 @@ import VueRouter from 'vue-router';
 import { Store } from 'vuex';
 import { StateInterface } from '../store';
 import routes from './routes';
+import store from '../store';
 
 /*
  * If not building with SSR mode, you can
@@ -19,9 +20,10 @@ export default route<Store<StateInterface>>(function ({ Vue }) {
     // Leave these as is and change from quasar.conf.js instead!
     // quasar.conf.js -> build -> vueRouterMode
     // quasar.conf.js -> build -> publicPath
-    mode: process.env.VUE_ROUTER_MODE,
+    mode: 'history',
     base: process.env.VUE_ROUTER_BASE
   });
 
   return Router;
+  
 })

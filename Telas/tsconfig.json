@@ -5,7 +5,14 @@
     "experimentalDecorators": true,
     "target": "es5",
     "allowSyntheticDefaultImports": true,
-    "moduleResolution": "Node"
+    "moduleResolution": "Node",
+    "noImplicitAny": false,
+    "types": [
+        
+        "quasar",
+        "vue-sweetalert2"
+    
+    ]
   }
 
 }

@@ -85,7 +85,9 @@ module.exports = {
     'quotes': 0,
     '@typescript-eslint/no-floating-promises': 0,
     '@typescript-eslint/restrict-template-expressions': 0,
-    '@typescript-eslint/unbound-method': 0
+    '@typescript-eslint/unbound-method': 0,
+    '@typescript-eslint/no-unsafe-member-access': 0,
+    '@typescript-eslint/no-for-in-array': 0
 
   }
 }
