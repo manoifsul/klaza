@@ -2,6 +2,7 @@ export interface Materia {
 
     id: number
     name: string
+    discord: { notificacao: string, trabalhos_provas: string }
 
 }
 

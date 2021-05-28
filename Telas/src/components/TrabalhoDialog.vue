@@ -124,7 +124,7 @@
 
                         </div>
                         <q-select outlined input-class="text-white" label-color="white" v-model="modelMaxTempo" :options="optionsMaxTempo" label="Limite de tempo" required />
-                        <q-input ref="inpTentativas" outlined v-model="vMaxTentativas" label-color="white" input-class="text-white" label="Maximo de tenativas (0 = sem limite)" type="number" :rules="[val => val >= 0]" required />
+                        <q-input ref="inpTentativas" outlined v-model="vMaxTentativas" label-color="white" input-class="text-white" label="Maximo de tenativas (0 = sem limite)" type="number" :rules="[val => val >= 0 && val <= 99]" required />
                         <q-input outlined v-model="modelDescricao" label-color="white" input-class="text-white" label="Descrição" type="textarea" placeholder="Digite a descrição da aula" required/>
 
                     </div>
@@ -260,14 +260,12 @@ export default class TrabalhoDialog extends Vue {
             const inpSDate = this.$refs.inpSDate as any
             const inpFDate = this.$refs.inpFDate as any
             const inpTentativas = this.$refs.inpTentativas as any
-            const inpDiscord = this.$refs.inpDiscord as any
 
             inpSDate.validate()
             inpFDate.validate()
             inpTentativas.validate()
-            inpDiscord.validate()
 
-            if (inpSDate.hasError || inpFDate.hasError || inpTentativas.hasError || inpDiscord.hasError) { return }           
+            if (inpSDate.hasError || inpFDate.hasError || inpTentativas.hasError ) { return }           
 
             // SALVA NO BD
 
@@ -283,9 +281,7 @@ export default class TrabalhoDialog extends Vue {
         }
         else {
 
-            console.log(this.$refs[1298])
-
-           
+            
 
         }
 
