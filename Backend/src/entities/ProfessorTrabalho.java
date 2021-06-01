@@ -4,18 +4,18 @@ public class ProfessorTrabalho {
 
 	private Long idProfessorTrabalho;
 	private Professor professor;
-	private Atividade atividade;
+	private Trabalho trabalho;
 	
 	public ProfessorTrabalho() {
 		this.idProfessorTrabalho = (long) 0;
 		this.professor = new Professor();
-		this.atividade = new Atividade();
+		this.trabalho = new Trabalho();
 	}
 
-	public ProfessorTrabalho(Long idProfessorTrabalho, Professor professor, Atividade atividade) {
+	public ProfessorTrabalho(Long idProfessorTrabalho, Professor professor, Trabalho trabalho) {
 		this.idProfessorTrabalho = idProfessorTrabalho;
 		this.professor = professor;
-		this.atividade = atividade;
+		this.trabalho = trabalho;
 	}
 
 	public Long getIdProfessorTrabalho() {
@@ -34,17 +34,20 @@ public class ProfessorTrabalho {
 		this.professor = professor;
 	}
 
-	public Atividade getAtividade() {
-		return atividade;
+	public Trabalho getTrabalho() {
+		return trabalho;
 	}
 
-	public void setAtividade(Atividade atividade) {
-		this.atividade = atividade;
+	public void setTrabalho(Trabalho trabalho) {
+		this.trabalho = trabalho;
 	}
 
 	@Override
 	public String toString() {
-		return "ProfessorTrabalho [idProfessorTrabalho=" + idProfessorTrabalho + ", professor=" + professor
-				+ ", atividade=" + atividade + "]";
+		return "ProfessorTrabalho{" +
+				"idProfessorTrabalho=" + idProfessorTrabalho +
+				", professor=" + professor +
+				", trabalho=" + trabalho +
+				'}';
 	}
 }
