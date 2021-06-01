@@ -1,0 +1,18 @@
+{
+  "extends": "@quasar/app/tsconfig-preset",
+  "compilerOptions": {
+    "baseUrl": ".",
+    "experimentalDecorators": true,
+    "target": "es5",
+    "allowSyntheticDefaultImports": true,
+    "moduleResolution": "Node",
+    "noImplicitAny": false,
+    "types": [
+        
+        "quasar",
+        "vue-sweetalert2"
+    
+    ]
+  }
+
+}

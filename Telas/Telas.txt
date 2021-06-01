@@ -21,8 +21,7 @@ Turma
   Edicao*
     Professor, Admin
   View
-    Aluno
-    Professor
+    Aluno, Professor, Admin
 
 Prova
   Criacao*
