@@ -114,6 +114,7 @@
 
 import { DayCardType } from 'src/components/models';
 import { Vue, Component } from 'vue-property-decorator';
+import { DB } from '../middlewares/DBContector'
 
 import DayCard from '../components/DayCard.vue'
 
@@ -127,6 +128,8 @@ import moment from 'moment'
 export default class Home extends Vue {
    
     date = moment().format("YYYY/MM/DD")
+
+    a() {const a = new DB(this.$axios, this.$store)}
 
 }
 
