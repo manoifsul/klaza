@@ -129,8 +129,6 @@ export default class Home extends Vue {
    
     date = moment().format("YYYY/MM/DD")
 
-    a() {const a = new DB(this.$axios, this.$store)}
-
 }
 
 </script>
