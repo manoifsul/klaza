@@ -7,7 +7,6 @@ public class Turma {
 	
 	private Long idTurma;
 	private String nome;
-	private List<Arquivo> arquivo;
 	private List<TurmaAluno> turmaAluno;
 	private List<TurmaAula> turmaAula;
 	private List<TurmaProfessor> turmaProfessor;
@@ -24,7 +23,6 @@ public class Turma {
 	public Turma() {
 		this.idTurma = (long) 0;
 		this.nome = "";
-		this.arquivo = new ArrayList<Arquivo>();
 		this.turmaAluno = new ArrayList<TurmaAluno>();
 		this.turmaAula = new ArrayList<TurmaAula>();
 		this.turmaProfessor = new ArrayList<TurmaProfessor>();
@@ -35,20 +33,18 @@ public class Turma {
 		this.discord = new Discord();
 	}
 
-	public Turma(Long idTurma, String nome, List<Arquivo> arquivo, List<TurmaAluno> turmaAluno,
-			List<TurmaAula> turmaAula, List<TurmaProfessor> turmaProfessor, List<Trabalho> trabalho,
-			List<Atividade> atividade, List<Prova> prova, Materia materia, Discord discord) {
+	public Turma(Long idTurma, String nome, List<TurmaAluno> turmaAluno, List<TurmaAula> turmaAula, List<TurmaProfessor> turmaProfessor,
+				 List<Trabalho> trabalho, List<Atividade> atividade, Materia materia, Discord discord, List<Prova> prova) {
 		this.idTurma = idTurma;
 		this.nome = nome;
-		this.arquivo = arquivo;
 		this.turmaAluno = turmaAluno;
 		this.turmaAula = turmaAula;
 		this.turmaProfessor = turmaProfessor;
 		this.trabalho = trabalho;
 		this.atividade = atividade;
-		this.prova = prova;
 		this.materia = materia;
 		this.discord = discord;
+		this.prova = prova;
 	}
 
 	public Long getIdTurma() {
@@ -65,14 +61,6 @@ public class Turma {
 
 	public void setNome(String nome) {
 		this.nome = nome;
-	}
-
-	public List<Arquivo> getArquivo() {
-		return arquivo;
-	}
-
-	public void setArquivo(List<Arquivo> arquivo) {
-		this.arquivo = arquivo;
 	}
 
 	public List<TurmaAluno> getTurmaAluno() {
@@ -115,14 +103,6 @@ public class Turma {
 		this.atividade = atividade;
 	}
 
-	public List<Prova> getProva() {
-		return prova;
-	}
-
-	public void setProva(List<Prova> prova) {
-		this.prova = prova;
-	}
-
 	public Materia getMateria() {
 		return materia;
 	}
@@ -139,11 +119,27 @@ public class Turma {
 		this.discord = discord;
 	}
 
+	public List<Prova> getProva() {
+		return prova;
+	}
+
+	public void setProva(List<Prova> prova) {
+		this.prova = prova;
+	}
+
 	@Override
 	public String toString() {
-		return "Turma [idTurma=" + idTurma + ", nome=" + nome + ", arquivo=" + arquivo + ", turmaAluno=" + turmaAluno
-				+ ", turmaAula=" + turmaAula + ", turmaProfessor=" + turmaProfessor + ", trabalho=" + trabalho
-				+ ", atividade=" + atividade + ", prova=" + prova + ", materia=" + materia + ", discord=" + discord
-				+ "]";
+		return "Turma{" +
+				"idTurma=" + idTurma +
+				", nome='" + nome + '\'' +
+				", turmaAluno=" + turmaAluno +
+				", turmaAula=" + turmaAula +
+				", turmaProfessor=" + turmaProfessor +
+				", trabalho=" + trabalho +
+				", atividade=" + atividade +
+				", materia=" + materia +
+				", discord=" + discord +
+				", prova=" + prova +
+				'}';
 	}
 }
