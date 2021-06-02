@@ -57,6 +57,8 @@ export interface Trabalho {
     administrador: Administrador[]
     arquivo: Arquivo[]
     questao: Questao[]
+    materia: Materia
+    resposta: Resposta[]
 
 }
 
@@ -105,6 +107,7 @@ export interface Prova {
     arquivo: Arquivo[]
     questao: Questao[]
     resposta: Resposta[]
+    materia: Materia
 
 }
 
@@ -171,7 +174,9 @@ export interface Resposta {
     idResposta: number,
     questao: Questao
     resposta: string
-    nroTentativa: number
+    nroTentativa: number,
+    idAluno: number
+    
 
 } 
 
@@ -185,5 +190,6 @@ export interface Atividade {
     administrador: Administrador[]
     professor: Professor[]
     resposta: Resposta[]
+    materia: Materia
 
 }

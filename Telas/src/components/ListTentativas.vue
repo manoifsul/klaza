@@ -20,7 +20,7 @@
 
                 <q-item v-if="x > 0">
 
-                    <a :href="`/tentativas/${t[0].questao.id}/${t[0].aluno.id}/${t[0].num_tentativa}`">Tentativa: {{t[0].num_tentativa}}</a>
+                    <a :href="`/tentativas/${t[0].questao.idQuestao}/${t[0].idAluno}/${t[0].nroTentativa}`">Tentativa: {{t[0].nroTentativa}}</a>
 
                 </q-item>
 
@@ -41,6 +41,8 @@ import { uid } from 'quasar'
 import * as TypesDB from 'src/@types/DB'
 import { sortTentativas } from 'src/@types/vue';
 
+import { DB } from 'src/middlewares/DBContector'
+
 @Component({
 
     components: {},
@@ -54,24 +56,24 @@ export default class ListTentativas extends Vue {
 
     uid = uid
 
+    db = new DB(this.$axios, this.$store)
+
     created() {
 
-        const alunosMap = this.respostas.map(r => r.aluno)
+        this.respostas.map(r => r.idAluno).forEach(a => { this.db.aluno.get(a) })
 
-        const alunos: TypesDB.Aluno[] = []
-
-        alunosMap.forEach(a => { if (!alunos.map(a => a.id).includes(a.id)) { alunos.push(a) } })
+        const alunos = this.$store.state.alunos as TypesDB.Aluno[]
 
         for (let a in alunos) {
 
-            const respostasAluno = this.respostas.filter(r => r.aluno.id == alunos[a].id)
-            const nums_tentativas = Array.from(new Set(respostasAluno.map(r => r.num_tentativa)))
+            const respostasAluno = this.respostas.filter(r => r.idAluno == alunos[a].idAluno)
+            const nums_tentativas = Array.from(new Set(respostasAluno.map(r => r.nroTentativa)))
 
             nums_tentativas.forEach(n => {
 
                 if (this.sortTentativas[alunos[a].nome] == undefined) { this.sortTentativas[alunos[a].nome] = [[]] }
 
-                if (this.sortTentativas[alunos[a].nome][n] == undefined) { this.sortTentativas[alunos[a].nome][n] = respostasAluno.filter(r => r.num_tentativa == n) }
+                if (this.sortTentativas[alunos[a].nome][n] == undefined) { this.sortTentativas[alunos[a].nome][n] = respostasAluno.filter(r => r.nroTentativa == n) }
 
             })
 

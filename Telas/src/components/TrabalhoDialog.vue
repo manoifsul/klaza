@@ -31,7 +31,7 @@
                     <div class="column text-bold text-h4 text-white q-gutter-y-md">
 
                         <span>Trabalho: {{vNome}}</span>
-                        <span>Materia: {{vMateria.name}}</span>
+                        <span>Materia: {{vMateria.nome}}</span>
                         <span>Data: {{vStart}} a {{vFinish}}</span>
                         <span>Maximo de tentativas: {{vMaxTentativas}}</span>
                         <span>Tempo maximo para resolver: {{vMaxTempo}}</span>
@@ -140,7 +140,7 @@
 
                     <q-list>
 
-                        <ItemQuestao v-for="(q, i) in questoes" :key="q.id" :question="q.question" :type="q.type" :alternativas="q.alternativas" :correta="q.correta" :id="q.id" :number="i+1"/>
+                        <ItemQuestao v-for="(q, i) in questoes" :key="q.idQuestao" :question="q.pergunta" :type="q.tipo" :alternativas="q.questaoAlternativa" :correta="q.questaoCorreta" :id="q.idQuestao" :number="i+1"/>
 
                     </q-list>
 
@@ -164,10 +164,9 @@
 
 import { Vue, Component, Prop, Watch } from 'vue-property-decorator';
 import { qSelectOptions } from 'src/@types/vue'
+import * as DBTypes from '../@types/DB'
 
 import moment from 'moment';
-import { Materia, Resposta, Turma } from 'src/@types/DB';
-import { QuestaoItemType } from './models';
 
 import ItemQuestao from 'components/ItemQuestao.vue'
 import ListTentativas from 'components/ListTentativas.vue'
@@ -181,14 +180,14 @@ export default class TrabalhoDialog extends Vue {
 
     @Prop() id!: string
     @Prop() nome!: string
-    @Prop() materia!: Materia
+    @Prop() materia!: DBTypes.Materia
     @Prop() start!: Date
     @Prop() finish!: Date
     @Prop() descricao!: string
     @Prop() maxTentativas!: number
     @Prop() maxTempo!: number
-    @Prop() questoes!: QuestaoItemType[]
-    @Prop() respostas!: Resposta[]
+    @Prop() questoes!: DBTypes.Questao[]
+    @Prop() respostas!: DBTypes.Resposta[]
 
     vNome = this.nome
     modelNome = this.vNome
@@ -218,7 +217,7 @@ export default class TrabalhoDialog extends Vue {
     modelDescricao = this.vDescricao
 
     vMateria = this.materia
-    modelMateria: qSelectOptions = { label: this.vMateria.name, value: this.vMateria.id }
+    modelMateria: qSelectOptions = { label: this.vMateria.nome, value: this.vMateria.idMateria }
     optionsMateria: qSelectOptions[] = []
 
     tab = "i"
@@ -239,9 +238,9 @@ export default class TrabalhoDialog extends Vue {
 
         for (let mat in this.$store.state.materiasProfessor) {
 
-            const materia: Materia = this.$store.state.materiasProfessor[mat]
+            const materia: DBTypes.Materia = this.$store.state.materiasProfessor[mat]
 
-            this.optionsMateria.push({label: materia.name, value: materia.id})
+            this.optionsMateria.push({label: materia.nome, value: materia.idMateria})
 
         }
 
@@ -335,7 +334,7 @@ export default class TrabalhoDialog extends Vue {
 
     addQuestão() {
 
-        this.questoes.push({id: -(Math.floor(Math.random() * 9999) + 1), question: "", correta: [], alternativas: [], type: 0})
+        this.questoes.push({idQuestao: -(Math.floor(Math.random() * 9999) + 1), pergunta: "", tipo: 0, questaoCorreta: [], questaoAlternativa: []})
 
     }
 

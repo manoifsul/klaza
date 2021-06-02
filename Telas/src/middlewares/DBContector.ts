@@ -165,7 +165,7 @@ const testQuestao: Questao[] = [
         pergunta: "Quanto é 1+1?",
         questaoAlternativa: [testQuestaoAlternativa[0], testQuestaoAlternativa[1], testQuestaoAlternativa[2]],
         questaoCorreta: [testQuestaoCorreta[0]],
-        tipo: 1 
+        tipo: 1,
 
     },
     {
@@ -174,7 +174,7 @@ const testQuestao: Questao[] = [
         pergunta: "Selecione o que n é 'Bola'",
         questaoAlternativa: [testQuestaoAlternativa[3], testQuestaoAlternativa[4], testQuestaoAlternativa[5]],
         questaoCorreta: [testQuestaoCorreta[1]],
-        tipo: 1 
+        tipo: 1,
 
     }
 
@@ -187,7 +187,8 @@ const testResposta: Resposta[] = [
         idResposta: 0,
         nroTentativa: 1,
         questao: testQuestao[0],
-        resposta: "1"
+        resposta: "1",
+        idAluno: 0
 
     },
     {
@@ -195,7 +196,8 @@ const testResposta: Resposta[] = [
         idResposta: 1,
         nroTentativa: 3,
         questao: testQuestao[1],
-        resposta: "1"
+        resposta: "1",
+        idAluno: 1
 
     },
 
@@ -216,7 +218,8 @@ const testProva: Prova[] = [
         tentativas: 3,
         administrador: [],
         professor: [testProfessor[0]],
-        resposta: [testResposta[0]]
+        resposta: [testResposta[0]],
+        materia: testMateria[0]
 
     },
     {
@@ -232,7 +235,8 @@ const testProva: Prova[] = [
         tentativas: 1,
         professor: [],
         administrador: [testAdministrador[0]],
-        resposta: [testResposta[1]]
+        resposta: [testResposta[1]],
+        materia: testMateria[1]
 
     }
 
@@ -272,7 +276,9 @@ const testTrabalho: Trabalho[] = [
         questao: [],
         tempo: 9000,
         tentativas: 0,
-        tipo: 4
+        tipo: 4,
+        materia: testMateria[1],
+        resposta: []
 
     }
 
@@ -306,6 +312,7 @@ const testAtividade: Atividade[] = [
         nome: "Eba",
         professor: [testProfessor[0]],
         resposta: [],
+        materia: testMateria[0]
 
     }
 

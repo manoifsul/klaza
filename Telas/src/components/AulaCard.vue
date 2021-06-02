@@ -6,11 +6,11 @@
 
             <div class="w-fit q-ml-sm">{{getTime()}}</div>
 
-            <div :class="`${sizeText} text-bold text-left q-ml-md`">Aula: {{event.name}} - {{event.materia.name}}</div>
+            <div :class="`${sizeText} text-bold text-left q-ml-md`">Aula: {{event.nome}} - {{event.materia.nome}}</div>
 
         </div>
 
-        <q-dialog v-model="open" full-width> <Aula :nome="event.name" :materia="event.materia" :dia="event.dia" :descricao="event.descricao"/> </q-dialog>
+        <q-dialog v-model="open" full-width> <AulaDialog :nome="event.nome" :materia="event.materia" :dia="event.inicio" :descricao="event.descricao"/> </q-dialog>
 
     </div>
 
@@ -19,25 +19,24 @@
 <script lang='ts'>
 
 import { Vue, Component, Prop } from 'vue-property-decorator'
+import * as DBTypes from '../@types/DB'
 
-import Aula from 'components/Aula.vue'
-
+import AulaDialog from 'src/components/AulaDialog.vue'
 
 import moment from "moment";
-import { AulaCardType } from './models';
 
 @Component({
 
-    components: { Aula }
+    components: { AulaDialog }
 
 })
 export default class AulaCard extends Vue {
 
-    @Prop() event!: AulaCardType
+    @Prop() event!: DBTypes.Aula
 
     open = false
 
-    getTime() { return moment(this.event.dia).format("hh:mm A") }
+    getTime() { return moment(this.event.inicio).format("hh:mm A") }
 
     get sizeText() { 
 

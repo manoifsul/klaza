@@ -15,7 +15,7 @@
             <div v-if="!vEdit" class="column text-bold text-h4 text-white q-gutter-y-md">
 
                 <span>Aula: {{vNome}}</span>
-                <span>Materia: {{vMateria.name}}</span>
+                <span>Materia: {{vMateria.nome}}</span>
                 <span>Dia: {{vDia}}</span>
                 <span>Horario: {{vHora}}</span>
                 <span>Descrição:</span>
@@ -102,7 +102,7 @@ export default class Aula extends Vue {
 
     
     vMateria = this.materia
-    modelMateria: qSelectOptions = { label: this.vMateria.name, value: this.vMateria.id }
+    modelMateria: qSelectOptions = { label: this.vMateria.nome, value: this.vMateria.idMateria }
     optionsMateria: qSelectOptions[] = []
 
     vEdit = false
@@ -113,7 +113,7 @@ export default class Aula extends Vue {
 
             const materia: Materia = this.$store.state.materiasProfessor[mat]
 
-            this.optionsMateria.push({label: materia.name, value: materia.id})
+            this.optionsMateria.push({label: materia.nome, value: materia.idMateria})
 
         }
 
@@ -131,7 +131,7 @@ export default class Aula extends Vue {
 
         this.vDia = this.date
         this.vHora = moment().set({ hour: parseInt(this.time.split(":")[0]), minute: parseInt(this.time.split(":")[1]) }).format("LT")
-        this.vMateria = { id: this.modelMateria.value as number, name: this.modelMateria.label as string }
+        this.vMateria = { idMateria: this.modelMateria.value as number, nome: this.modelMateria.label as string }
         this.vNome = this.modelNome
         this.vDescricao = this.modelDescricao
 

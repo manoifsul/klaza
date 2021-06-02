@@ -4,10 +4,10 @@
 
         <div v-if="type == 0">
 
-            <div v-for="q in alternativas" :key="`Questao@${q.id}`" class="row">
+            <div v-for="q in Questao.questaoAlternativa" :key="`Questao@${q.idQuestaoAlternativa}`" class="row">
 
                 <q-input class="col-grow" v-model="q.resposta" autofocus outlined label-color="white" input-class="text-white" label="Resposta" type="textarea" placeholder="Digite a resposta" required/>
-                <q-btn @click="parent.removeResposta(q.id)" flat dense icon="fas fa-trash" />
+                <q-btn @click="parent.removeResposta(q.idQuestaoAlternativa)" flat dense icon="fas fa-trash" />
 
             </div>
 
@@ -15,11 +15,11 @@
 
         <div v-if="type == 1" class="column">
 
-            <div v-for="q in alternativas" :key="`Questao@${q.id}`" class="row">
+            <div v-for="q in Questao.questaoAlternativa" :key="`Questao@${q.idQuestaoAlternativa}`" class="row">
 
-                <q-radio v-model="modelRadio" @input="changeRadio()" :val="q.id" color="white"/>
+                <q-radio v-model="modelRadio" @input="changeRadio()" :val="q.idQuestaoAlternativa" color="white"/>
                 <q-input v-model="q.resposta" class="col-grow" outlined label-color="white" input-class="text-white" placeholder="Digite a resposta" required/>
-                <q-btn @click="parent.removeResposta(q.id)" flat dense icon="fas fa-trash" />
+                <q-btn @click="parent.removeResposta(q.idQuestaoAlternativa)" flat dense icon="fas fa-trash" />
 
             </div>
 
@@ -27,11 +27,11 @@
 
         <div v-if="type == 2" class="column">
 
-            <div v-for="q in alternativas" :key="`Questao@${q.id}`" class="row">
+            <div v-for="q in Questao.questaoAlternativa" :key="`Questao@${q.idQuestaoAlternativa}`" class="row">
 
-                <q-checkbox v-model="parent.modelCorreta" :val="q.id" color="white" />
+                <q-checkbox v-model="parent.modelCorreta" :val="q.idQuestaoAlternativa" color="white" />
                 <q-input v-model="q.resposta" class="col-grow" outlined label-color="white" input-class="text-white" placeholder="Digite a resposta" required/>
-                <q-btn @click="parent.removeResposta(q.id)" flat dense icon="fas fa-trash" />
+                <q-btn @click="parent.removeResposta(q.idQuestaoAlternativa)" flat dense icon="fas fa-trash" />
 
             </div>
 
@@ -57,8 +57,10 @@ import ItemQuestao from './ItemQuestao.vue';
 })
 export default class Alternativas extends Vue {
 
-    @Prop() alternativas!: DBTypes.Questao[]
+    @Prop() Questao!: DBTypes.Questao
     @Prop() type!: number
+
+    a = this.Questao.questaoAlternativa
 
     parent = this.$parent as ItemQuestao
 

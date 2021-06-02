@@ -128,7 +128,6 @@ import Alternativas from 'src/components/Alternativas.vue'
 
 import * as DBTypes from "src/@types/DB";
 import { qSelectOptions } from 'src/@types/vue';
-import { QuestaoItemType } from './models';
 import Trabalho from './TrabalhoDialog.vue';
 
 @Component({
@@ -139,8 +138,8 @@ import Trabalho from './TrabalhoDialog.vue';
 export default class ItemQuestao extends Vue {
 
     @Prop() question!: string
-    @Prop() correta!: number[]
-    @Prop() alternativas!: DBTypes.Questao[]
+    @Prop() correta!: DBTypes.QuestaoCorreta[]
+    @Prop() alternativas!: DBTypes.QuestaoAlternativa[]
     @Prop() type!: number
     @Prop() number!: number
     @Prop() idTrabalhoProva!: number
@@ -151,8 +150,8 @@ export default class ItemQuestao extends Vue {
     vAlternativas = this.alternativas
     vType = this.type
 
-    modelCorreta: number[] = []
-    modelAlternativas: DBTypes.Questao[] = []
+    modelCorreta: DBTypes.QuestaoCorreta[] = []
+    modelAlternativas:DBTypes.QuestaoAlternativa[] = []
 
     view = false
     edit = (this.id < 0) ? true : false
@@ -164,7 +163,7 @@ export default class ItemQuestao extends Vue {
 
         for (let c in this.vCorreta) { this.modelCorreta.push(this.vCorreta[c]) }
 
-        for (let a in this.vAlternativas) { this.modelAlternativas.push({ id: this.vAlternativas[a].id, resposta: this.vAlternativas[a].resposta }) }
+        for (let a in this.vAlternativas) { this.modelAlternativas.push({ idQuestaoAlternativa: this.vAlternativas[a].idQuestaoAlternativa, resposta: this.vAlternativas[a].resposta }) }
 
     }
 
@@ -176,7 +175,7 @@ export default class ItemQuestao extends Vue {
 
             console.log(this.correta)
 
-            validas.push(this.alternativas.filter(a => { return a.id == this.correta[c] })[0].resposta)
+            validas.push(this.alternativas.filter(a => { return a.idQuestaoAlternativa == this.correta[c].idQuestaoCorreta })[0].resposta)
 
         }
 
@@ -184,25 +183,24 @@ export default class ItemQuestao extends Vue {
 
     }
 
-    getValida() { return this.alternativas.find(a => {return a.id == this.correta[0] })?.resposta }
+    getValida() { return this.alternativas.find(a => {return a.idQuestaoAlternativa == this.correta[0].idQuestaoCorreta })?.resposta }
 
-    getCorretas() { return this.alternativas.filter(v => { return this.correta.includes(v.id) }) }
+    getCorretas() { return this.alternativas.filter(v => { return this.correta.some(c => c.idQuestaoCorreta == v.idQuestaoAlternativa) }) }
 
     addResposta() {
 
         const id = Math.floor(Math.random() * 100) + 1
 
-        if (this.modelType.value == 0) { this.modelCorreta.push(id) }
-
-        this.modelAlternativas.push({ id: id, resposta: "" })
+        this.modelAlternativas.push({ idQuestaoAlternativa: id, resposta: "" })
+        if (this.modelType.value == 0) { this.modelCorreta.push({ idQuestaoCorreta: id, questaoAlternativa: this.modelAlternativas }) }
 
     }
 
     removeResposta(id: number) {
 
-        const index = this.modelAlternativas.indexOf(this.modelAlternativas.find(v => { return v.id == id }) as DBTypes.Questao)
+        const index = this.modelAlternativas.indexOf(this.modelAlternativas.find(v => { return v.idQuestaoAlternativa == id }) as DBTypes.QuestaoAlternativa)
 
-        if (this.modelCorreta.includes(id)) { this.modelCorreta.splice(this.modelCorreta.indexOf(id), 1) }
+        if (this.modelCorreta.find(c => c.idQuestaoCorreta == id)) { this.modelCorreta.splice(this.modelCorreta.findIndex(c => c.idQuestaoCorreta == id), 1) }
 
         this.modelAlternativas.splice(index, 1)
 
@@ -374,13 +372,11 @@ export default class ItemQuestao extends Vue {
 
         console.log(parent)
 
-        const index = parent.questoes.indexOf(parent.questoes.find(v => { return v.id == this.id }) as QuestaoItemType)
+        const index = parent.questoes.indexOf(parent.questoes.find(v => { return v.idQuestao == this.id }) as DBTypes.Questao)
 
         parent.questoes.splice(index, 1)
 
     }
-
-    
 
 }
 

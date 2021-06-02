@@ -3,70 +3,70 @@ import * as DBTypes from "src/@types/DB";
 export interface DayCardType {
 
     day: string
-    aulas: AulaCardType[]
-    trabalhos: TrabalhoCardType[]
-    atividades: AtividadeCardType[]
-    provas: ProvaCardType[]
+    aulas: DBTypes.Aula[]
+    trabalhos: DBTypes.Trabalho[]
+    atividades: DBTypes.Atividade[]
+    provas: DBTypes.Prova[]
     id: number
 
 }
 
-export interface AulaCardType {
+// export interface AulaCardType {
 
-    dia: Date
-    name: string
-    materia: DBTypes.Materia
-    id: number
-    descricao: string
+//     dia: Date
+//     name: string
+//     materia: DBTypes.Materia
+//     id: number
+//     descricao: string
    
-}
+// }
 
-export interface AtividadeCardType {
+// export interface AtividadeCardType {
 
-    dia: Date
-    name: string
-    materia: DBTypes.Materia
-    id: number
-    descricao: string
+//     dia: Date
+//     name: string
+//     materia: DBTypes.Materia
+//     id: number
+//     descricao: string
 
-}
+// }
 
-export interface TrabalhoCardType {
+// export interface TrabalhoCardType {
 
-    start: Date
-    finish: Date
-    name: string
-    materia: DBTypes.Materia
-    id: number
-    descricao: string
-    maxTentativas: number
-    maxTempo: number
-    questoes: QuestaoItemType[],
-    respostas: DBTypes.Resposta[]
+//     start: Date
+//     finish: Date
+//     name: string
+//     materia: DBTypes.Materia
+//     id: number
+//     descricao: string
+//     maxTentativas: number
+//     maxTempo: number
+//     questoes: QuestaoItemType[],
+//     respostas: DBTypes.Resposta[]
 
-}
+// }
 
-export interface ProvaCardType {
+// export interface ProvaCardType {
 
-    start: Date
-    finish: Date
-    name: string
-    materia: DBTypes.Materia
-    id: number
-    descricao: string
-    maxTentativas: number
-    maxTempo: number
-    questoes: QuestaoItemType[]
-    tentativas: DBTypes.Resposta[]
+//     start: Date
+//     finish: Date
+//     name: string
+//     materia: DBTypes.Materia
+//     id: number
+//     descricao: string
+//     maxTentativas: number
+//     maxTempo: number
+//     questoes: QuestaoItemType[]
+//     tentativas: DBTypes.Resposta[]
 
-}
+// }
 
-export interface QuestaoItemType {
+// export interface QuestaoItemType {
 
-    id: number,
-    question: string,
-    correta: number[],
-    alternativas: DBTypes.Questao[]
-    type: number // 0 - String, 1 - Single, 2 - Multi, 3 - Upload
+//     id: number,
+//     question: string,
+//     correta: number[],
+//     alternativas: DBTypes.Questao[]
+//     type: number // 0 - String, 1 - Single, 2 - Multi, 3 - Upload
 
-}
+// }

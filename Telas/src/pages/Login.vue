@@ -104,36 +104,25 @@
 <script lang="ts">
 import { Vue, Component } from 'vue-property-decorator';
 
-@Component({
+@Component
+export default class Login extends Vue {
 
-    data() {
+    tipoLogin = 'Aluno'
+    login = ''
+    senha = ''
 
-        return {
+    Login() { 
+    
+        const login = { login: this.$data.login, password: this.$data.senha }
 
-            tipoLogin: 'Aluno',
-            login: '',
-            senha: ''
+        console.log(login)
 
-        }
-
-    },
-
-    methods: {
-
-        Login() { 
+        return this.$router.push('home') 
         
-            const login = { login: this.$data.login, password: this.$data.senha }
-
-            console.log(login)
-
-            return this.$router.push('home') 
-            
-        }
-
     }
 
-})
-export default class Login extends Vue {}
+
+}
 
 </script>
 

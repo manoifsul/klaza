@@ -112,7 +112,6 @@
 
 <script lang="ts">
 
-import { DayCardType } from 'src/components/models';
 import { Vue, Component } from 'vue-property-decorator';
 import { DB } from '../middlewares/DBContector'
 
