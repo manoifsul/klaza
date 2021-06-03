@@ -2,6 +2,7 @@ export interface Materia {
 
     idMateria: number
     nome: string
+    idProfessor: number[]
 
 }
 
@@ -110,6 +111,7 @@ export interface Prova {
     questao: Questao[]
     resposta: Resposta[]
     materia: Materia
+    idTurma: number 
 
 }
 
@@ -134,7 +136,7 @@ export interface Professor {
     senha: string
     email: string
     materia: Materia[]
-    turmas: number[]
+    idTurmas: number[]
 
 }
 
@@ -161,18 +163,6 @@ export interface Aula {
 
 }
 
-export interface NotaTrabalho {
-
-
-
-}
-
-export interface NotaProva {
-
-
-
-}
-
 export interface Resposta {
 
     idResposta: number,
@@ -180,7 +170,6 @@ export interface Resposta {
     resposta: string
     nroTentativa: number,
     idAluno: number
-    
 
 } 
 

@@ -1,6 +1,6 @@
 <template>
 
-    <div class="box fit q-pa-md contentAula">
+    <div class="box fit q-pa-md contentProva">
 
         <form @submit.prevent="save()">
 
@@ -14,7 +14,7 @@
 
             <div v-if="!vEdit" class="column text-bold text-h4 text-white q-gutter-y-md">
 
-                <span>Aula: {{vNome}}</span>
+                <span>Prova: {{vNome}}</span>
                 <span>Materia: {{vMateria.nome}}</span>
                 <span>Dia: {{vDia}}</span>
                 <span>Horario: {{vHora}}</span>
@@ -25,9 +25,9 @@
 
             <div v-else class="column text-bold text-h4 q-gutter-y-md">
 
-                <q-input outlined v-model="modelNome" label-color="white" input-class="text-white" label="Aula" placeholder="Digite o nome da aula"/>
-                <q-select outlined input-class="text-white" label-color="white" color="white" v-model="modelMateria"  placeholder="Digite o nome da materia" :options="optionsMateria" label="Materia" use-input/>
-                <q-input v-model="date" label-color="white" input-class="text-white" label="Dia" placeholder="Digite o dia da aula" mask="##/##/####" fill-mask outlined>
+                <q-input outlined v-model="modelNome" label-color="white" input-class="text-white" label="Prova" placeholder="Digite o nome da prova"/>
+                <q-select outlined input-class="text-white" label-color="white" color="white" v-model="modelMateria"  placeholder="Digite a materia da prova" :options="optionsMateria" label="Materia" use-input/>
+                <q-input v-model="date" label-color="white" input-class="text-white" label="Dia" placeholder="Digite o dia da prova" mask="##/##/####" fill-mask outlined>
                     <template v-slot:append>
                         <q-icon name="event" class="cursor-pointer">
                         <q-popup-proxy ref="qDateProxy" transition-show="scale" transition-hide="scale">
@@ -40,7 +40,7 @@
                         </q-icon>
                     </template>
                 </q-input>
-                <q-input outlined input-class="text-white" label-color="white" placeholder="Digite o horario da aula" label="Horario" v-model="time" mask="##:##" fill-mask :rules="['time']">
+                <q-input outlined input-class="text-white" label-color="white" placeholder="Digite o horario da prova" label="Horario" v-model="time" mask="##:##" fill-mask :rules="['time']">
                     <template v-slot:append>
                         <q-icon name="access_time" class="cursor-pointer">
                             <q-popup-proxy transition-show="scale" transition-hide="scale">
@@ -53,7 +53,7 @@
                         </q-icon>
                     </template>
                 </q-input>
-                <q-input outlined v-model="modelDescricao" label-color="white" input-class="text-white" label="Descrição" type="textarea" placeholder="Digite a descrição da aula"/>
+                <q-input outlined v-model="modelDescricao" label-color="white" input-class="text-white" label="Descrição" type="textarea" placeholder="Digite a descrição da prova"/>
 
             </div>
             <div class="row justify-center q-mt-md">
@@ -80,7 +80,7 @@ import { Materia } from 'src/@types/DB';
     components: { }
 
 })
-export default class Aula extends Vue {
+export default class ProvaDialog extends Vue {
 
     @Prop() nome!: string
     @Prop() materia!: Materia
@@ -146,8 +146,8 @@ export default class Aula extends Vue {
 
             title: "Excluir?",
             icon: "question",
-            html: `tem certeza que deseja excluir a aula '${this.nome}'?<br>(Essa ação não pode ser desfeita)`,
-            target: '.contentAula',
+            html: `tem certeza que deseja excluir a prova '${this.nome}'?<br>(Essa ação não pode ser desfeita)`,
+            target: '.contentProva',
             backdrop: false,
             showConfirmButton: true,
             showDenyButton: true,

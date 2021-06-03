@@ -6,8 +6,8 @@
 
             <div class="q-gutter-x-sm row wrap justify-end q-mb-md">
 
-                <q-btn v-if="$store.state.typeUser != 'Aluno'" @click="edit()" class="br-10" padding="sm" color="primary" icon="fas fa-pen"/>
-                <q-btn v-if="$store.state.typeUser != 'Aluno'" @click="remove()" class="br-10" padding="sm" color="primary" icon="fas fa-trash"/>
+                <q-btn v-if="$store.state.typeUser != 'aluno' && editProp != true" @click="edit()" class="br-10" padding="sm" color="primary" icon="fas fa-pen"/>
+                <q-btn v-if="$store.state.typeUser != 'aluno' && editProp != true" @click="remove()" class="br-10" padding="sm" color="primary" icon="fas fa-trash"/>
                 <q-btn class="br-10" padding="sm" color="primary" icon="fas fa-times" v-close-popup/>
 
             </div>
@@ -17,7 +17,7 @@
                 <q-tabs v-model="tab" class="text-white" align="justify">
 
                     <q-tab name="i" label="Informações" />
-                    <q-tab v-if="$store.state.typeUser != 'Aluno' && vEdit" name="q" label="Questões" />
+                    <q-tab v-if="$store.state.typeUser != 'aluno' && vEdit" name="q" label="Questões" />
                     <q-tab v-if="!vEdit" name="t" label="Tentativas" />
             
                 </q-tabs>
@@ -33,7 +33,16 @@
                         <span>Trabalho: {{vNome}}</span>
                         <span>Materia: {{vMateria.nome}}</span>
                         <span>Data: {{vStart}} a {{vFinish}}</span>
-                        <span>Maximo de tentativas: {{vMaxTentativas}}</span>
+                        <span v-if="vMaxTentativas > 0">
+                            
+                            Maximo de tentativas: {{vMaxTentativas}}
+                            
+                        </span>
+                        <span v-else>
+
+                            Maximo de tentativas: Sem maximo
+
+                        </span>
                         <span>Tempo maximo para resolver: {{vMaxTempo}}</span>
                         <span>Descrição:</span>
                         <div class="descricao br-20">{{vDescricao}}</div>        
@@ -162,7 +171,7 @@
 
 <script lang="ts">
 
-import { Vue, Component, Prop, Watch } from 'vue-property-decorator';
+import { Vue, Component, Prop } from 'vue-property-decorator';
 import { qSelectOptions } from 'src/@types/vue'
 import * as DBTypes from '../@types/DB'
 
@@ -188,6 +197,7 @@ export default class TrabalhoDialog extends Vue {
     @Prop() maxTempo!: number
     @Prop() questoes!: DBTypes.Questao[]
     @Prop() respostas!: DBTypes.Resposta[]
+    @Prop() editProp!: boolean
 
     vNome = this.nome
     modelNome = this.vNome
@@ -222,7 +232,7 @@ export default class TrabalhoDialog extends Vue {
 
     tab = "i"
 
-    vEdit = false
+    vEdit = (this.editProp != true) ? false : true
 
     optionsFDate(date: any) { 
     

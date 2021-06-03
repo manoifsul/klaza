@@ -3,6 +3,8 @@ import { Administrador, Aluno, Arquivo, Atividade, Aula, Discord, Materia, NotaP
 import { Store } from 'vuex'
 import { StateInterface } from 'src/store'
 import { DayCardType } from 'src/components/models'
+import moment from 'moment'
+import { uid } from 'quasar'
 
 const testArquivo: Arquivo[] = [
 
@@ -53,19 +55,22 @@ const testMateria: Materia[] = [
     {
 
         idMateria: 0,
-        nome: "Historia"
+        nome: "Historia",
+        idProfessor: [0],
 
     },
     {
 
         idMateria: 1,
-        nome: "Protugues"
+        nome: "Protugues",
+        idProfessor: [0],
 
     },
     {
 
         idMateria: 2,
-        nome: "Historia"
+        nome: "Geografia",
+        idProfessor: [0],
 
     }
 
@@ -81,7 +86,7 @@ const testProfessor: Professor[] = [
         nome: "Remor Oliveira",
         senha: "1234",
         materia: [testMateria[0], testMateria[1]],
-        turmas: [0]
+        idTurmas: [0]
 
     }
 
@@ -221,7 +226,8 @@ const testProva: Prova[] = [
         administrador: [],
         professor: [testProfessor[0]],
         resposta: [testResposta[0]],
-        materia: testMateria[0]
+        materia: testMateria[0],
+        idTurma: 0
 
     },
     {
@@ -238,7 +244,8 @@ const testProva: Prova[] = [
         professor: [],
         administrador: [testAdministrador[0]],
         resposta: [testResposta[1]],
-        materia: testMateria[1]
+        materia: testMateria[1],
+        idTurma: 1
 
     }
 
@@ -294,7 +301,55 @@ const testAula: Aula[] = [
         idAula: 0,
         arquivo: [testArquivo[0]],
         descricao: "AAAAAAAAA",
-        inicio: new Date(),
+        inicio: moment("06/02/2021").toDate(),
+        link: "aaaa.com",
+        materia: testMateria[0],
+        nome: "A",
+        idTurma: 0
+
+    },
+    {
+
+        idAula: 1,
+        arquivo: [testArquivo[0]],
+        descricao: "AAAAAAAAA",
+        inicio: moment("06/10/2021").toDate(),
+        link: "aaaa.com",
+        materia: testMateria[0],
+        nome: "A",
+        idTurma: 0
+
+    },
+    {
+
+        idAula: 2,
+        arquivo: [testArquivo[0]],
+        descricao: "AAAAAAAAA",
+        inicio: moment("06/01/2021").toDate(),
+        link: "aaaa.com",
+        materia: testMateria[0],
+        nome: "A",
+        idTurma: 0
+
+    },
+    {
+
+        idAula: 3,
+        arquivo: [],
+        descricao: "AAAAAAAAA",
+        inicio: moment("06/10/2021").toDate(),
+        link: "aaaa.com",
+        materia: testMateria[0],
+        nome: "A",
+        idTurma: 0
+
+    },
+    {
+
+        idAula: 4,
+        arquivo: [],
+        descricao: "AAAAAAAAA",
+        inicio: moment("05/02/2021").toDate(),
         link: "aaaa.com",
         materia: testMateria[0],
         nome: "A",
@@ -375,9 +430,23 @@ const testTurma: Turma[] = [
         nome: "Turminha do Barrulho",
         prova: [testProva[0], testProva[1]],
         trabalho: [testTrabalho[0]],
-        aula: [testAula[0]],
+        aula: testAula,
         professor: [testProfessor[0]],
         aluno: testAluno
+
+    },
+    {
+
+        idTurma: 1,
+        atividade: [],
+        discord: testDiscord[1],
+        materia: testMateria[3],
+        nome: "Turminhaaaaaaaa",
+        prova: [],
+        trabalho: [],
+        aula: [],
+        professor: [],
+        aluno: [testAluno[2]]
 
     }
 
@@ -404,21 +473,439 @@ export class DB {
 
             const days: DayCardType[] = []
 
-            console.log("aaaa")
-
             if (this.store.state.typeUser == "aluno") {
 
                 const turmasAluno = this.store.state.turmas.filter(t => t.aluno.map(a => a.idAluno).includes(this.store.state.idUser))
 
-                console.log(turmasAluno)
+                turmasAluno.forEach(t => {
 
+                    new Set(t.aula.map(a => a.inicio.getTime())).forEach(time => {
+
+                        const date = moment(time).format("DD/MM/YYYY")
+                        const i = days.findIndex(d => d.day == date)
+                        const aulas = t.aula.filter(a => a.inicio.getTime() == time)
+
+                        if (moment(time).isSameOrAfter(moment(), 'D')) {
+
+                            if (i != -1) {
+
+                                days[i].aulas = aulas
+
+                            }
+                            else {
+
+                                days.push({
+
+                                    id: uid(),
+                                    day: date,
+                                    aulas: aulas,
+                                    atividades: [],
+                                    trabalhos: [],
+                                    provas: []
+            
+                                })
+
+                            }
+
+                        }
+
+                    })
+
+                    new Set(t.atividade.map(a => a.inicio.getTime())).forEach(time => {
+
+                        const date = moment(time).format("DD/MM/YYYY")
+                        const i = days.findIndex(d => d.day == date)
+                        const atividades = t.atividade.filter(a => a.inicio.getTime() == time)
+
+                        if (moment(time).isSameOrAfter(moment(), 'D')) {
+
+                            if (i != -1) {
+
+                                days[i].atividades = atividades
+
+                            }
+                            else {
+
+                                days.push({
+
+                                    id: uid(),
+                                    day: date,
+                                    aulas: [],
+                                    atividades: atividades,
+                                    trabalhos: [],
+                                    provas: []
+            
+                                })
+
+                            }
+
+                        }
+
+                    })
+
+                    new Set(t.trabalho.map(a => a.inicio.getTime())).forEach(time => {
+
+                        const date = moment(time).format("DD/MM/YYYY")
+                        const i = days.findIndex(d => d.day == date)
+                        const trabalhos = t.trabalho.filter(a => a.inicio.getTime() == time)
+
+                        if (moment(time).isSameOrAfter(moment(), 'D')) {
+
+                            if (i != -1) {
+
+                                days[i].trabalhos = trabalhos
+
+                            }
+                            else {
+
+                                days.push({
+
+                                    id: uid(),
+                                    day: date,
+                                    aulas: [],
+                                    atividades: [],
+                                    trabalhos: trabalhos,
+                                    provas: []
+            
+                                })
+
+                            }
+
+                        }
+
+                    })
+
+                    new Set(t.prova.map(a => a.inicio.getTime())).forEach(time => {
+
+                        const date = moment(time).format("DD/MM/YYYY")
+                        const i = days.findIndex(d => d.day == date)
+                        const provas = t.prova.filter(a => a.inicio.getTime() == time)
+
+                        if (moment(time).isSameOrAfter(moment(), 'D')) {
+
+                            if (i != -1) {
+
+                                days[i].provas = provas
+
+                            }
+                            else {
+
+                                days.push({
+
+                                    id: uid(),
+                                    day: date,
+                                    aulas: [],
+                                    atividades: [],
+                                    trabalhos: [],
+                                    provas: provas
+            
+                                })
+
+                            }
+
+                        }
+
+                    })
+
+                })
 
             }
 
+            if (this.store.state.typeUser == "professor") {
 
+                this.materia.get()
 
+                const turmasProfessor = this.store.state.turmas.filter(t => t.professor.map(a => a.idProfessor).includes(this.store.state.idUser))
 
-            this.store.state.days = days
+                turmasProfessor.forEach(t => {
+
+                    new Set(t.aula.map(a => a.inicio.getTime())).forEach(time => {
+
+                        const date = moment(time).format("DD/MM/YYYY")
+                        const i = days.findIndex(d => d.day == date)
+                        const aulas = t.aula.filter(a => a.inicio.getTime() == time)
+
+                        if (moment(time).isSameOrAfter(moment(), 'D')) {
+
+                            if (i != -1) {
+
+                                days[i].aulas = aulas
+
+                            }
+                            else {
+
+                                days.push({
+
+                                    id: uid(),
+                                    day: date,
+                                    aulas: aulas,
+                                    atividades: [],
+                                    trabalhos: [],
+                                    provas: []
+            
+                                })
+
+                            }
+
+                        }
+
+                    })
+
+                    new Set(t.atividade.map(a => a.inicio.getTime())).forEach(time => {
+
+                        const date = moment(time).format("DD/MM/YYYY")
+                        const i = days.findIndex(d => d.day == date)
+                        const atividades = t.atividade.filter(a => a.inicio.getTime() == time)
+
+                        if (moment(time).isSameOrAfter(moment(), 'D')) {
+
+                            if (i != -1) {
+
+                                days[i].atividades = atividades
+
+                            }
+                            else {
+
+                                days.push({
+
+                                    id: uid(),
+                                    day: date,
+                                    aulas: [],
+                                    atividades: atividades,
+                                    trabalhos: [],
+                                    provas: []
+            
+                                })
+
+                            }
+
+                        }
+
+                    })
+
+                    new Set(t.trabalho.map(a => a.inicio.getTime())).forEach(time => {
+
+                        const date = moment(time).format("DD/MM/YYYY")
+                        const i = days.findIndex(d => d.day == date)
+                        const trabalhos = t.trabalho.filter(a => a.inicio.getTime() == time)
+
+                        if (moment(time).isSameOrAfter(moment(), 'D')) {
+
+                            if (i != -1) {
+
+                                days[i].trabalhos = trabalhos
+
+                            }
+                            else {
+
+                                days.push({
+
+                                    id: uid(),
+                                    day: date,
+                                    aulas: [],
+                                    atividades: [],
+                                    trabalhos: trabalhos,
+                                    provas: []
+            
+                                })
+
+                            }
+
+                        }
+
+                    })
+
+                    new Set(t.prova.map(a => a.inicio.getTime())).forEach(time => {
+
+                        const date = moment(time).format("DD/MM/YYYY")
+                        const i = days.findIndex(d => d.day == date)
+                        const provas = t.prova.filter(a => a.inicio.getTime() == time)
+
+                        if (moment(time).isSameOrAfter(moment(), 'D')) {
+
+                            if (i != -1) {
+
+                                days[i].provas = provas
+
+                            }
+                            else {
+
+                                days.push({
+
+                                    id: uid(),
+                                    day: date,
+                                    aulas: [],
+                                    atividades: [],
+                                    trabalhos: [],
+                                    provas: provas
+            
+                                })
+
+                            }
+
+                        }
+
+                    })
+
+                })
+
+            }
+
+            if (this.store.state.typeUser == "administrador") {
+
+                this.materia.get()
+
+                const turmasAdministrador = this.store.state.turmas
+
+                turmasAdministrador.forEach(t => {
+
+                    new Set(t.aula.map(a => a.inicio.getTime())).forEach(time => {
+
+                        const date = moment(time).format("DD/MM/YYYY")
+                        const i = days.findIndex(d => d.day == date)
+                        const aulas = t.aula.filter(a => a.inicio.getTime() == time)
+
+                        if (moment(time).isSameOrAfter(moment(), 'D')) {
+
+                            if (i != -1) {
+
+                                days[i].aulas = aulas
+
+                            }
+                            else {
+
+                                days.push({
+
+                                    id: uid(),
+                                    day: date,
+                                    aulas: aulas,
+                                    atividades: [],
+                                    trabalhos: [],
+                                    provas: []
+            
+                                })
+
+                            }
+
+                        }
+
+                    })
+
+                    new Set(t.atividade.map(a => a.inicio.getTime())).forEach(time => {
+
+                        const date = moment(time).format("DD/MM/YYYY")
+                        const i = days.findIndex(d => d.day == date)
+                        const atividades = t.atividade.filter(a => a.inicio.getTime() == time)
+
+                        if (moment(time).isSameOrAfter(moment(), 'D')) {
+
+                            if (i != -1) {
+
+                                days[i].atividades = atividades
+
+                            }
+                            else {
+
+                                days.push({
+
+                                    id: uid(),
+                                    day: date,
+                                    aulas: [],
+                                    atividades: atividades,
+                                    trabalhos: [],
+                                    provas: []
+            
+                                })
+
+                            }
+
+                        }
+
+                    })
+
+                    new Set(t.trabalho.map(a => a.inicio.getTime())).forEach(time => {
+
+                        const date = moment(time).format("DD/MM/YYYY")
+                        const i = days.findIndex(d => d.day == date)
+                        const trabalhos = t.trabalho.filter(a => a.inicio.getTime() == time)
+
+                        if (moment(time).isSameOrAfter(moment(), 'D')) {
+
+                            if (i != -1) {
+
+                                days[i].trabalhos = trabalhos
+
+                            }
+                            else {
+
+                                days.push({
+
+                                    id: uid(),
+                                    day: date,
+                                    aulas: [],
+                                    atividades: [],
+                                    trabalhos: trabalhos,
+                                    provas: []
+            
+                                })
+
+                            }
+
+                        }
+
+                    })
+
+                    new Set(t.prova.map(a => a.inicio.getTime())).forEach(time => {
+
+                        const date = moment(time).format("DD/MM/YYYY")
+                        const i = days.findIndex(d => d.day == date)
+                        const provas = t.prova.filter(a => a.inicio.getTime() == time)
+
+                        if (moment(time).isSameOrAfter(moment(), 'D')) {
+
+                            if (i != -1) {
+
+                                days[i].provas = provas
+
+                            }
+                            else {
+
+                                days.push({
+
+                                    id: uid(),
+                                    day: date,
+                                    aulas: [],
+                                    atividades: [],
+                                    trabalhos: [],
+                                    provas: provas
+            
+                                })
+
+                            }
+
+                        }
+
+                    })
+
+                })
+
+            }
+
+            this.store.state.days = days.sort((a, b) => {
+
+                const splitA = a.day.split("/")
+                const splitB = b.day.split("/")
+
+                const momentA = moment(`${splitA[1]}/${splitA[0]}/${splitA[2]}`)
+                const momentB = moment(`${splitB[1]}/${splitB[0]}/${splitA[2]}`)
+
+                if (momentA.isBefore(momentB)) { return -1 }
+                if (momentA.isSame(momentB)) { return 0 }
+                if (momentA.isAfter(momentB)) { return 1 }
+
+                return 0
+
+            })
 
         }
 
@@ -1165,39 +1652,39 @@ export class DB {
 
         },
 
-        create: async (prova: Prova) => {
+        create: async (materia: Materia) => {
 
             await this.axios({
 
-                url: `${this.baseUrl}/prova`,
+                url: `${this.baseUrl}/turma`,
                 method: "POST",
-                data: prova
+                data: materia
 
             }).then(r => {
                 
-                const i = this.store.state.provas.findIndex(a => a.idProva == prova.idProva)
+                const i = this.store.state.provas.findIndex(a => a.idProva == materia.idMateria)
 
-                if (i != -1) { this.store.state.provas[i] = prova }
-                else { this.store.state.provas.push(prova) }
+                if (i != -1) { this.store.state.materias[i] = materia }
+                else { this.store.state.materias.push(materia) }
 
             })
 
         },
 
-        update: async (prova: Prova) => {
+        update: async (materia: Materia) => {
 
             await this.axios({
 
-                url: `${this.baseUrl}/trabalho/${prova.idProva}`,
+                url: `${this.baseUrl}/trabalho/${materia.idMateria}`,
                 method: "PUT",
-                data: prova
+                data: materia
 
             }).then(r => {
 
-                const i = this.store.state.provas.findIndex(a => a.idProva == prova.idProva)
+                const i = this.store.state.provas.findIndex(a => a.idProva == materia.idMateria)
 
-                if (i != -1) { this.store.state.provas[i] = prova }
-                else { this.store.state.provas.push(prova) }
+                if (i != -1) { this.store.state.materias[i] = materia }
+                else { this.store.state.materias.push(materia) }
 
             })
 
@@ -1207,14 +1694,119 @@ export class DB {
 
             await this.axios({
 
-                url: `${this.baseUrl}/prova/${id}`,
+                url: `${this.baseUrl}/materia/${id}`,
                 method: "DELETE"
 
             }).then(r => {
                 
-                const i = this.store.state.provas.findIndex(a => a.idProva == id)
+                const i = this.store.state.materias.findIndex(a => a.idMateria == id)
 
-                if (i != -1) { this.store.state.provas.splice(i, 1) }
+                if (i != -1) { this.store.state.materias.splice(i, 1) }
+
+            })
+
+        }
+
+    }
+
+    materia = {
+
+        get: async (id?: number) => {
+           
+            if (id) {
+
+                await this.axios({
+
+                    url: `${this.baseUrl}/materia/${id}`,
+                    method: "GET"
+
+                }).then(r => {
+                    
+                    const materia: Materia = testMateria[id] //r.data
+
+                    const i = this.store.state.materias.findIndex(a => a.idMateria == id)
+
+                    if (i != -1) { this.store.state.materias[i] = materia }
+                    else { this.store.state.materias.push(materia) }
+
+                })
+
+            }
+            else {
+
+                // await this.axios({
+
+                //     url: `${this.baseUrl}/materias`,
+                //     method: "GET"
+
+                // }).then(r => {
+  
+                // const materias: Materia[] = testMateria //r.data
+
+                // this.store.state.materias = materias
+
+                // })
+
+                const materias: Materia[] = testMateria //r.data
+
+                this.store.state.materias = materias
+
+                this.store.state.materiasProfessor = materias.filter(m => m.idProfessor.includes(this.store.state.idUser))
+
+            }
+
+        },
+
+        create: async (materia: Materia) => {
+
+            await this.axios({
+
+                url: `${this.baseUrl}/materia`,
+                method: "POST",
+                data: materia
+
+            }).then(r => {
+                
+                const i = this.store.state.provas.findIndex(a => a.idProva == materia.idMateria)
+
+                if (i != -1) { this.store.state.materias[i] = materia }
+                else { this.store.state.materias.push(materia) }
+
+            })
+
+        },
+
+        update: async (materia: Materia) => {
+
+            await this.axios({
+
+                url: `${this.baseUrl}/materia/${materia.idMateria}`,
+                method: "PUT",
+                data: materia
+
+            }).then(r => {
+
+                const i = this.store.state.materias.findIndex(a => a.idMateria == materia.idMateria)
+
+                if (i != -1) { this.store.state.materias[i] = materia }
+                else { this.store.state.materias.push(materia) }
+
+            })
+
+        },
+
+        delete: async (id: number) => {
+
+            await this.axios({
+
+                url: `${this.baseUrl}/materia/${id}`,
+                method: "DELETE"
+
+            }).then(r => {
+                
+                const i = this.store.state.materias.findIndex(a => a.idMateria == id)
+
+                if (i != -1) { this.store.state.materias.splice(i, 1) }
 
             })
 

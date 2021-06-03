@@ -7,7 +7,7 @@ export interface DayCardType {
     trabalhos: DBTypes.Trabalho[]
     atividades: DBTypes.Atividade[]
     provas: DBTypes.Prova[]
-    id: number
+    id: string
 
 }
 

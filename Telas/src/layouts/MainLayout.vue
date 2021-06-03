@@ -30,7 +30,7 @@
 
                 </q-item>
 
-                <q-item to="/atividades" class="text-black" active-class="bg-white text-primary text-bold" clickable>
+                <q-item to="/atividades" class="text-white text-strike" active-class="bg-white text-primary text-bold" clickable>
 
                     <q-item-section avatar>
                         <q-icon name="fas fa-file-alt"/>
@@ -40,7 +40,7 @@
 
                 </q-item>
 
-                <q-item to="/trabalhos" class="text-black" active-class="bg-white text-primary text-bold" clickable>
+                <q-item to="/trabalhos" class="text-white text-strike" active-class="bg-white text-primary text-bold" clickable>
 
                     <q-item-section avatar>
                         <q-icon name="fas fa-newspaper"/>
@@ -50,7 +50,7 @@
 
                 </q-item>
 
-                <q-item to="/provas" class="text-black" active-class="bg-white text-primary text-bold" clickable>
+                <q-item to="/provas" class="text-white text-strike" active-class="bg-white text-primary text-bold" clickable>
 
                     <q-item-section avatar>
                         <q-icon name="fas fa-scroll"/>
@@ -60,7 +60,7 @@
 
                 </q-item>
 
-                <q-item to="/aulas" class="text-black" active-class="bg-white text-primary text-bold" clickable>
+                <q-item to="/aulas" class="text-white text-strike" active-class="bg-white text-primary text-bold" clickable>
 
                     <q-item-section avatar>
                         <q-icon name="fas fa-book-open"/>
@@ -70,7 +70,7 @@
 
                 </q-item>
 
-                <q-item to="/boletim" class="text-black" active-class="bg-white text-primary text-bold" clickable>
+                <q-item to="/boletim" class="text-white" active-class="bg-white text-primary text-bold" clickable>
 
                     <q-item-section avatar>
                         <q-icon name="fas fa-clipboard-list"/>

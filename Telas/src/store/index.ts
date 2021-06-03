@@ -34,7 +34,7 @@ export default store(function ({ Vue }) {
         state: {
 
             idUser: 0,
-            typeUser: "aluno",
+            typeUser: "professor",
 
             administradores: [],
             professores: [],
