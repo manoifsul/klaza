@@ -148,19 +148,6 @@ PRIMARY KEY(id_questao)
 INSERT INTO Questao(id_questao, pergunta, tipo)
 VALUES(0, "quanto é 1+1?", 1);
 
-CREATE TABLE Presenca(
-id_presenca BIGINT NOT NULL UNIQUE AUTO_INCREMENT,
-valor INT NOT NULL,
-id_aula BIGINT NOT NULL,
-id_aluno BIGINT NOT NULL,
-FOREIGN KEY(id_aula) REFERENCES Aula(id_aula),
-FOREIGN KEY(id_aluno) REFERENCES Aluno(id_aluno),
-PRIMARY KEY(id_presenca)
-);
-
-INSERT INTO Presenca(id_presenca, valor, id_aula, id_aluno)
-VALUES(0, 1, 0, 0);
-
 CREATE TABLE Arquivo_Aula(
 id_arquivo_aula BIGINT NOT NULL UNIQUE AUTO_INCREMENT,
 id_aula BIGINT NOT NULL,
