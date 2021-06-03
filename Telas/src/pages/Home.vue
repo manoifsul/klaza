@@ -132,7 +132,7 @@ export default class Home extends Vue {
 
         const db = new DB(this.$axios, this.$store)
 
-        db.turma.get()
+        db.dias.get()
 
     }
 

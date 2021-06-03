@@ -29,7 +29,32 @@ export interface StateInterface {
 export default store(function ({ Vue }) {
     Vue.use(Vuex);
 
-    const Store = new Vuex.Store<StateInterface>({});
+    const Store = new Vuex.Store<StateInterface>({
+
+        state: {
+
+            idUser: 0,
+            typeUser: "aluno",
+
+            administradores: [],
+            professores: [],
+            alunos: [],
+
+            provas: [],
+            trabalhos: [],
+            atividades: [],
+            aulas: [],
+
+            days: [],
+
+            materias: [],
+            materiasProfessor: [],
+
+            turmas: []
+
+        }
+
+    });
 
     return Store;
 });

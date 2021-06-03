@@ -404,9 +404,13 @@ export class DB {
 
             const days: DayCardType[] = []
 
+            console.log("aaaa")
+
             if (this.store.state.typeUser == "aluno") {
 
                 const turmasAluno = this.store.state.turmas.filter(t => t.aluno.map(a => a.idAluno).includes(this.store.state.idUser))
+
+                console.log(turmasAluno)
 
 
             }
@@ -1140,18 +1144,22 @@ export class DB {
             }
             else {
 
-                await this.axios({
+                // await this.axios({
 
-                    url: `${this.baseUrl}/turmas`,
-                    method: "GET"
+                //     url: `${this.baseUrl}/turmas`,
+                //     method: "GET"
 
-                }).then(r => {
+                // }).then(r => {
 
-                    const turmas: Turma[] = testTurma //r.data
+                //     const turmas: Turma[] = testTurma //r.data
 
-                    this.store.state.turmas = turmas
+                //     this.store.state.turmas = turmas
 
-                })
+                // })
+
+                const turmas: Turma[] = testTurma //r.data
+
+                this.store.state.turmas = turmas
 
             }
 
