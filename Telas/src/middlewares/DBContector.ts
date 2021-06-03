@@ -2,6 +2,7 @@ import { AxiosInstance } from 'axios'
 import { Administrador, Aluno, Arquivo, Atividade, Aula, Discord, Materia, NotaProva, Professor, Prova, Questao, QuestaoAlternativa, QuestaoCorreta, Resposta, Trabalho, Turma } from '../@types/DB'
 import { Store } from 'vuex'
 import { StateInterface } from 'src/store'
+import { DayCardType } from 'src/components/models'
 
 const testArquivo: Arquivo[] = [
 
@@ -79,7 +80,8 @@ const testProfessor: Professor[] = [
         matricula: "49857848984",
         nome: "Remor Oliveira",
         senha: "1234",
-        materia: [testMateria[0], testMateria[1]]
+        materia: [testMateria[0], testMateria[1]],
+        turmas: [0]
 
     }
 
@@ -278,7 +280,8 @@ const testTrabalho: Trabalho[] = [
         tentativas: 0,
         tipo: 4,
         materia: testMateria[1],
-        resposta: []
+        resposta: [],
+        idTurma: 0
 
     }
 
@@ -295,6 +298,7 @@ const testAula: Aula[] = [
         link: "aaaa.com",
         materia: testMateria[0],
         nome: "A",
+        idTurma: 0
 
     }
 
@@ -312,26 +316,8 @@ const testAtividade: Atividade[] = [
         nome: "Eba",
         professor: [testProfessor[0]],
         resposta: [],
-        materia: testMateria[0]
-
-    }
-
-]
-
-
-const testTurma: Turma[] = [
-
-    {
-
-        idTurma: 0,
-        atividade: [testAtividade[0]],
-        discord: testDiscord[0],
-        materia: testMateria[2],
-        nome: "Turminha do Barrulho",
-        prova: [testProva[0], testProva[1]],
-        trabalho: [testTrabalho[0]],
-        aula: [testAula[0]],
-        professor: [testProfessor[0]]
+        materia: testMateria[0],
+        idTurma: 0
 
     }
 
@@ -348,7 +334,7 @@ const testAluno: Aluno[] = [
         notasProvas: [testNotaProva[0]],
         notasTrabalhos: [],
         senha: "abc",
-        turma: [testTurma[0]]
+        idTurmas: [0]
 
     },
     {
@@ -360,7 +346,7 @@ const testAluno: Aluno[] = [
         notasProvas: [testNotaProva[1]],
         notasTrabalhos: [],
         senha: "opa123",
-        turma: [testTurma[0]]
+        idTurmas: [0]
 
     },
     {
@@ -372,7 +358,26 @@ const testAluno: Aluno[] = [
         notasProvas: [],
         notasTrabalhos: [],
         senha: "0987654321",
-        turma: [testTurma[0]]
+        idTurmas: [0]
+
+    }
+
+]
+
+const testTurma: Turma[] = [
+
+    {
+
+        idTurma: 0,
+        atividade: [testAtividade[0]],
+        discord: testDiscord[0],
+        materia: testMateria[2],
+        nome: "Turminha do Barrulho",
+        prova: [testProva[0], testProva[1]],
+        trabalho: [testTrabalho[0]],
+        aula: [testAula[0]],
+        professor: [testProfessor[0]],
+        aluno: testAluno
 
     }
 
@@ -393,7 +398,25 @@ export class DB {
 
     dias = {
 
-        get: () => {}
+        get: async () => {
+
+            this.turma.get()
+
+            const days: DayCardType[] = []
+
+            if (this.store.state.typeUser == "aluno") {
+
+                const turmasAluno = this.store.state.turmas.filter(t => t.aluno.map(a => a.idAluno).includes(this.store.state.idUser))
+
+
+            }
+
+
+
+
+            this.store.state.days = days
+
+        }
 
     }
 
@@ -410,7 +433,12 @@ export class DB {
 
                 }).then(r => {
                     
-                    //ADD ALGUMA MANIPULACAO PARA ALUNO + ADD NO VUEX
+                    const aluno: Aluno = testAluno[id] //r.data
+
+                    const i = this.store.state.alunos.findIndex(a => a.idAluno == id)
+
+                    if (i != -1) { this.store.state.alunos[i] = aluno }
+                    else { this.store.state.alunos.push(aluno) }
 
                 })
 
@@ -424,7 +452,9 @@ export class DB {
 
                 }).then(r => {
 
-                    //ADD ALGUMA MANIPULACAO PARA ALUNO + ADD NO VUEX
+                    const aluno: Aluno[] = testAluno //r.data
+
+                    this.store.state.alunos = aluno
 
                 })
 
@@ -442,29 +472,35 @@ export class DB {
 
             }).then(r => {
                 
-                //ADD ALGUMA MANIPULACAO PARA ALUNO + ADD NO VUEX
+                const i = this.store.state.alunos.findIndex(a => a.idAluno == aluno.idAluno)
+
+                if (i != -1) { this.store.state.alunos[i] = aluno }
+                else { this.store.state.alunos.push(aluno) }
 
             })
 
         },
 
-        update: async (id: string, aluno: Aluno) => {
+        update: async (aluno: Aluno) => {
 
             await this.axios({
 
-                url: `${this.baseUrl}/aluno/${id}`,
+                url: `${this.baseUrl}/aluno/${aluno.idAluno}`,
                 method: "PUT",
                 data: aluno
 
             }).then(r => {
                 
-                //ADD ALGUMA MANIPULACAO PARA ALUNO + ADD NO VUEX
+                const i = this.store.state.alunos.findIndex(a => a.idAluno == aluno.idAluno)
+
+                if (i != -1) { this.store.state.alunos[i] = aluno }
+                else { this.store.state.alunos.push(aluno) }
 
             })
 
         },
 
-        delete: async (id: string) => {
+        delete: async (id: number) => {
 
             await this.axios({
 
@@ -473,7 +509,9 @@ export class DB {
 
             }).then(r => {
                 
-                //ADD ALGUMA MANIPULACAO PARA ALUNO + ADD NO VUEX
+                const i = this.store.state.alunos.findIndex(a => a.idAluno == id)
+
+                if (i != -1) { this.store.state.alunos.splice(i, 1) }
 
             })
 
@@ -494,7 +532,12 @@ export class DB {
 
                 }).then(r => {
                     
-                    //ADD ALGUMA MANIPULACAO PARA PROFESSOR + ADD NO VUEX
+                    const professor: Professor = testProfessor[id] //r.data
+
+                    const i = this.store.state.professores.findIndex(a => a.idProfessor == id)
+
+                    if (i != -1) { this.store.state.professores[i] = professor }
+                    else { this.store.state.professores.push(professor) }
 
                 })
 
@@ -508,7 +551,9 @@ export class DB {
 
                 }).then(r => {
 
-                    //ADD ALGUMA MANIPULACAO PARA PROFESSOR + ADD NO VUEX
+                    const professores: Professor[] = testProfessor //r.data
+
+                    this.store.state.professores = professores
 
                 })
 
@@ -525,30 +570,36 @@ export class DB {
                 data: professor
 
             }).then(r => {
-                
-                //ADD ALGUMA MANIPULACAO PARA PROFESSOR + ADD NO VUEX
+
+                const i = this.store.state.professores.findIndex(a => a.idProfessor == professor.idProfessor)
+
+                if (i != -1) { this.store.state.professores[i] = professor }
+                else { this.store.state.professores.push(professor) }
 
             })
 
         },
 
-        update: async (id: string, professor: Professor) => {
+        update: async (professor: Professor) => {
 
             await this.axios({
 
-                url: `${this.baseUrl}/professor/${id}`,
+                url: `${this.baseUrl}/professor/${professor.idProfessor}`,
                 method: "PUT",
                 data: professor
 
             }).then(r => {
                 
-                //ADD ALGUMA MANIPULACAO PARA PROFESSOR + ADD NO VUEX
+                const i = this.store.state.professores.findIndex(a => a.idProfessor == professor.idProfessor)
+
+                if (i != -1) { this.store.state.professores[i] = professor }
+                else { this.store.state.professores.push(professor) }
 
             })
 
         },
 
-        delete: async (id: string) => {
+        delete: async (id: number) => {
 
             await this.axios({
 
@@ -557,7 +608,9 @@ export class DB {
 
             }).then(r => {
                 
-                //ADD ALGUMA MANIPULACAO PARA PROFESSOR + ADD NO VUEX
+                const i = this.store.state.professores.findIndex(a => a.idProfessor == id)
+
+                if (i != -1) { this.store.state.professores.splice(i, 1) }
 
             })
 
@@ -578,7 +631,12 @@ export class DB {
 
                 }).then(r => {
                     
-                    //ADD ALGUMA MANIPULACAO PARA ADMINISTRADOR + ADD NO VUEX
+                    const administrador: Administrador = testAdministrador[id] //r.data
+
+                    const i = this.store.state.administradores.findIndex(a => a.idAdministrador == id)
+
+                    if (i != -1) { this.store.state.administradores[i] = administrador }
+                    else { this.store.state.administradores.push(administrador) }
 
                 })
 
@@ -592,7 +650,9 @@ export class DB {
 
                 }).then(r => {
 
-                    //ADD ALGUMA MANIPULACAO PARA ADMINISTRADOR + ADD NO VUEX
+                    const administradores: Administrador[] = testAdministrador //r.data
+
+                    this.store.state.administradores = administradores
 
                 })
 
@@ -610,29 +670,35 @@ export class DB {
 
             }).then(r => {
                 
-                //ADD ALGUMA MANIPULACAO PARA ADMINISTRADOR + ADD NO VUEX
+                const i = this.store.state.administradores.findIndex(a => a.idAdministrador == administrador.idAdministrador)
+
+                if (i != -1) { this.store.state.administradores[i] = administrador }
+                else { this.store.state.administradores.push(administrador) }
 
             })
 
         },
 
-        update: async (id: string, administrador: Administrador) => {
+        update: async (administrador: Administrador) => {
 
             await this.axios({
 
-                url: `${this.baseUrl}/administrador/${id}`,
+                url: `${this.baseUrl}/administrador/${administrador.idAdministrador}`,
                 method: "PUT",
                 data: administrador
 
             }).then(r => {
                 
-                //ADD ALGUMA MANIPULACAO PARA ADMINISTRADOR + ADD NO VUEX
+                const i = this.store.state.administradores.findIndex(a => a.idAdministrador == administrador.idAdministrador)
+
+                if (i != -1) { this.store.state.administradores[i] = administrador }
+                else { this.store.state.administradores.push(administrador) }
 
             })
 
         },
 
-        delete: async (id: string) => {
+        delete: async (id: number) => {
 
             await this.axios({
 
@@ -641,7 +707,9 @@ export class DB {
 
             }).then(r => {
                 
-                //ADD ALGUMA MANIPULACAO PARA ADMINISTRADOR + ADD NO VUEX
+                const i = this.store.state.administradores.findIndex(a => a.idAdministrador == id)
+
+                if (i != -1) { this.store.state.administradores.splice(i, 1) }
 
             })
 
@@ -662,7 +730,12 @@ export class DB {
 
                 }).then(r => {
                     
-                    //ADD ALGUMA MANIPULACAO PARA AULA + ADD NO VUEX
+                    const aula: Aula = testAula[id] //r.data
+
+                    const i = this.store.state.aulas.findIndex(a => a.idAula == id)
+
+                    if (i != -1) { this.store.state.aulas[i] = aula }
+                    else { this.store.state.aulas.push(aula) }
 
                 })
 
@@ -676,7 +749,9 @@ export class DB {
 
                 }).then(r => {
 
-                    //ADD ALGUMA MANIPULACAO PARA AULA + ADD NO VUEX
+                    const aulas: Aula[] = testAula //r.data
+
+                    this.store.state.aulas = aulas
 
                 })
 
@@ -684,52 +759,514 @@ export class DB {
 
         },
 
-        create: async (administrador: Administrador) => {
+        create: async (aula: Aula) => {
 
             await this.axios({
 
                 url: `${this.baseUrl}/aula`,
                 method: "POST",
-                data: administrador
+                data: aula
 
             }).then(r => {
                 
-                //ADD ALGUMA MANIPULACAO PARA ADMINISTRADOR + ADD NO VUEX
+                const i = this.store.state.aulas.findIndex(a => a.idAula == aula.idAula)
+
+                if (i != -1) { this.store.state.aulas[i] = aula }
+                else { this.store.state.aulas.push(aula) }
 
             })
 
         },
 
-        update: async (id: string, administrador: Administrador) => {
+        update: async (aula: Aula) => {
 
             await this.axios({
 
-                url: `${this.baseUrl}/administrador/${id}`,
+                url: `${this.baseUrl}/aula/${aula.idAula}`,
                 method: "PUT",
-                data: administrador
+                data: aula
 
             }).then(r => {
                 
-                //ADD ALGUMA MANIPULACAO PARA ADMINISTRADOR + ADD NO VUEX
+                const i = this.store.state.aulas.findIndex(a => a.idAula == aula.idAula)
+
+                if (i != -1) { this.store.state.aulas[i] = aula }
+                else { this.store.state.aulas.push(aula) }
 
             })
 
         },
 
-        delete: async (id: string) => {
+        delete: async (id: number) => {
 
             await this.axios({
 
-                url: `${this.baseUrl}/administrador/${id}`,
+                url: `${this.baseUrl}/aula/${id}`,
                 method: "DELETE"
 
             }).then(r => {
                 
-                //ADD ALGUMA MANIPULACAO PARA ADMINISTRADOR + ADD NO VUEX
+                const i = this.store.state.aulas.findIndex(a => a.idAula == id)
+
+                if (i != -1) { this.store.state.aulas.splice(i, 1) }
 
             })
 
         }
+
+    }
+
+    atividade = {
+
+        get: async (id?: number) => {
+           
+            if (id) {
+
+                await this.axios({
+
+                    url: `${this.baseUrl}/atividade/${id}`,
+                    method: "GET"
+
+                }).then(r => {
+                    
+                    const atividade: Atividade = testAtividade[id] //r.data
+
+                    const i = this.store.state.atividades.findIndex(a => a.idAtividade == id)
+
+                    if (i != -1) { this.store.state.atividades[i] = atividade }
+                    else { this.store.state.atividades.push(atividade) }
+
+                })
+
+            }
+            else {
+
+                await this.axios({
+
+                    url: `${this.baseUrl}/atividades`,
+                    method: "GET"
+
+                }).then(r => {
+
+                    const atividades: Atividade[] = testAtividade //r.data
+
+                    this.store.state.atividades = atividades
+
+                })
+
+            }
+
+        },
+
+        create: async (aula: Aula) => {
+
+            await this.axios({
+
+                url: `${this.baseUrl}/aula`,
+                method: "POST",
+                data: aula
+
+            }).then(r => {
+                
+                const i = this.store.state.aulas.findIndex(a => a.idAula == aula.idAula)
+
+                if (i != -1) { this.store.state.aulas[i] = aula }
+                else { this.store.state.aulas.push(aula) }
+
+            })
+
+        },
+
+        update: async (aula: Aula) => {
+
+            await this.axios({
+
+                url: `${this.baseUrl}/aula/${aula.idAula}`,
+                method: "PUT",
+                data: aula
+
+            }).then(r => {
+                
+                const atividade: Atividade = testAtividade[aula.idAula] //r.data
+
+                const i = this.store.state.atividades.findIndex(a => a.idAtividade == aula.idAula)
+
+                if (i != -1) { this.store.state.atividades[i] = atividade }
+                else { this.store.state.atividades.push(atividade) }
+
+            })
+
+        },
+
+        delete: async (id: number) => {
+
+            await this.axios({
+
+                url: `${this.baseUrl}/aula/${id}`,
+                method: "DELETE"
+
+            }).then(r => {
+                
+                const i = this.store.state.aulas.findIndex(a => a.idAula == id)
+
+                if (i != -1) { this.store.state.aulas.splice(i, 1) }
+
+            })
+
+        }
+
+    }
+
+    trabalho = {
+
+        get: async (id?: number) => {
+           
+            if (id) {
+
+                await this.axios({
+
+                    url: `${this.baseUrl}/trabalho/${id}`,
+                    method: "GET"
+
+                }).then(r => {
+                    
+                    const trabalho: Trabalho = testTrabalho[id] //r.data
+
+                    const i = this.store.state.trabalhos.findIndex(a => a.idTrabalho == id)
+
+                    if (i != -1) { this.store.state.trabalhos[i] = trabalho }
+                    else { this.store.state.trabalhos.push(trabalho) }
+
+                })
+
+            }
+            else {
+
+                await this.axios({
+
+                    url: `${this.baseUrl}/trabalhos`,
+                    method: "GET"
+
+                }).then(r => {
+
+                    const trabalhos: Trabalho[] = testTrabalho //r.data
+
+                    this.store.state.trabalhos = trabalhos
+
+                })
+
+            }
+
+        },
+
+        create: async (trabalho: Trabalho) => {
+
+            await this.axios({
+
+                url: `${this.baseUrl}/trabalho`,
+                method: "POST",
+                data: trabalho
+
+            }).then(r => {
+                
+                const i = this.store.state.trabalhos.findIndex(a => a.idTrabalho == trabalho.idTrabalho)
+
+                if (i != -1) { this.store.state.trabalhos[i] = trabalho }
+                else { this.store.state.trabalhos.push(trabalho) }
+
+            })
+
+        },
+
+        update: async (trabalho: Trabalho) => {
+
+            await this.axios({
+
+                url: `${this.baseUrl}/trabalho/${trabalho.idTrabalho}`,
+                method: "PUT",
+                data: trabalho
+
+            }).then(r => {
+
+                const i = this.store.state.trabalhos.findIndex(a => a.idTrabalho == trabalho.idTrabalho)
+
+                if (i != -1) { this.store.state.trabalhos[i] = trabalho }
+                else { this.store.state.trabalhos.push(trabalho) }
+
+            })
+
+        },
+
+        delete: async (id: number) => {
+
+            await this.axios({
+
+                url: `${this.baseUrl}/trabalho/${id}`,
+                method: "DELETE"
+
+            }).then(r => {
+                
+                const i = this.store.state.trabalhos.findIndex(a => a.idTrabalho == id)
+
+                if (i != -1) { this.store.state.trabalhos.splice(i, 1) }
+
+            })
+
+        }
+
+    }
+
+    prova = {
+
+        get: async (id?: number) => {
+           
+            if (id) {
+
+                await this.axios({
+
+                    url: `${this.baseUrl}/prova/${id}`,
+                    method: "GET"
+
+                }).then(r => {
+                    
+                    const prova: Prova = testProva[id] //r.data
+
+                    const i = this.store.state.provas.findIndex(a => a.idProva == id)
+
+                    if (i != -1) { this.store.state.provas[i] = prova }
+                    else { this.store.state.provas.push(prova) }
+
+                })
+
+            }
+            else {
+
+                await this.axios({
+
+                    url: `${this.baseUrl}/provas`,
+                    method: "GET"
+
+                }).then(r => {
+
+                    const provas: Prova[] = testProva //r.data
+
+                    this.store.state.provas = provas
+
+                })
+
+            }
+
+        },
+
+        create: async (prova: Prova) => {
+
+            await this.axios({
+
+                url: `${this.baseUrl}/prova`,
+                method: "POST",
+                data: prova
+
+            }).then(r => {
+                
+                const i = this.store.state.provas.findIndex(a => a.idProva == prova.idProva)
+
+                if (i != -1) { this.store.state.provas[i] = prova }
+                else { this.store.state.provas.push(prova) }
+
+            })
+
+        },
+
+        update: async (prova: Prova) => {
+
+            await this.axios({
+
+                url: `${this.baseUrl}/trabalho/${prova.idProva}`,
+                method: "PUT",
+                data: prova
+
+            }).then(r => {
+
+                const i = this.store.state.provas.findIndex(a => a.idProva == prova.idProva)
+
+                if (i != -1) { this.store.state.provas[i] = prova }
+                else { this.store.state.provas.push(prova) }
+
+            })
+
+        },
+
+        delete: async (id: number) => {
+
+            await this.axios({
+
+                url: `${this.baseUrl}/prova/${id}`,
+                method: "DELETE"
+
+            }).then(r => {
+                
+                const i = this.store.state.provas.findIndex(a => a.idProva == id)
+
+                if (i != -1) { this.store.state.provas.splice(i, 1) }
+
+            })
+
+        }
+
+    }
+
+    turma = {
+
+        get: async (id?: number) => {
+           
+            if (id) {
+
+                await this.axios({
+
+                    url: `${this.baseUrl}/turma/${id}`,
+                    method: "GET"
+
+                }).then(r => {
+                    
+                    const turma: Turma = testTurma[id] //r.data
+
+                    const i = this.store.state.turmas.findIndex(a => a.idTurma == id)
+
+                    if (i != -1) { this.store.state.turmas[i] = turma }
+                    else { this.store.state.turmas.push(turma) }
+
+                })
+
+            }
+            else {
+
+                await this.axios({
+
+                    url: `${this.baseUrl}/turmas`,
+                    method: "GET"
+
+                }).then(r => {
+
+                    const turmas: Turma[] = testTurma //r.data
+
+                    this.store.state.turmas = turmas
+
+                })
+
+            }
+
+        },
+
+        create: async (prova: Prova) => {
+
+            await this.axios({
+
+                url: `${this.baseUrl}/prova`,
+                method: "POST",
+                data: prova
+
+            }).then(r => {
+                
+                const i = this.store.state.provas.findIndex(a => a.idProva == prova.idProva)
+
+                if (i != -1) { this.store.state.provas[i] = prova }
+                else { this.store.state.provas.push(prova) }
+
+            })
+
+        },
+
+        update: async (prova: Prova) => {
+
+            await this.axios({
+
+                url: `${this.baseUrl}/trabalho/${prova.idProva}`,
+                method: "PUT",
+                data: prova
+
+            }).then(r => {
+
+                const i = this.store.state.provas.findIndex(a => a.idProva == prova.idProva)
+
+                if (i != -1) { this.store.state.provas[i] = prova }
+                else { this.store.state.provas.push(prova) }
+
+            })
+
+        },
+
+        delete: async (id: number) => {
+
+            await this.axios({
+
+                url: `${this.baseUrl}/prova/${id}`,
+                method: "DELETE"
+
+            }).then(r => {
+                
+                const i = this.store.state.provas.findIndex(a => a.idProva == id)
+
+                if (i != -1) { this.store.state.provas.splice(i, 1) }
+
+            })
+
+        }
+
+    }
+
+    login = (tipo: "aluno" | "professor" | "administrador", login: string, senha: string) => {
+
+        this.axios({
+
+            url: `${this.baseUrl}/login`,
+            method: 'POST',
+            data: { login: login, senha: senha, tipo: tipo }
+
+        }).then(r => {
+
+            if (tipo == "aluno") {
+
+                const aluno: Aluno = testAluno[0] //r.data
+
+                const i = this.store.state.alunos.findIndex(a => a.idAluno == aluno.idAluno)
+
+                this.store.state.idUser = aluno.idAluno
+                this.store.state.typeUser = tipo
+
+                if (i != -1) { this.store.state.alunos[i] = aluno }
+                else { this.store.state.alunos.push(aluno) }
+
+            }
+
+            if (tipo == "professor") {
+
+                const professor: Professor = testProfessor[0] //r.data
+
+                const i = this.store.state.professores.findIndex(p => p.idProfessor == professor.idProfessor)
+
+                this.store.state.idUser = professor.idProfessor
+                this.store.state.typeUser = tipo
+
+                if (i != -1) { this.store.state.professores[i] = professor }
+                else { this.store.state.professores.push(professor) }
+
+            }
+
+            if (tipo == "administrador") {
+
+                const administrador: Administrador = testAdministrador[0] //r.data
+
+                const i = this.store.state.administradores.findIndex(a => a.idAdministrador == administrador.idAdministrador)
+
+                this.store.state.idUser = administrador.idAdministrador
+                this.store.state.typeUser = tipo
+
+                if (i != -1) { this.store.state.administradores[i] = administrador }
+                else { this.store.state.administradores.push(administrador) }
+
+            }
+
+        })
 
     }
 

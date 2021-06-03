@@ -1,17 +1,28 @@
 import { store } from 'quasar/wrappers';
-import { Materia } from 'src/@types/DB';
+import { Administrador, Aluno, Atividade, Aula, Materia, Professor, Prova, Trabalho, Turma } from 'src/@types/DB';
 import { DayCardType } from 'src/components/models';
 import Vuex from 'vuex';
 
 export interface StateInterface {
 
     idUser: number,
-    typeUser: "Aluno" | "Professor" | "Administrador",
+    typeUser: "aluno" | "professor" | "administrador",
 
     materias: Materia[],
     materiasProfessor: Materia[]
 
     days: DayCardType[]
+
+    alunos: Aluno[]
+    professores: Professor[]
+    administradores: Administrador[]
+
+    provas: Prova[]
+    trabalhos: Trabalho[]
+    atividades: Atividade[]
+    aulas: Aula[]
+
+    turmas: Turma[]
 
 }
 

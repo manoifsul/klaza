@@ -128,6 +128,14 @@ export default class Home extends Vue {
    
     date = moment().format("YYYY/MM/DD")
 
+    created() {
+
+        const db = new DB(this.$axios, this.$store)
+
+        db.turma.get()
+
+    }
+
 }
 
 </script>

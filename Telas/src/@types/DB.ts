@@ -40,6 +40,7 @@ export interface Turma {
     prova: Prova[]
     materia: Materia
     discord: Discord
+    aluno: Aluno[]
 
 }
 
@@ -59,6 +60,7 @@ export interface Trabalho {
     questao: Questao[]
     materia: Materia
     resposta: Resposta[]
+    idTurma: number
 
 }
 
@@ -120,7 +122,7 @@ export interface Aluno {
     email: string
     notasTrabalhos: NotaTrabalho[]
     notasProvas: NotaProva[]
-    turma: Turma[]
+    idTurmas: number[]
 
 }
 
@@ -132,6 +134,7 @@ export interface Professor {
     senha: string
     email: string
     materia: Materia[]
+    turmas: number[]
 
 }
 
@@ -154,6 +157,7 @@ export interface Aula {
     inicio: Date
     link: string
     arquivo: Arquivo[]
+    idTurma: number
 
 }
 
@@ -191,5 +195,6 @@ export interface Atividade {
     professor: Professor[]
     resposta: Resposta[]
     materia: Materia
+    idTurma: number
 
 }
