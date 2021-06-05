@@ -12,6 +12,7 @@ export interface StateInterface {
     materiasProfessor: Materia[]
 
     days: DayCardType[]
+    allDays: DayCardType[]
 
     alunos: Aluno[]
     professores: Professor[]
@@ -34,7 +35,7 @@ export default store(function ({ Vue }) {
         state: {
 
             idUser: 0,
-            typeUser: "professor",
+            typeUser: "aluno",
 
             administradores: [],
             professores: [],
@@ -46,6 +47,7 @@ export default store(function ({ Vue }) {
             aulas: [],
 
             days: [],
+            allDays: [],
 
             materias: [],
             materiasProfessor: [],

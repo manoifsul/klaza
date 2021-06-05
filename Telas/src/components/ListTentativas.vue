@@ -18,10 +18,10 @@
 
             <div v-for="(t, x) in sortTentativas[i]" :key="uid()">
 
-                <q-item v-if="x > 0">
+                <q-item v-if="sortTentativas[i][x] != undefined && sortTentativas[i][x][0] != undefined">
 
-                    <a :href="`/tentativas/${t[0].questao.idQuestao}/${t[0].idAluno}/${t[0].nroTentativa}`">Tentativa: {{t[0].nroTentativa}}</a>
-
+                    <a :href="`/tentativas/${sortTentativas[i][x][0].questao.idQuestao}/${sortTentativas[i][x][0].idAluno}/${sortTentativas[i][x][0].nroTentativa}`">Tentativa: {{sortTentativas[i][x][0].nroTentativa}}</a>
+                    
                 </q-item>
 
             </div>

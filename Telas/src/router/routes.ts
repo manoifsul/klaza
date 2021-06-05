@@ -17,6 +17,20 @@ const routes: RouteConfig[] = [
           { path: '', component: () => import('src/pages/Home.vue') }
         ]
     },
+    {
+        path: '/notas',
+        component: () => import('layouts/MainLayout.vue'),
+        children: [
+          { path: '', component: () => import('src/pages/Notas.vue') }
+        ]
+    },
+    {
+        path: '/trabalho/:idTrabalho/:nTentativa',
+        component: () => import('layouts/MainLayout.vue'),
+        children: [
+          { path: '', component: () => import('src/pages/Trabalho.vue') }
+        ]
+    },
 
     // Always leave this as last one,
     // but you can also remove it

@@ -65,7 +65,7 @@
 
                     <div class="column text-bold text-h4 q-gutter-y-md">
 
-                        <q-input outlined v-model="modelNome" label-color="white" input-class="text-white" label="Trabalho" placeholder="Digite o nome da aula" required/>
+                        <q-input outlined v-model="modelNome" label-color="white" input-class="text-white" label="Trabalho" placeholder="Digite o nome do trabalho" required/>
                         <q-select outlined input-class="text-white" label-color="white" v-model="modelMateria" :options="optionsMateria" label="Materia" required>
 
                             <template v-slot:no-option>
@@ -134,7 +134,7 @@
                         </div>
                         <q-select outlined input-class="text-white" label-color="white" v-model="modelMaxTempo" :options="optionsMaxTempo" label="Limite de tempo" required />
                         <q-input ref="inpTentativas" outlined v-model="vMaxTentativas" label-color="white" input-class="text-white" label="Maximo de tenativas (0 = sem limite)" type="number" :rules="[val => val >= 0 && val <= 99]" required />
-                        <q-input outlined v-model="modelDescricao" label-color="white" input-class="text-white" label="Descrição" type="textarea" placeholder="Digite a descrição da aula" required/>
+                        <q-input outlined v-model="modelDescricao" label-color="white" input-class="text-white" label="Descrição" type="textarea" placeholder="Digite a descrição do trabalho" required/>
 
                     </div>
                     <div class="row justify-center q-mt-md">

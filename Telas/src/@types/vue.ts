@@ -16,3 +16,26 @@ export interface sortTentativas {
     [key: string]: [DBTypes.Resposta[]]
 
 }
+
+export interface sortNotas {
+
+    [key: string]: { 
+        
+        Provas: { provas: DBTypes.Prova[], notas: DBTypes.NotaProva[] }
+        
+        Trabalhos: { trabalhos: DBTypes.Trabalho[], notas: DBTypes.NotaTrabalho[] }
+    
+    }
+
+}
+
+export interface showCorretas {
+
+    [key: string]: {
+
+        correta: boolean
+        file: boolean
+        
+    }
+
+}

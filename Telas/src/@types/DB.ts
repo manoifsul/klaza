@@ -11,6 +11,7 @@ export interface NotaProva {
     idNotaProva: number
     valor: number
     prova: Prova
+    idAluno: number
 
 }
 
@@ -18,7 +19,8 @@ export interface NotaTrabalho {
 
     idNotaTrabalho: number
     valor: number
-    trabalho: Trabalho
+    trabalho: Trabalho,
+    idAluno: number
 
 }
 
@@ -76,8 +78,8 @@ export interface Questao {
 
     idQuestao: number
     pergunta: string
-    tipo: number // 0 - texto, 1 - simples, 2 - multipla, 4 - upload
-    questaoCorreta: QuestaoCorreta[]
+    tipo: number // 0 - texto, 1 - simples, 2 - multipla, 3 - upload
+    questaoCorreta: QuestaoCorreta
     questaoAlternativa: QuestaoAlternativa[]
 
 }

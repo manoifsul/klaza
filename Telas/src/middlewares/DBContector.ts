@@ -1,5 +1,5 @@
 import { AxiosInstance } from 'axios'
-import { Administrador, Aluno, Arquivo, Atividade, Aula, Discord, Materia, NotaProva, Professor, Prova, Questao, QuestaoAlternativa, QuestaoCorreta, Resposta, Trabalho, Turma } from '../@types/DB'
+import { Administrador, Aluno, Arquivo, Atividade, Aula, Discord, Materia, NotaProva, NotaTrabalho, Professor, Prova, Questao, QuestaoAlternativa, QuestaoCorreta, Resposta, Trabalho, Turma } from '../@types/DB'
 import { Store } from 'vuex'
 import { StateInterface } from 'src/store'
 import { DayCardType } from 'src/components/models'
@@ -171,7 +171,7 @@ const testQuestao: Questao[] = [
         idQuestao: 0,
         pergunta: "Quanto é 1+1?",
         questaoAlternativa: [testQuestaoAlternativa[0], testQuestaoAlternativa[1], testQuestaoAlternativa[2]],
-        questaoCorreta: [testQuestaoCorreta[0]],
+        questaoCorreta: testQuestaoCorreta[0],
         tipo: 1,
 
     },
@@ -180,8 +180,26 @@ const testQuestao: Questao[] = [
         idQuestao: 1,
         pergunta: "Selecione o que n é 'Bola'",
         questaoAlternativa: [testQuestaoAlternativa[3], testQuestaoAlternativa[4], testQuestaoAlternativa[5]],
-        questaoCorreta: [testQuestaoCorreta[1]],
-        tipo: 1,
+        questaoCorreta: testQuestaoCorreta[1],
+        tipo: 2,
+
+    },
+    {
+
+        idQuestao: 2,
+        pergunta: "Blz?",
+        questaoAlternativa: [],
+        questaoCorreta: testQuestaoCorreta[1],
+        tipo: 0,
+
+    },
+    {
+
+        idQuestao: 3,
+        pergunta: "Hehe",
+        questaoAlternativa: [],
+        questaoCorreta: { idQuestaoCorreta: -1, questaoAlternativa: [] },
+        tipo: 3,
 
     }
 
@@ -226,7 +244,7 @@ const testProva: Prova[] = [
         administrador: [],
         professor: [testProfessor[0]],
         resposta: [testResposta[0]],
-        materia: testMateria[0],
+        materia: testMateria[2],
         idTurma: 0
 
     },
@@ -257,14 +275,16 @@ const testNotaProva: NotaProva[] = [
 
         idNotaProva: 0,
         prova: testProva[0],
-        valor: 10
+        valor: 10,
+        idAluno: 0,
 
     },
     {
 
         idNotaProva: 1,
         prova: testProva[1],
-        valor: 4
+        valor: 4,
+        idAluno: 1
 
     }
 
@@ -282,11 +302,11 @@ const testTrabalho: Trabalho[] = [
         nome: "Trabalho Legal",
         prazo: new Date(),
         professor: [testProfessor[0]],
-        questao: [],
+        questao: testQuestao,
         tempo: 9000,
         tentativas: 0,
         tipo: 4,
-        materia: testMateria[1],
+        materia: testMateria[2],
         resposta: [],
         idTurma: 0
 
@@ -378,6 +398,27 @@ const testAtividade: Atividade[] = [
 
 ]
 
+const testNotaTrabalho: NotaTrabalho[] = [
+
+    {
+
+        idNotaTrabalho: 0,
+        trabalho: testTrabalho[0],
+        valor: 10,
+        idAluno: 0,
+
+    },
+    {
+
+        idNotaTrabalho: 1,
+        trabalho: testTrabalho[1],
+        valor: 4,
+        idAluno: 1
+
+    }
+
+]
+
 const testAluno: Aluno[] = [
 
     {
@@ -387,7 +428,7 @@ const testAluno: Aluno[] = [
         matricula: "01785infq",
         nome: "Emanuel Scherer",
         notasProvas: [testNotaProva[0]],
-        notasTrabalhos: [],
+        notasTrabalhos: [testNotaTrabalho[0]],
         senha: "abc",
         idTurmas: [0]
 
@@ -413,7 +454,7 @@ const testAluno: Aluno[] = [
         notasProvas: [],
         notasTrabalhos: [],
         senha: "0987654321",
-        idTurmas: [0]
+        idTurmas: [1]
 
     }
 
@@ -440,7 +481,7 @@ const testTurma: Turma[] = [
         idTurma: 1,
         atividade: [],
         discord: testDiscord[1],
-        materia: testMateria[3],
+        materia: testMateria[1],
         nome: "Turminhaaaaaaaa",
         prova: [],
         trabalho: [],
@@ -472,6 +513,7 @@ export class DB {
             this.turma.get()
 
             const days: DayCardType[] = []
+            const allDays: DayCardType[] = []
 
             if (this.store.state.typeUser == "aluno") {
 
@@ -490,11 +532,48 @@ export class DB {
                             if (i != -1) {
 
                                 days[i].aulas = aulas
+                                allDays[i].aulas = aulas
 
                             }
                             else {
 
                                 days.push({
+
+                                    id: uid(),
+                                    day: date,
+                                    aulas: aulas,
+                                    atividades: [],
+                                    trabalhos: [],
+                                    provas: []
+            
+                                })
+
+                                allDays.push({
+
+                                    id: uid(),
+                                    day: date,
+                                    aulas: aulas,
+                                    atividades: [],
+                                    trabalhos: [],
+                                    provas: []
+            
+                                })
+
+                            }
+
+                        }
+                        else {
+
+                            const i = allDays.findIndex(d => d.day == date)
+
+                            if (i != -1) {
+
+                                allDays[i].aulas = aulas
+
+                            }
+                            else {
+
+                                allDays.push({
 
                                     id: uid(),
                                     day: date,
@@ -522,11 +601,48 @@ export class DB {
                             if (i != -1) {
 
                                 days[i].atividades = atividades
+                                allDays[i].atividades = atividades
 
                             }
                             else {
 
                                 days.push({
+
+                                    id: uid(),
+                                    day: date,
+                                    aulas: [],
+                                    atividades: atividades,
+                                    trabalhos: [],
+                                    provas: []
+            
+                                })
+
+                                allDays.push({
+
+                                    id: uid(),
+                                    day: date,
+                                    aulas: [],
+                                    atividades: atividades,
+                                    trabalhos: [],
+                                    provas: []
+            
+                                })
+
+                            }
+
+                        }
+                        else {
+
+                            const i = allDays.findIndex(d => d.day == date)
+
+                            if (i != -1) {
+
+                                allDays[i].atividades = atividades
+
+                            }
+                            else {
+
+                                allDays.push({
 
                                     id: uid(),
                                     day: date,
@@ -554,11 +670,48 @@ export class DB {
                             if (i != -1) {
 
                                 days[i].trabalhos = trabalhos
+                                allDays[i].trabalhos = trabalhos
 
                             }
                             else {
 
                                 days.push({
+
+                                    id: uid(),
+                                    day: date,
+                                    aulas: [],
+                                    atividades: [],
+                                    trabalhos: trabalhos,
+                                    provas: []
+            
+                                })
+
+                                allDays.push({
+
+                                    id: uid(),
+                                    day: date,
+                                    aulas: [],
+                                    atividades: [],
+                                    trabalhos: trabalhos,
+                                    provas: []
+            
+                                })
+
+                            }
+
+                        }
+                        else {
+
+                            const i = allDays.findIndex(d => d.day == date)
+
+                            if (i != -1) {
+
+                                allDays[i].trabalhos = trabalhos
+
+                            }
+                            else {
+
+                                allDays.push({
 
                                     id: uid(),
                                     day: date,
@@ -586,11 +739,49 @@ export class DB {
                             if (i != -1) {
 
                                 days[i].provas = provas
+                                allDays[i].provas = provas
 
                             }
                             else {
 
                                 days.push({
+
+                                    id: uid(),
+                                    day: date,
+                                    aulas: [],
+                                    atividades: [],
+                                    trabalhos: [],
+                                    provas: provas
+            
+                                })
+
+                                
+                                allDays.push({
+
+                                    id: uid(),
+                                    day: date,
+                                    aulas: [],
+                                    atividades: [],
+                                    trabalhos: [],
+                                    provas: provas
+            
+                                })
+
+                            }
+
+                        }
+                        else {
+
+                            const i = allDays.findIndex(d => d.day == date)
+
+                            if (i != -1) {
+
+                                allDays[i].provas = provas
+
+                            }
+                            else {
+
+                                allDays.push({
 
                                     id: uid(),
                                     day: date,
@@ -630,11 +821,48 @@ export class DB {
                             if (i != -1) {
 
                                 days[i].aulas = aulas
+                                allDays[i].aulas = aulas
 
                             }
                             else {
 
                                 days.push({
+
+                                    id: uid(),
+                                    day: date,
+                                    aulas: aulas,
+                                    atividades: [],
+                                    trabalhos: [],
+                                    provas: []
+            
+                                })
+
+                                allDays.push({
+
+                                    id: uid(),
+                                    day: date,
+                                    aulas: aulas,
+                                    atividades: [],
+                                    trabalhos: [],
+                                    provas: []
+            
+                                })
+
+                            }
+
+                        }
+                        else {
+
+                            const i = allDays.findIndex(d => d.day == date)
+
+                            if (i != -1) {
+
+                                allDays[i].aulas = aulas
+
+                            }
+                            else {
+
+                                allDays.push({
 
                                     id: uid(),
                                     day: date,
@@ -662,11 +890,48 @@ export class DB {
                             if (i != -1) {
 
                                 days[i].atividades = atividades
+                                allDays[i].atividades = atividades
 
                             }
                             else {
 
                                 days.push({
+
+                                    id: uid(),
+                                    day: date,
+                                    aulas: [],
+                                    atividades: atividades,
+                                    trabalhos: [],
+                                    provas: []
+            
+                                })
+
+                                allDays.push({
+
+                                    id: uid(),
+                                    day: date,
+                                    aulas: [],
+                                    atividades: atividades,
+                                    trabalhos: [],
+                                    provas: []
+            
+                                })
+
+                            }
+
+                        }
+                        else {
+
+                            const i = allDays.findIndex(d => d.day == date)
+
+                            if (i != -1) {
+
+                                allDays[i].atividades = atividades
+
+                            }
+                            else {
+
+                                allDays.push({
 
                                     id: uid(),
                                     day: date,
@@ -694,11 +959,48 @@ export class DB {
                             if (i != -1) {
 
                                 days[i].trabalhos = trabalhos
+                                allDays[i].trabalhos = trabalhos
 
                             }
                             else {
 
                                 days.push({
+
+                                    id: uid(),
+                                    day: date,
+                                    aulas: [],
+                                    atividades: [],
+                                    trabalhos: trabalhos,
+                                    provas: []
+            
+                                })
+
+                                allDays.push({
+
+                                    id: uid(),
+                                    day: date,
+                                    aulas: [],
+                                    atividades: [],
+                                    trabalhos: trabalhos,
+                                    provas: []
+            
+                                })
+
+                            }
+
+                        }
+                        else {
+
+                            const i = allDays.findIndex(d => d.day == date)
+
+                            if (i != -1) {
+
+                                allDays[i].trabalhos = trabalhos
+
+                            }
+                            else {
+
+                                allDays.push({
 
                                     id: uid(),
                                     day: date,
@@ -726,11 +1028,49 @@ export class DB {
                             if (i != -1) {
 
                                 days[i].provas = provas
+                                allDays[i].provas = provas
 
                             }
                             else {
 
                                 days.push({
+
+                                    id: uid(),
+                                    day: date,
+                                    aulas: [],
+                                    atividades: [],
+                                    trabalhos: [],
+                                    provas: provas
+            
+                                })
+
+                                
+                                allDays.push({
+
+                                    id: uid(),
+                                    day: date,
+                                    aulas: [],
+                                    atividades: [],
+                                    trabalhos: [],
+                                    provas: provas
+            
+                                })
+
+                            }
+
+                        }
+                        else {
+
+                            const i = allDays.findIndex(d => d.day == date)
+
+                            if (i != -1) {
+
+                                allDays[i].provas = provas
+
+                            }
+                            else {
+
+                                allDays.push({
 
                                     id: uid(),
                                     day: date,
@@ -770,11 +1110,48 @@ export class DB {
                             if (i != -1) {
 
                                 days[i].aulas = aulas
+                                allDays[i].aulas = aulas
 
                             }
                             else {
 
                                 days.push({
+
+                                    id: uid(),
+                                    day: date,
+                                    aulas: aulas,
+                                    atividades: [],
+                                    trabalhos: [],
+                                    provas: []
+            
+                                })
+
+                                allDays.push({
+
+                                    id: uid(),
+                                    day: date,
+                                    aulas: aulas,
+                                    atividades: [],
+                                    trabalhos: [],
+                                    provas: []
+            
+                                })
+
+                            }
+
+                        }
+                        else {
+
+                            const i = allDays.findIndex(d => d.day == date)
+
+                            if (i != -1) {
+
+                                allDays[i].aulas = aulas
+
+                            }
+                            else {
+
+                                allDays.push({
 
                                     id: uid(),
                                     day: date,
@@ -802,11 +1179,48 @@ export class DB {
                             if (i != -1) {
 
                                 days[i].atividades = atividades
+                                allDays[i].atividades = atividades
 
                             }
                             else {
 
                                 days.push({
+
+                                    id: uid(),
+                                    day: date,
+                                    aulas: [],
+                                    atividades: atividades,
+                                    trabalhos: [],
+                                    provas: []
+            
+                                })
+
+                                allDays.push({
+
+                                    id: uid(),
+                                    day: date,
+                                    aulas: [],
+                                    atividades: atividades,
+                                    trabalhos: [],
+                                    provas: []
+            
+                                })
+
+                            }
+
+                        }
+                        else {
+
+                            const i = allDays.findIndex(d => d.day == date)
+
+                            if (i != -1) {
+
+                                allDays[i].atividades = atividades
+
+                            }
+                            else {
+
+                                allDays.push({
 
                                     id: uid(),
                                     day: date,
@@ -834,11 +1248,48 @@ export class DB {
                             if (i != -1) {
 
                                 days[i].trabalhos = trabalhos
+                                allDays[i].trabalhos = trabalhos
 
                             }
                             else {
 
                                 days.push({
+
+                                    id: uid(),
+                                    day: date,
+                                    aulas: [],
+                                    atividades: [],
+                                    trabalhos: trabalhos,
+                                    provas: []
+            
+                                })
+
+                                allDays.push({
+
+                                    id: uid(),
+                                    day: date,
+                                    aulas: [],
+                                    atividades: [],
+                                    trabalhos: trabalhos,
+                                    provas: []
+            
+                                })
+
+                            }
+
+                        }
+                        else {
+
+                            const i = allDays.findIndex(d => d.day == date)
+
+                            if (i != -1) {
+
+                                allDays[i].trabalhos = trabalhos
+
+                            }
+                            else {
+
+                                allDays.push({
 
                                     id: uid(),
                                     day: date,
@@ -866,11 +1317,49 @@ export class DB {
                             if (i != -1) {
 
                                 days[i].provas = provas
+                                allDays[i].provas = provas
 
                             }
                             else {
 
                                 days.push({
+
+                                    id: uid(),
+                                    day: date,
+                                    aulas: [],
+                                    atividades: [],
+                                    trabalhos: [],
+                                    provas: provas
+            
+                                })
+
+                                
+                                allDays.push({
+
+                                    id: uid(),
+                                    day: date,
+                                    aulas: [],
+                                    atividades: [],
+                                    trabalhos: [],
+                                    provas: provas
+            
+                                })
+
+                            }
+
+                        }
+                        else {
+
+                            const i = allDays.findIndex(d => d.day == date)
+
+                            if (i != -1) {
+
+                                allDays[i].provas = provas
+
+                            }
+                            else {
+
+                                allDays.push({
 
                                     id: uid(),
                                     day: date,
@@ -907,6 +1396,22 @@ export class DB {
 
             })
 
+            this.store.state.allDays = allDays.sort((a, b) => {
+
+                const splitA = a.day.split("/")
+                const splitB = b.day.split("/")
+
+                const momentA = moment(`${splitA[1]}/${splitA[0]}/${splitA[2]}`)
+                const momentB = moment(`${splitB[1]}/${splitB[0]}/${splitA[2]}`)
+
+                if (momentA.isBefore(momentB)) { return -1 }
+                if (momentA.isSame(momentB)) { return 0 }
+                if (momentA.isAfter(momentB)) { return 1 }
+
+                return 0
+
+            })
+
         }
 
     }
@@ -915,23 +1420,30 @@ export class DB {
 
         get: async (id?: number) => {
            
-            if (id) {
+            if (id != undefined) {
 
-                await this.axios({
+                // await this.axios({
 
-                    url: `${this.baseUrl}/aluno/${id}`,
-                    method: "GET"
+                //     url: `${this.baseUrl}/aluno/${id}`,
+                //     method: "GET"
 
-                }).then(r => {
+                // }).then(r => {
                     
-                    const aluno: Aluno = testAluno[id] //r.data
+                //     const aluno: Aluno = r.data
 
-                    const i = this.store.state.alunos.findIndex(a => a.idAluno == id)
+                //     const i = this.store.state.alunos.findIndex(a => a.idAluno == id)
 
-                    if (i != -1) { this.store.state.alunos[i] = aluno }
-                    else { this.store.state.alunos.push(aluno) }
+                //     if (i != -1) { this.store.state.alunos[i] = aluno }
+                //     else { this.store.state.alunos.push(aluno) }
 
-                })
+                // })
+
+                const aluno: Aluno = testAluno[id]
+
+                const i = this.store.state.alunos.findIndex(a => a.idAluno == id)
+
+                if (i != -1) { this.store.state.alunos[i] = aluno }
+                else { this.store.state.alunos.push(aluno) }
 
             }
             else {
@@ -1014,7 +1526,7 @@ export class DB {
 
         get: async (id?: number) => {
            
-            if (id) {
+            if (id != undefined) {
 
                 await this.axios({
 
@@ -1113,7 +1625,7 @@ export class DB {
 
         get: async (id?: number) => {
            
-            if (id) {
+            if (id != undefined) {
 
                 await this.axios({
 
@@ -1212,7 +1724,7 @@ export class DB {
 
         get: async (id?: number) => {
            
-            if (id) {
+            if (id != undefined) {
 
                 await this.axios({
 
@@ -1311,7 +1823,7 @@ export class DB {
 
         get: async (id?: number) => {
            
-            if (id) {
+            if (id != undefined) {
 
                 await this.axios({
 
@@ -1412,23 +1924,31 @@ export class DB {
 
         get: async (id?: number) => {
            
-            if (id) {
+            if (id != undefined) {
 
-                await this.axios({
+                // await this.axios({
 
-                    url: `${this.baseUrl}/trabalho/${id}`,
-                    method: "GET"
+                //     url: `${this.baseUrl}/trabalho/${id}`,
+                //     method: "GET"
 
-                }).then(r => {
+                // }).then(r => {
                     
-                    const trabalho: Trabalho = testTrabalho[id] //r.data
+                //     const trabalho: Trabalho = r.data
 
-                    const i = this.store.state.trabalhos.findIndex(a => a.idTrabalho == id)
+                //     const i = this.store.state.trabalhos.findIndex(a => a.idTrabalho == id)
 
-                    if (i != -1) { this.store.state.trabalhos[i] = trabalho }
-                    else { this.store.state.trabalhos.push(trabalho) }
+                //     if (i != -1) { this.store.state.trabalhos[i] = trabalho }
+                //     else { this.store.state.trabalhos.push(trabalho) }
 
-                })
+                // })
+
+                const trabalho: Trabalho = testTrabalho[id]
+
+                const i = this.store.state.trabalhos.findIndex(a => a.idTrabalho == id)
+
+                if (i != -1) { this.store.state.trabalhos[i] = trabalho }
+                else { this.store.state.trabalhos.push(trabalho) }
+
 
             }
             else {
@@ -1440,7 +1960,7 @@ export class DB {
 
                 }).then(r => {
 
-                    const trabalhos: Trabalho[] = testTrabalho //r.data
+                    const trabalhos: Trabalho[] = r.data
 
                     this.store.state.trabalhos = trabalhos
 
@@ -1471,20 +1991,25 @@ export class DB {
 
         update: async (trabalho: Trabalho) => {
 
-            await this.axios({
+            // await this.axios({
 
-                url: `${this.baseUrl}/trabalho/${trabalho.idTrabalho}`,
-                method: "PUT",
-                data: trabalho
+            //     url: `${this.baseUrl}/trabalho/${trabalho.idTrabalho}`,
+            //     method: "PUT",
+            //     data: trabalho
 
-            }).then(r => {
+            // }).then(r => {
 
-                const i = this.store.state.trabalhos.findIndex(a => a.idTrabalho == trabalho.idTrabalho)
+            //     const i = this.store.state.trabalhos.findIndex(a => a.idTrabalho == trabalho.idTrabalho)
 
-                if (i != -1) { this.store.state.trabalhos[i] = trabalho }
-                else { this.store.state.trabalhos.push(trabalho) }
+            //     if (i != -1) { this.store.state.trabalhos[i] = trabalho }
+            //     else { this.store.state.trabalhos.push(trabalho) }
 
-            })
+            // })
+
+            const i = this.store.state.trabalhos.findIndex(a => a.idTrabalho == trabalho.idTrabalho)
+
+            if (i != -1) { this.store.state.trabalhos[i] = trabalho }
+            else { this.store.state.trabalhos.push(trabalho) }
 
         },
 
@@ -1511,7 +2036,7 @@ export class DB {
 
         get: async (id?: number) => {
            
-            if (id) {
+            if (id != undefined) {
 
                 await this.axios({
 
@@ -1610,7 +2135,7 @@ export class DB {
 
         get: async (id?: number) => {
            
-            if (id) {
+            if (id != undefined) {
 
                 await this.axios({
 
@@ -1713,7 +2238,7 @@ export class DB {
 
         get: async (id?: number) => {
            
-            if (id) {
+            if (id != undefined) {
 
                 await this.axios({
 
@@ -1767,7 +2292,7 @@ export class DB {
 
             }).then(r => {
                 
-                const i = this.store.state.provas.findIndex(a => a.idProva == materia.idMateria)
+                const i = this.store.state.materias.findIndex(a => a.idMateria == materia.idMateria)
 
                 if (i != -1) { this.store.state.materias[i] = materia }
                 else { this.store.state.materias.push(materia) }
@@ -1809,6 +2334,214 @@ export class DB {
                 if (i != -1) { this.store.state.materias.splice(i, 1) }
 
             })
+
+        }
+
+    }
+
+    nota = {
+
+        create: (nota: NotaProva | NotaTrabalho, tipo: "trabalho" | "prova"): Promise<NotaProva | NotaTrabalho> => {
+
+            return new Promise(async resolve => {
+
+                if (tipo == "trabalho") {
+
+                    const newNota = nota as NotaTrabalho
+
+                    // await this.axios({
+
+                    //     url: `${this.baseUrl}/notatrabalho`,
+                    //     method: "POST",
+                    //     data: nota
+        
+                    // }).then(r => {
+                        
+                    //     const i = this.store.state.alunos.findIndex(a => a.idAluno == newNota.idAluno)
+        
+                    //     if (i != -1) { this.store.state.alunos[i].notasTrabalhos.push(newNota) }
+
+                    //     resolve(newNota)
+        
+                    // })
+
+                    resolve(newNota)
+
+                }
+
+                if (tipo == "prova") {
+
+                    const newNota = nota as NotaProva
+
+                    // await this.axios({
+
+                    //     url: `${this.baseUrl}/notaprova`,
+                    //     method: "POST",
+                    //     data: nota
+        
+                    // }).then(r => {
+                        
+                    //     const i = this.store.state.alunos.findIndex(a => a.idAluno == newNota.idAluno)
+        
+                    //     if (i != -1) { this.store.state.alunos[i].notasProvas.push(newNota) }
+
+                    //     resolve(newNota)
+        
+                    // })
+
+                    resolve(newNota)
+
+                }
+
+            })
+
+        },
+
+        update: async (nota: NotaProva | NotaTrabalho, tipo: "trabalho" | "prova") => {
+
+            if (tipo == "trabalho") {
+
+                const newNota = nota as NotaTrabalho
+
+                await this.axios({
+
+                    url: `${this.baseUrl}/notatrabalho`,
+                    method: "PUT",
+                    data: nota
+    
+                }).then(r => {
+                    
+                    const i = this.store.state.alunos.findIndex(a => a.idAluno == newNota.idAluno)
+                    const x = this.store.state.alunos[i].notasTrabalhos.findIndex(n => n.idNotaTrabalho == newNota.idNotaTrabalho)
+
+                    if (i != -1) { 
+                        
+                        if (x != -1) { this.store.state.alunos[i].notasTrabalhos[x] = newNota }
+                        else { this.store.state.alunos[i].notasTrabalhos.push(newNota)  }
+
+                    }
+    
+                })
+
+            }
+
+            if (tipo == "prova") {
+
+                const newNota = nota as NotaProva
+
+                await this.axios({
+
+                    url: `${this.baseUrl}/notaprova`,
+                    method: "PUT",
+                    data: nota
+    
+                }).then(r => {
+                    
+                    const i = this.store.state.alunos.findIndex(a => a.idAluno == newNota.idAluno)
+                    const x = this.store.state.alunos[i].notasProvas.findIndex(n => n.idNotaProva == newNota.idNotaProva)
+
+                    if (i != -1) { 
+                        
+                        if (x != -1) { this.store.state.alunos[i].notasProvas[x] = newNota }
+                        else { this.store.state.alunos[i].notasProvas.push(newNota)  }
+
+                    }
+    
+                })
+
+            }
+
+        },
+
+        delete: async (id: number, tipo: "trabalho" | "prova") => {
+
+            if (tipo == "trabalho") {
+
+                await this.axios({
+
+                    url: `${this.baseUrl}/notatrabalho/${id}`,
+                    method: "DELETE"
+    
+                }).then(r => {
+                    
+                    const i = this.store.state.alunos.findIndex(a => a.notasTrabalhos.map(n => n.idNotaTrabalho).includes(id))
+                    const x = this.store.state.alunos[i].notasTrabalhos.findIndex(n => n.idNotaTrabalho == id)
+    
+                    if (i != -1) { 
+                        
+                        if (x != -1) { this.store.state.alunos[i].notasTrabalhos.splice(x, 1)  }
+
+                    }
+    
+                })
+
+            }
+
+            if (tipo == "prova") {
+
+                await this.axios({
+
+                    url: `${this.baseUrl}/notaprova/${id}`,
+                    method: "DELETE"
+    
+                }).then(r => {
+                    
+                    const i = this.store.state.alunos.findIndex(a => a.notasProvas.map(n => n.idNotaProva).includes(id))
+                    const x = this.store.state.alunos[i].notasProvas.findIndex(n => n.idNotaProva == id)
+    
+                    if (i != -1) { 
+                        
+                        if (x != -1) { this.store.state.alunos[i].notasProvas.splice(x, 1)  }
+
+                    }
+    
+                })
+
+            }
+
+        }
+
+    }
+
+    resposta = {
+
+        create: (resposta: Resposta): Promise<Resposta> => {
+
+            return new Promise(async resolve => {
+
+                await this.axios({
+
+                    url: `${this.baseUrl}/resposta`,
+                    method: "POST",
+                    data: resposta
+    
+                }).then(r => { resolve(resposta) })
+
+            })
+
+
+        },
+
+        update: async (resposta: Resposta) => {
+
+            await this.axios({
+
+                url: `${this.baseUrl}/resposta`,
+                method: "PUT",
+                data: resposta
+
+            }).then(r => {})
+
+        },
+
+        delete: async (id: number) => {
+
+            await this.axios({
+
+                url: `${this.baseUrl}/resposta/${id}`,
+                method: "DELETE"
+
+            }).then(r => {})
 
         }
 
