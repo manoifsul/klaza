@@ -7,9 +7,9 @@
 
                 <q-tab v-for="(q, i) in trabalho.questao" :key="`Tab/${q.idQuestao}`" :name="`Tab/${q.idQuestao}`" class="text-white text-bold" :label="`Pergunta ${i+1}`"> 
                 
-                    <q-icon v-if="finalizada && showCorretas[q.idQuestao].correta" name="fas fa-check"/>
-                    <q-icon v-if="finalizada && !showCorretas[q.idQuestao].correta && !showCorretas[q.idQuestao].file" name="fas fa-times"/>
-                    <q-icon v-if="finalizada && !showCorretas[q.idQuestao].correta && showCorretas[q.idQuestao].file" name="fas fa-question"/>
+                    <q-icon v-if="showCorretas[q.idQuestao].correta" name="fas fa-check"/>
+                    <q-icon v-if="!showCorretas[q.idQuestao].correta && !showCorretas[q.idQuestao].file" name="fas fa-times"/>
+                    <q-icon v-if="!showCorretas[q.idQuestao].correta && showCorretas[q.idQuestao].file" name="fas fa-question"/>
                 
                 </q-tab>
 
@@ -33,37 +33,39 @@
 
                                 <div v-if="q.tipo == 0" class="column">
 
-                                    <q-input autofocus outlined rounded label-color="white" input-class="text-white" placeholder="Digite a resposta" v-model="models[q.idQuestao]" type="textarea" :disable="finalizada"/>
+                                    <q-input autofocus outlined rounded label-color="white" input-class="text-white" placeholder="Digite a resposta" v-model="models[q.idQuestao]" type="textarea" disable/>
 
                                 </div>
 
                                 <div v-if="q.tipo == 1" class="column">
 
-                                    <q-radio v-for="a in q.questaoAlternativa" :key="`Radio/${a.idQuestaoAlternativa}`" v-model="models[q.idQuestao]" :val="a.idQuestaoAlternativa" :label="a.resposta" :disable="finalizada"/>
+                                    <q-radio v-for="a in q.questaoAlternativa" :key="`Radio/${a.idQuestaoAlternativa}`" v-model="models[q.idQuestao]" :val="a.idQuestaoAlternativa" :label="a.resposta" disable/>
 
                                 </div>
 
                                 <div v-if="q.tipo == 2" class="column">
 
-                                    <q-checkbox :false-value="null" v-for="a in q.questaoAlternativa" :key="`Check/${a.idQuestaoAlternativa}`" v-model="models[`${q.idQuestao}/${a.idQuestaoAlternativa}`]" :label="a.resposta" :disable="finalizada" />
+                                    <q-checkbox :false-value="null" v-for="a in q.questaoAlternativa" :key="`Check/${a.idQuestaoAlternativa}`" v-model="models[`${q.idQuestao}/${a.idQuestaoAlternativa}`]" :label="a.resposta" disable />
 
                                 </div>
 
                                 <div v-if="q.tipo == 3" class="column">
 
-                                    <q-file v-model="models[q.idQuestao]" label-color="white" label="Adicione o(s) anexo(s)" outlined counter use-chips append multiple :disable="finalizada">
+                                    <!-- <q-file v-model="models[q.idQuestao]" label-color="white" label="Adicione o(s) anexo(s)" outlined counter use-chips append multiple disable>
 
                                         <template v-slot:prepend>
                                             <q-icon color="white" name="fas fa-upload" />
                                         </template>
 
-                                    </q-file>
+                                    </q-file> -->
+
+                                    <a v-for="f in models[q.idQuestao]" :href="f">{{f}}</a>
 
                                 </div>
 
                             </div>
 
-                            <div v-if="finalizada" class="boxQuestao br-20 q-mb-xl text-white text-center text-h4">
+                            <div v-if="q.tipo != 3" class="boxQuestao br-20 q-mb-xl text-white text-center text-h4">
 
                                 Corretas:
                                 
@@ -79,15 +81,14 @@
                                 <div class="text-h4 text-bold">Questão</div>
                                 <div class="text-h5 text-bold q-mb-xl">{{trabalho.questao.findIndex(q => q.idQuestao == parseInt(tab.split("/")[1]))+1}} / {{trabalho.questao.length}}</div>
 
-                                <div v-if="!finalizada" class="q-mb-xl">
+                                <div class="q-mb-xl">
 
-                                    <div class="text-h5 text-bold">Tempo restante</div>
-                                    <div class="text-h5 text-bold">{{timer}}</div>
+                                    <div class="text-h5 text-bold">Nota</div>
+                                    <div class="text-h5 text-bold">{{nota}} / 10</div>
 
                                 </div>
 
-                                <q-btn v-if="!finalizada" class="bg-primary" @click="finalizarSwal()">Finalizar</q-btn>
-                                <q-btn v-if="finalizada" class="bg-primary" to="/home">Voltar ao home</q-btn>
+                                <q-btn class="bg-primary" to="/home">Voltar ao home</q-btn>
 
                             </div>
 
@@ -110,7 +111,6 @@ import { Vue, Component } from 'vue-property-decorator';
 import { DB } from '../middlewares/DBContector'
 import { uid } from 'quasar'
 
-import moment from 'moment'
 import * as DBTypes from 'src/@types/DB';
 import { showCorretas } from 'src/@types/vue';
 
@@ -119,7 +119,7 @@ import { showCorretas } from 'src/@types/vue';
     components: { }
 
 })
-export default class Trabalho extends Vue {
+export default class TrabalhoView extends Vue {
 
     db = new DB(this.$axios, this.$store)
 
@@ -134,13 +134,12 @@ export default class Trabalho extends Vue {
     timer = ""
 
     idTrabalho = parseInt(this.$route.params.idTrabalho)
+    idAluno = parseInt(this.$route.params.idAluno)
     nTentativa = parseInt(this.$route.params.nTentativa)
-
-    finalizada = false
 
     showCorretas: showCorretas = {}
 
-    interval!: NodeJS.Timeout
+    nota = 0
 
     async created() {
 
@@ -149,77 +148,42 @@ export default class Trabalho extends Vue {
         const trabalhos = this.$store.state.trabalhos as DBTypes.Trabalho[]
         const i = trabalhos.findIndex(t => (t != undefined && t.idTrabalho == this.idTrabalho) )
 
-        if (i != -1) {
+        if (i == -1) { this.swal404(); return }
 
-            this.trabalho = trabalhos[i]
+        this.trabalho = trabalhos[i]
 
-            this.tab = `Tab/${this.trabalho.questao[0].idQuestao}`
+        const respostas = this.trabalho.resposta.filter(r => ( r.idAluno == this.idAluno && r.nroTentativa == this.nTentativa ))
 
-        }
-        else { this.swal404(); return }
+        if (respostas.length == 0) { this.swal404(); return }
 
-        const respostas = this.trabalho.resposta.filter(r => ( r.idAluno == this.$store.state.idUser && r.nroTentativa == this.nTentativa ))
+        respostas.forEach(r => {
 
-        if (respostas.length > 0) { this.swalJaRealizado(); return }
+            if (r.questao.tipo == 0) { this.models[r.questao.idQuestao] = r.resposta }
 
-        let duracao = moment.duration(this.trabalho.tempo, 'seconds')
-        this.timer = `${duracao.hours()}:${duracao.minutes()}:${duracao.seconds()}`
+            if (r.questao.tipo == 1) { this.models[r.questao.idQuestao] = parseInt(r.resposta) }
 
-        this.interval = setInterval(() => {
+            if (r.questao.tipo == 2) { 
+                
+                const check = r.resposta.split(',')
 
-            duracao = moment.duration(duracao.asSeconds()-1, 'seconds')
-            this.timer = `${duracao.hours()}:${duracao.minutes()}:${duracao.seconds()}`
+                check.forEach(c => {
 
-            if (duracao.asMilliseconds() <= 0) { 
-
-                clearInterval(this.interval)
-
-                this.$swal.fire({
-
-                    title: "Tempo esgotado",
-                    text: "O tempo para realização acabou, a tentativa sera encerrada",
-                     customClass: {
-
-                        popup: "bg-primary",
-                        content: "text-white",
-                        title: "text-white",
-                        confirmButton: "bg-white text-black",
-
-                    }
-
-                }).then(r => {
-
-                    this.finalizar()
+                    this.models[`${r.questao.idQuestao}/${c}`] = true 
 
                 })
 
             }
 
-        }, 1000)
+            if (r.questao.tipo == 3) { this.models[r.questao.idQuestao] = r.resposta.split(",") }
 
-    }
-
-    async finalizar() {
-
-        clearInterval(this.interval)
-
-        await this.db.trabalho.get(this.idTrabalho)
-
-        const trabalhos = this.$store.state.trabalhos as DBTypes.Trabalho[]
-        const i = trabalhos.findIndex(t => t.idTrabalho == parseInt(this.$route.params.idTrabalho))
-
-        this.trabalho = trabalhos[i]
+        })
 
         const total = this.trabalho.questao.length
         let certas = 0
        
         this.trabalho.questao.forEach(async q => {
 
-            console.log(q)
-
-            let corretas = (q.questaoCorreta.questaoAlternativa.length > 0) ? q.questaoCorreta.questaoAlternativa.map(a => a.idQuestaoAlternativa) : []
-
-            console.log(corretas)
+            const corretas = (q.questaoCorreta.questaoAlternativa.length > 0) ? q.questaoCorreta.questaoAlternativa.map(a => a.idQuestaoAlternativa) : [] 
 
             if (q.tipo == 0) {
 
@@ -233,18 +197,6 @@ export default class Trabalho extends Vue {
 
                 }
                 else { this.showCorretas[q.idQuestao] = { correta: false, file: false } }
-
-                const resposta = (await this.db.resposta.create({
-
-                    idResposta: -1,
-                    questao: q,
-                    resposta: (this.models[q.idQuestao] == undefined) ? "" : this.models[q.idQuestao],
-                    nroTentativa: this.nTentativa,
-                    idAluno: this.$store.state.idUser
-
-                }))
-
-                this.trabalho.resposta.push(resposta)
 
             }
 
@@ -312,90 +264,29 @@ export default class Trabalho extends Vue {
 
         })
 
-        const nota = (certas/total)*10
+        this.nota = (certas/total)*10
 
-        console.log("Nota ->", nota)
+        if (i != -1) {
 
-        await this.db.trabalho.update(this.trabalho)
+            this.trabalho = trabalhos[i]
 
-        await this.db.nota.create({
+            this.tab = `Tab/${this.trabalho.questao[0].idQuestao}`
 
-            idNotaTrabalho: -1,
-            valor: nota,
-            trabalho: this.trabalho,
-            idAluno: this.$store.state.idUser
+        }
+        else {
 
-        } as DBTypes.NotaTrabalho, "trabalho")
+            this.$router.push("/404")
 
-        this.$swal.fire({
-
-            title: "Tentativa finalizada",
-            text: `Sua nota foi ${nota}`,
-            customClass: {
-
-                popup: "bg-primary",
-                content: "text-white",
-                title: "text-white",
-                confirmButton: "bg-white text-black",
-
-            }
-
-        })
-
-        this.finalizada = true
-
-    }
-
-    finalizarSwal() {
-
-        this.$swal.fire({
-
-            icon: "question",
-            title: "Finalizar",
-            text: "Tem certeza que quer finalizar a tentativa",
-            showConfirmButton: true,
-            showDenyButton: true,
-            confirmButtonText: "Sim",
-            denyButtonText: "Não",
-            customClass: {
-
-                popup: "bg-primary",
-                content: "text-white",
-                title: "text-white",
-                confirmButton: "bg-white text-black"
-
-            }
-
-        }).then(r => { if (r.isConfirmed) { this.finalizar() } })
-
+        }
+        
     }
 
     swal404() {
 
         this.$swal.fire({
 
-            title: "Não encontrado",
-            text: "Esse trabalho não foi encontrado",
-            confirmButtonText: "Voltar ao Home",
-            customClass: {
-
-                popup: "bg-primary",
-                content: "text-white",
-                title: "text-white",
-                confirmButton: "bg-white text-black",
-
-            }
-
-        }).then(swal => { this.$router.push("/home") })
-
-    }
-
-    swalJaRealizado() {
-
-        this.$swal.fire({
-
-            title: "Já realizada",
-            text: "Essa tentativa ja foi realiza",
+            title: "Não encontrada",
+            text: "Essa tentativa não foi encontrada",
             confirmButtonText: "Voltar ao Home",
             customClass: {
 

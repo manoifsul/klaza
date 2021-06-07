@@ -20,7 +20,7 @@
 
                 <q-item v-if="sortTentativas[i][x] != undefined && sortTentativas[i][x][0] != undefined">
 
-                    <a :href="`/tentativas/${sortTentativas[i][x][0].questao.idQuestao}/${sortTentativas[i][x][0].idAluno}/${sortTentativas[i][x][0].nroTentativa}`">Tentativa: {{sortTentativas[i][x][0].nroTentativa}}</a>
+                    <a :href="`/tentativas/${negocio}/${idNegocio}/${sortTentativas[i][x][0].idAluno}/${sortTentativas[i][x][0].nroTentativa}`">Tentativa: {{sortTentativas[i][x][0].nroTentativa}}</a>
                     
                 </q-item>
 
@@ -50,7 +50,9 @@ import { DB } from 'src/middlewares/DBContector'
 })
 export default class ListTentativas extends Vue {
 
+    @Prop() idNegocio!: number
     @Prop() respostas!: TypesDB.Resposta[]
+    @Prop() negocio!: "trabalho" | "prova"
     
     sortTentativas: sortTentativas = {}
 

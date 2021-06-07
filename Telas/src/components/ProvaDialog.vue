@@ -344,7 +344,7 @@ export default class TrabalhoDialog extends Vue {
 
     addQuestão() {
 
-        this.questoes.push({idQuestao: -(Math.floor(Math.random() * 9999) + 1), pergunta: "", tipo: 0, questaoCorreta: [], questaoAlternativa: []})
+        this.questoes.push({idQuestao: -(Math.floor(Math.random() * 9999) + 1), pergunta: "", tipo: 0, questaoCorreta: { idQuestaoCorreta: -1, questaoAlternativa: [] }, questaoAlternativa: []})
 
     }
 

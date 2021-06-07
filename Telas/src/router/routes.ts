@@ -31,6 +31,27 @@ const routes: RouteConfig[] = [
           { path: '', component: () => import('src/pages/Trabalho.vue') }
         ]
     },
+    {
+        path: '/tentativas/trabalho/:idTrabalho/:idAluno/:nTentativa',
+        component: () => import('layouts/MainLayout.vue'),
+        children: [
+          { path: '', component: () => import('src/pages/TrabalhoView.vue') }
+        ]
+    },
+    {
+        path: '/prova/:idProva/:nTentativa',
+        component: () => import('layouts/MainLayout.vue'),
+        children: [
+          { path: '', component: () => import('src/pages/Prova.vue') }
+        ]
+    },
+    {
+        path: '/tentativas/prova/:idProva/:idAluno/:nTentativa',
+        component: () => import('layouts/MainLayout.vue'),
+        children: [
+          { path: '', component: () => import('src/pages/ProvaView.vue') }
+        ]
+    },
 
     // Always leave this as last one,
     // but you can also remove it

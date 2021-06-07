@@ -219,6 +219,33 @@ const testResposta: Resposta[] = [
     {
 
         idResposta: 1,
+        nroTentativa: 1,
+        questao: testQuestao[1],
+        resposta: "4,5",
+        idAluno: 0
+
+    },
+    {
+
+        idResposta: 2,
+        nroTentativa: 1,
+        questao: testQuestao[2],
+        resposta: "Guoba",
+        idAluno: 0
+
+    },
+    {
+
+        idResposta: 3,
+        nroTentativa: 1,
+        questao: testQuestao[3],
+        resposta: "https://link.com",
+        idAluno: 0
+
+    },
+    {
+
+        idResposta: 4,
         nroTentativa: 3,
         questao: testQuestao[1],
         resposta: "1",
@@ -243,7 +270,7 @@ const testProva: Prova[] = [
         tentativas: 3,
         administrador: [],
         professor: [testProfessor[0]],
-        resposta: [testResposta[0]],
+        resposta: testResposta,
         materia: testMateria[2],
         idTurma: 0
 
@@ -307,7 +334,7 @@ const testTrabalho: Trabalho[] = [
         tentativas: 0,
         tipo: 4,
         materia: testMateria[2],
-        resposta: [],
+        resposta: testResposta,
         idTurma: 0
 
     }

@@ -5,7 +5,7 @@
 
             <q-tabs v-model="tab" align="justify">
 
-                <q-tab v-for="(q, i) in trabalho.questao" :key="`Tab/${q.idQuestao}`" :name="`Tab/${q.idQuestao}`" class="text-white text-bold" :label="`Pergunta ${i+1}`"> 
+                <q-tab v-for="(q, i) in prova.questao" :key="`Tab/${q.idQuestao}`" :name="`Tab/${q.idQuestao}`" class="text-white text-bold" :label="`Pergunta ${i+1}`"> 
                 
                     <q-icon v-if="finalizada && showCorretas[q.idQuestao].correta" name="fas fa-check"/>
                     <q-icon v-if="finalizada && !showCorretas[q.idQuestao].correta && !showCorretas[q.idQuestao].file" name="fas fa-times"/>
@@ -21,7 +21,7 @@
 
             <q-tab-panels v-model="tab" animated transition-prev="jump-up" transition-next="jump-up" class="bg-transparent">
 
-                <q-tab-panel v-for="(q, i) in trabalho.questao" :key="`Tab/${q.idQuestao}`" :name="`Tab/${q.idQuestao}`">
+                <q-tab-panel v-for="(q, i) in prova.questao" :key="`Tab/${q.idQuestao}`" :name="`Tab/${q.idQuestao}`">
 
                     <div class="fit row wrap justify-between items-start content-start">
 
@@ -77,7 +77,7 @@
                             <div class="boxInfo br-20 h-100 text-center text-white">
 
                                 <div class="text-h4 text-bold">Questão</div>
-                                <div class="text-h5 text-bold q-mb-xl">{{trabalho.questao.findIndex(q => q.idQuestao == parseInt(tab.split("/")[1]))+1}} / {{trabalho.questao.length}}</div>
+                                <div class="text-h5 text-bold q-mb-xl">{{prova.questao.findIndex(q => q.idQuestao == parseInt(tab.split("/")[1]))+1}} / {{prova.questao.length}}</div>
 
                                 <div v-if="!finalizada" class="q-mb-xl">
 
@@ -119,11 +119,11 @@ import { showCorretas } from 'src/@types/vue';
     components: { }
 
 })
-export default class Trabalho extends Vue {
+export default class Prova extends Vue {
 
     db = new DB(this.$axios, this.$store)
 
-    trabalho: DBTypes.Trabalho = { idTrabalho: 0, nome: "", prazo: new Date(), descricao: "", inicio: new Date(), tempo: 0, tentativas: 0, tipo: 0, professor: [], administrador: [], arquivo: [], questao: [], materia: { idMateria: 0, nome: "", idProfessor: [] }, resposta: [], idTurma: 0}
+    prova: DBTypes.Prova = { idProva: 0, nome: "", prazo: new Date(), descricao: "", inicio: new Date(), tempo: 0, tentativas: 0, professor: [], administrador: [], arquivo: [], questao: [], materia: { idMateria: 0, nome: "", idProfessor: [] }, resposta: [], idTurma: 0 }
 
     uid = uid
 
@@ -133,7 +133,7 @@ export default class Trabalho extends Vue {
 
     timer = ""
 
-    idTrabalho = parseInt(this.$route.params.idTrabalho)
+    idProva = parseInt(this.$route.params.idProva)
     nTentativa = parseInt(this.$route.params.nTentativa)
 
     finalizada = false
@@ -144,25 +144,25 @@ export default class Trabalho extends Vue {
 
     async created() {
 
-        await this.db.trabalho.get(this.idTrabalho)
+        await this.db.prova.get(this.idProva)
 
-        const trabalhos = this.$store.state.trabalhos as DBTypes.Trabalho[]
-        const i = trabalhos.findIndex(t => (t != undefined && t.idTrabalho == this.idTrabalho) )
+        const provas = this.$store.state.trabalhos as DBTypes.Prova[]
+        const i = provas.findIndex(t => (t != undefined && t.idProva == this.idProva) )
 
         if (i != -1) {
 
-            this.trabalho = trabalhos[i]
+            this.prova = provas[i]
 
-            this.tab = `Tab/${this.trabalho.questao[0].idQuestao}`
+            this.tab = `Tab/${this.prova.questao[0].idQuestao}`
 
         }
         else { this.swal404(); return }
 
-        const respostas = this.trabalho.resposta.filter(r => ( r.idAluno == this.$store.state.idUser && r.nroTentativa == this.nTentativa ))
+        const respostas = this.prova.resposta.filter(r => ( r.idAluno == this.$store.state.idUser && r.nroTentativa == this.nTentativa ))
 
         if (respostas.length > 0) { this.swalJaRealizado(); return }
 
-        let duracao = moment.duration(this.trabalho.tempo, 'seconds')
+        let duracao = moment.duration(this.prova.tempo, 'seconds')
         this.timer = `${duracao.hours()}:${duracao.minutes()}:${duracao.seconds()}`
 
         this.interval = setInterval(() => {
@@ -203,17 +203,17 @@ export default class Trabalho extends Vue {
 
         clearInterval(this.interval)
 
-        await this.db.trabalho.get(this.idTrabalho)
+        await this.db.prova.get(this.idProva)
 
-        const trabalhos = this.$store.state.trabalhos as DBTypes.Trabalho[]
-        const i = trabalhos.findIndex(t => t.idTrabalho == parseInt(this.$route.params.idTrabalho))
+        const provas = this.$store.state.trabalhos as DBTypes.Prova[]
+        const i = provas.findIndex(t => t.idProva == parseInt(this.$route.params.idTrabalho))
 
-        this.trabalho = trabalhos[i]
+        this.prova = provas[i]
 
-        const total = this.trabalho.questao.length
+        const total = this.prova.questao.length
         let certas = 0
        
-        this.trabalho.questao.forEach(async q => {
+        this.prova.questao.forEach(async q => {
 
             console.log(q)
 
@@ -244,7 +244,7 @@ export default class Trabalho extends Vue {
 
                 }))
 
-                this.trabalho.resposta.push(resposta)
+                this.prova.resposta.push(resposta)
 
             }
 
@@ -271,7 +271,7 @@ export default class Trabalho extends Vue {
 
                 }))
 
-                this.trabalho.resposta.push(resposta)
+                this.prova.resposta.push(resposta)
 
             }
 
@@ -304,7 +304,7 @@ export default class Trabalho extends Vue {
 
                 }))
 
-                this.trabalho.resposta.push(resposta)
+                this.prova.resposta.push(resposta)
 
             }
 
@@ -316,16 +316,16 @@ export default class Trabalho extends Vue {
 
         console.log("Nota ->", nota)
 
-        await this.db.trabalho.update(this.trabalho)
+        await this.db.prova.update(this.prova)
 
         await this.db.nota.create({
 
-            idNotaTrabalho: -1,
+            idNotaProva: -1,
             valor: nota,
-            trabalho: this.trabalho,
+            prova: this.prova,
             idAluno: this.$store.state.idUser
 
-        } as DBTypes.NotaTrabalho, "trabalho")
+        } as DBTypes.NotaProva, "prova")
 
         this.$swal.fire({
 
