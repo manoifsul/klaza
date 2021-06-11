@@ -12,12 +12,13 @@
 
             </div>
 
-            <div v-if="!vEdit" class="column text-bold text-h4 text-white q-gutter-y-md">
+            <div v-if="!vEdit && !vAdd && vTurma" class="column text-bold text-h4 text-white q-gutter-y-md">
 
                 <span>Aula: {{vNome}}</span>
-                <span>Materia: {{vMateria.nome}}</span>
+                <span>Turma: {{vTurma.nome}} - {{vTurma.materia.nome}}</span>
                 <span>Dia: {{vDia}}</span>
                 <span>Horario: {{vHora}}</span>
+                 <span>Anexos: <a v-for="f in vAula.arquivo" :key="uid()" :href="f.link">{{f.link}}</a> </span>
                 <span>Descrição:</span>
                 <div class="descricao br-20">{{vDescricao}}</div>        
 
@@ -26,7 +27,8 @@
             <div v-else class="column text-bold text-h4 q-gutter-y-md">
 
                 <q-input outlined v-model="modelNome" label-color="white" input-class="text-white" label="Aula" placeholder="Digite o nome da aula"/>
-                <q-select outlined input-class="text-white" label-color="white" color="white" v-model="modelMateria"  placeholder="Digite o nome da materia" :options="optionsMateria" label="Materia" use-input/>
+                <q-input outlined v-model="modelLink" label-color="white" input-class="text-white" label="Link" placeholder="Digite o link da aula"/>
+                <q-select outlined input-class="text-white" label-color="white" v-model="modelTurma" placeholder="Digite a turma da aula" :options="optionsTurmas" label="Turma" use-chips use-input />
                 <q-input v-model="date" label-color="white" input-class="text-white" label="Dia" placeholder="Digite o dia da aula" mask="##/##/####" fill-mask outlined>
                     <template v-slot:append>
                         <q-icon name="event" class="cursor-pointer">
@@ -53,6 +55,13 @@
                         </q-icon>
                     </template>
                 </q-input>
+                <q-file v-model="modelFiles" label-color="white" label="Adicione o(s) anexo(s)" outlined counter use-chips append multiple>
+
+                    <template v-slot:prepend>
+                        <q-icon color="white" name="fas fa-upload" />
+                    </template>
+
+                </q-file>
                 <q-input outlined v-model="modelDescricao" label-color="white" input-class="text-white" label="Descrição" type="textarea" placeholder="Digite a descrição da aula"/>
 
             </div>
@@ -73,50 +82,54 @@ import { Vue, Component, Prop } from 'vue-property-decorator';
 import { qSelectOptions } from 'src/@types/vue'
 
 import moment from 'moment';
-import { Materia } from 'src/@types/DB';
+import { Aula, Materia, Turma } from 'src/@types/DB';
+import { DB } from 'src/middlewares/DBContector';
+import { uid } from 'quasar';
 
 @Component({
 
     components: { }
 
 })
-export default class Aula extends Vue {
+export default class AulaDialog extends Vue {
 
-    @Prop() nome!: string
-    @Prop() materia!: Materia
-    @Prop() dia!: Date
-    @Prop() descricao!: string
+    @Prop() aula!: Aula
     @Prop() editProp!: boolean
+    @Prop() add!: boolean
 
-    vNome = this.nome
+    uid = uid
+
+    db = new DB(this.$axios, this.$store)
+
+    vAula = this.aula
+
+    vNome = this.aula.nome
     modelNome = this.vNome
 
-    vDescricao = this.descricao
+    vDescricao = this.aula.descricao
     modelDescricao = this.vDescricao
 
-    vDia = moment(this.dia).format("DD/MM/YYYY")
+    vDia = moment(this.aula.inicio).format("DD/MM/YYYY")
     date = this.vDia
 
-
-    vHora = moment(this.dia).format("hh:mm A")
+    vHora = moment(this.aula.inicio).format("hh:mm A")
     time = this.vHora
 
-    
-    vMateria = this.materia
-    modelMateria: qSelectOptions = { label: this.vMateria.nome, value: this.vMateria.idMateria }
-    optionsMateria: qSelectOptions[] = []
+    vTurma = (this.$store.state.turmas as Turma[]).find(t => t.idTurma == this.aula.idTurma)
+    modelTurma: qSelectOptions | null = (this.vTurma != undefined) ? { label: `${this.vTurma?.nome} - ${this.vTurma?.materia.nome}`, value: this.vTurma as Turma} : null
+    optionsTurmas: qSelectOptions[] = []
 
-    vEdit = (this.editProp != true) ? false : true
+    vLink = this.aula.link
+    modelLink = this.vLink
+
+    vEdit = this.editProp
+    vAdd = this.add
+
+    modelFiles = this.aula.arquivo
 
     created() { 
 
-        for (let mat in this.$store.state.materiasProfessor) {
-
-            const materia: Materia = this.$store.state.materiasProfessor[mat]
-
-            this.optionsMateria.push({label: materia.nome, value: materia.idMateria})
-
-        }
+        this.$store.state.turmas.forEach((t: Turma) => { this.optionsTurmas.push({ label: t.nome, value: t }) })
 
     }
  
@@ -128,15 +141,54 @@ export default class Aula extends Vue {
 
     save() {
 
-        // SALVA NO BD
-
         this.vDia = this.date
         this.vHora = moment().set({ hour: parseInt(this.time.split(":")[0]), minute: parseInt(this.time.split(":")[1]) }).format("LT")
-        this.vMateria = { idMateria: this.modelMateria.value as number, nome: this.modelMateria.label as string, idProfessor: this.$store.state.materias[this.modelMateria.value].idProfessor }
         this.vNome = this.modelNome
         this.vDescricao = this.modelDescricao
+        this.vTurma = this.modelTurma?.value as Turma
+        this.vLink = this.modelLink
+
+       if (this.add) {
+
+            const aula: Aula = {
+
+                idAula: -1,
+                nome: this.vNome,
+                descricao: this.vDescricao,
+                inicio: moment(`${this.vDia} ${this.vHora}`, "DD-MM-YYYY HH:mm").toDate(),
+                link: this.vLink,
+                arquivo: [],
+                materia: this.vTurma.materia,
+                idTurma: this.vTurma.idTurma,
+
+            }
+            
+            this.db.aula.create(aula)
+
+        }
+        else {
+
+            const aula: Aula = {
+
+                idAula: this.aula.idAula,
+                nome: this.vNome,
+                descricao: this.vDescricao,
+                inicio: moment(`${this.vDia} ${this.vHora}`, "DD-MM-YYYY HH:mm").toDate(),
+                link: this.vLink,
+                arquivo: [],
+                materia: this.vTurma.materia,
+                idTurma: this.vTurma.idTurma,
+
+            }
+            
+            this.aula.idAula = aula.idAula
+
+            this.db.aula.update(aula)
+
+        }
 
         this.vEdit = false
+        this.vAdd = false
 
     }
 
@@ -146,7 +198,7 @@ export default class Aula extends Vue {
 
             title: "Excluir?",
             icon: "question",
-            html: `tem certeza que deseja excluir a aula '${this.nome}'?<br>(Essa ação não pode ser desfeita)`,
+            html: `tem certeza que deseja excluir a aula '${this.vNome}'?<br>(Essa ação não pode ser desfeita)`,
             target: '.contentAula',
             backdrop: false,
             showConfirmButton: true,

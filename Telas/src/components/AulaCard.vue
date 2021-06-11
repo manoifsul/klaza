@@ -10,7 +10,7 @@
 
         </div>
 
-        <q-dialog v-model="open" full-width> <AulaDialog :nome="event.nome" :materia="event.materia" :dia="event.inicio" :descricao="event.descricao"/> </q-dialog>
+        <q-dialog v-model="open" full-width> <AulaDialog :aula="event" :editProp="false" :add="false"/> </q-dialog>
 
     </div>
 

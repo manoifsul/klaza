@@ -3,7 +3,7 @@ import * as DBTypes from 'src/@types/DB'
 export interface qSelectOptions {
 
     label: string,
-    value: string | number,
+    value: string | number | Object,
     disable?: boolean,
     description?: string,
     category?: string
@@ -37,5 +37,32 @@ export interface showCorretas {
         file: boolean
         
     }
+
+}
+
+export interface qTableColumns {
+
+    name: string
+    label: string
+    field: string | Function
+    required?: boolean
+    align?: "left" | "center" | "right"
+    sortable?: boolean
+    sort?: Function
+    sortOrder?: "ad" | "da"
+    format?: Function
+    style?: string | Function
+    classes?: string | Function
+    headerStyle?: string
+    headerClasses?: string
+
+}
+
+export interface ColumnsTableAdm {
+
+    adm: qTableColumns[]
+    aluno: qTableColumns[]
+    professor: qTableColumns[]
+    turmas: qTableColumns[]
 
 }

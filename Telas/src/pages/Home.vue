@@ -70,10 +70,10 @@
 
             <div v-if="($store.state.typeUser == 'professor') || ($store.state.typeUser == 'administrador')" class="row wrap justify-around q-ma-md q-gutter-sm">
 
-                <q-dialog v-model="dialogAula" full-width> <AulaDialog nome="" materia="" dia="" descricao="" :editProp="true"/> </q-dialog>
-                <q-dialog v-model="dialogAtividade" full-width> <AtividadeDialog nome="" materia="" dia="" descricao="" :editProp="true"/> </q-dialog>
-                <q-dialog v-model="dialogTrabalho" full-width> <TrabalhoDialog nome="" materia="" dia="" descricao="" :editProp="true"/> </q-dialog>
-                <q-dialog v-model="dialogProva" full-width> <ProvaDialog nome="" materia="" dia="" descricao="" :editProp="true"/> </q-dialog>
+                <q-dialog v-model="dialogAula" full-width> <AulaDialog :aula="aulaNull" :editProp="true" :add="true"/> </q-dialog>
+                <q-dialog v-model="dialogAtividade" full-width> <AtividadeDialog :atividade="atividadeNull" :editProp="true" :add="true"/> </q-dialog>
+                <q-dialog v-model="dialogTrabalho" full-width> <TrabalhoDialog :trabalho="trabalhoNull" :editProp="true" :add="true"/> </q-dialog>
+                <q-dialog v-model="dialogProva" full-width> <ProvaDialog :prova="provaNull" :editProp="true" :add="true"/> </q-dialog>
 
                 <q-btn color="primary" label="Nova Aula" class="br-10" @click="dialogAula = true"/>
                 <q-btn color="primary" label="Nova Atividade" class="br-10"  @click="dialogAtividade = true"/>
@@ -109,6 +109,7 @@ import TrabalhoDialog from '../components/TrabalhoDialog.vue'
 import ProvaDialog from '../components/ProvaDialog.vue'
 
 import moment from 'moment'
+import { Atividade, Aula, Prova, Trabalho } from 'src/@types/DB';
 
 @Component({
 
@@ -123,6 +124,11 @@ export default class Home extends Vue {
     dialogAtividade = false
     dialogTrabalho = false
     dialogProva = false
+
+    aulaNull: Aula = { idAula: -1, nome: "", materia: { idMateria: -1, nome: "", idProfessor: [] }, descricao: "", inicio: new Date(), link: "", arquivo: [], idTurma: -1 }
+    atividadeNull: Atividade = { idAtividade: -1, nome: "", descricao: "", inicio: new Date(), arquivo: [], administrador: [], professor: [], materia: { idMateria: -1, nome: "", idProfessor: [] }, idTurma: -1 }
+    trabalhoNull: Trabalho = { idTrabalho: -1, nome: "", prazo: new Date(), descricao: "", inicio: new Date(), tempo: 0, tentativas: 0, tipo: 0, professor: [], administrador: [], arquivo: [], questao: [], materia: { idMateria: -1, nome: "", idProfessor: [] }, resposta: [], idTurma: -1 }
+    provaNull: Prova = { idProva: -1, nome: "", prazo: new Date(), descricao: "", inicio: new Date(), tempo: 0, tentativas: 0, professor: [], administrador: [], arquivo: [], questao: [], materia: { idMateria: -1, nome: "", idProfessor: [] }, resposta: [], idTurma: -1 }
 
     created() {
 

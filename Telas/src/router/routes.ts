@@ -52,6 +52,13 @@ const routes: RouteConfig[] = [
           { path: '', component: () => import('src/pages/ProvaView.vue') }
         ]
     },
+    {
+        path: '/admin',
+        component: () => import('layouts/MainLayout.vue'),
+        children: [
+          { path: '', component: () => import('src/pages/Admin.vue') }
+        ]
+    },
 
     // Always leave this as last one,
     // but you can also remove it

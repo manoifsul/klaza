@@ -102,6 +102,33 @@ const testAdministrador: Administrador[] = [
         senha: "1234",
         login: "remor.oliveira@gmail.com.br"
 
+    },
+    {
+
+        idAdministrador: 1,
+        email: "emanuel@gmail.com.br",
+        nome: "Emanuel",
+        senha: "as65d4as6",
+        login: "emanuel@gmail.com.br"
+
+    },
+    {
+
+        idAdministrador: 2,
+        email: "vitor@gmail.com.br",
+        nome: "Vitor",
+        senha: "eba",
+        login: "vitor@gmail.com.br"
+
+    },
+    {
+
+        idAdministrador: 3,
+        email: "blz@gmail.com.br",
+        nome: "Blz",
+        senha: "kk",
+        login: "blz@gmail.com.br"
+
     }
 
 ]
@@ -417,7 +444,6 @@ const testAtividade: Atividade[] = [
         inicio: new Date(),
         nome: "Eba",
         professor: [testProfessor[0]],
-        resposta: [],
         materia: testMateria[0],
         idTurma: 0
 
@@ -475,6 +501,102 @@ const testAluno: Aluno[] = [
     {
 
         idAluno: 2,
+        email: "remor.oliveira@ifsul.edu.br",
+        matricula: "321361695",
+        nome: "Remor Oliveira",
+        notasProvas: [],
+        notasTrabalhos: [],
+        senha: "0987654321",
+        idTurmas: [1]
+
+    },
+    {
+
+        idAluno: 3,
+        email: "remor.oliveira@ifsul.edu.br",
+        matricula: "321361695",
+        nome: "Remor Oliveira",
+        notasProvas: [],
+        notasTrabalhos: [],
+        senha: "0987654321",
+        idTurmas: [1]
+
+    },
+    {
+
+        idAluno: 4,
+        email: "remor.oliveira@ifsul.edu.br",
+        matricula: "321361695",
+        nome: "Remor Oliveira",
+        notasProvas: [],
+        notasTrabalhos: [],
+        senha: "0987654321",
+        idTurmas: [1]
+
+    },
+    {
+
+        idAluno: 5,
+        email: "remor.oliveira@ifsul.edu.br",
+        matricula: "321361695",
+        nome: "Remor Oliveira",
+        notasProvas: [],
+        notasTrabalhos: [],
+        senha: "0987654321",
+        idTurmas: [1]
+
+    },
+    {
+
+        idAluno: 6,
+        email: "remor.oliveira@ifsul.edu.br",
+        matricula: "321361695",
+        nome: "Remor Oliveira",
+        notasProvas: [],
+        notasTrabalhos: [],
+        senha: "0987654321",
+        idTurmas: [1]
+
+    },
+    {
+
+        idAluno: 7,
+        email: "remor.oliveira@ifsul.edu.br",
+        matricula: "321361695",
+        nome: "Remor Oliveira",
+        notasProvas: [],
+        notasTrabalhos: [],
+        senha: "0987654321",
+        idTurmas: [1]
+
+    },
+    {
+
+        idAluno: 8,
+        email: "remor.oliveira@ifsul.edu.br",
+        matricula: "321361695",
+        nome: "Remor Oliveira",
+        notasProvas: [],
+        notasTrabalhos: [],
+        senha: "0987654321",
+        idTurmas: [1]
+
+    },
+    {
+
+        idAluno: 9,
+        email: "remor.oliveira@ifsul.edu.br",
+        matricula: "321361695",
+        nome: "Remor Oliveira",
+        notasProvas: [],
+        notasTrabalhos: [],
+        senha: "0987654321",
+        idTurmas: [1]
+
+    },
+    {
+
+        idAluno: 10,
         email: "remor.oliveira@ifsul.edu.br",
         matricula: "321361695",
         nome: "Remor Oliveira",
@@ -1475,37 +1597,47 @@ export class DB {
             }
             else {
 
-                await this.axios({
+                // await this.axios({
 
-                    url: `${this.baseUrl}/alunos`,
-                    method: "GET"
+                //     url: `${this.baseUrl}/alunos`,
+                //     method: "GET"
 
-                }).then(r => {
+                // }).then(r => {
 
-                    const aluno: Aluno[] = testAluno //r.data
+                //     const aluno: Aluno[] = testAluno //r.data
 
-                    this.store.state.alunos = aluno
+                //     this.store.state.alunos = aluno
 
-                })
+                // })
+
+                const aluno: Aluno[] = testAluno
+
+                this.store.state.alunos = aluno
 
             }
 
         },
 
-        create: async (aluno: Aluno) => {
+        create: (aluno: Aluno): Promise<Aluno> => {
 
-            await this.axios({
+            return new Promise(async resolve => {
 
-                url: `${this.baseUrl}/aluno`,
-                method: "POST",
-                data: aluno
+                await this.axios({
 
-            }).then(r => {
-                
-                const i = this.store.state.alunos.findIndex(a => a.idAluno == aluno.idAluno)
+                    url: `${this.baseUrl}/aluno`,
+                    method: "POST",
+                    data: aluno
 
-                if (i != -1) { this.store.state.alunos[i] = aluno }
-                else { this.store.state.alunos.push(aluno) }
+                }).then(r => {
+                    
+                    const i = this.store.state.alunos.findIndex(a => a.idAluno == aluno.idAluno)
+
+                    if (i != -1) { this.store.state.alunos[i] = r.data }
+                    else { this.store.state.alunos.push(r.data) }
+
+                    resolve(r.data)
+
+                })
 
             })
 
@@ -1555,58 +1687,77 @@ export class DB {
            
             if (id != undefined) {
 
-                await this.axios({
+                // await this.axios({
 
-                    url: `${this.baseUrl}/professor/${id}`,
-                    method: "GET"
+                //     url: `${this.baseUrl}/professor/${id}`,
+                //     method: "GET"
 
-                }).then(r => {
+                // }).then(r => {
                     
-                    const professor: Professor = testProfessor[id] //r.data
+                //     const professor: Professor = r.data
 
-                    const i = this.store.state.professores.findIndex(a => a.idProfessor == id)
+                //     const i = this.store.state.professores.findIndex(a => a.idProfessor == id)
 
-                    if (i != -1) { this.store.state.professores[i] = professor }
-                    else { this.store.state.professores.push(professor) }
+                //     if (i != -1) { this.store.state.professores[i] = professor }
+                //     else { this.store.state.professores.push(professor) }
 
-                })
+                // })
+
+                const professor: Professor = testProfessor[id]
+
+                const i = this.store.state.professores.findIndex(a => a.idProfessor == id)
+
+                if (i != -1) { this.store.state.professores[i] = professor }
+                else { this.store.state.professores.push(professor) }
 
             }
             else {
 
-                await this.axios({
+                // await this.axios({
 
-                    url: `${this.baseUrl}/professores`,
-                    method: "GET"
+                //     url: `${this.baseUrl}/professores`,
+                //     method: "GET"
 
-                }).then(r => {
+                // }).then(r => {
 
-                    const professores: Professor[] = testProfessor //r.data
+                //     const professores: Professor[] = testProfessor //r.data
 
-                    this.store.state.professores = professores
+                //     this.store.state.professores = professores
 
-                })
+                // })
+                
+                const professores: Professor[] = testProfessor
+
+                this.store.state.professores = professores
 
             }
 
         },
 
-        create: async (professor: Professor) => {
+        create: (professor: Professor): Promise<Professor> => {
 
-            await this.axios({
+            return new Promise(async resolve => {
 
-                url: `${this.baseUrl}/professor`,
-                method: "POST",
-                data: professor
+                await this.axios({
 
-            }).then(r => {
+                    url: `${this.baseUrl}/professor`,
+                    method: "POST",
+                    data: professor
+    
+                }).then(r => {
+    
+                    const i = this.store.state.professores.findIndex(a => a.idProfessor == professor.idProfessor)
+    
+                    if (i != -1) { this.store.state.professores[i] = r.data }
+                    else { this.store.state.professores.push(r.data) }
 
-                const i = this.store.state.professores.findIndex(a => a.idProfessor == professor.idProfessor)
-
-                if (i != -1) { this.store.state.professores[i] = professor }
-                else { this.store.state.professores.push(professor) }
+                    resolve(r.data)
+    
+                })
 
             })
+
+           
 
         },
 
@@ -1654,62 +1805,81 @@ export class DB {
            
             if (id != undefined) {
 
-                await this.axios({
+                // await this.axios({
 
-                    url: `${this.baseUrl}/administrador/${id}`,
-                    method: "GET"
+                //     url: `${this.baseUrl}/administrador/${id}`,
+                //     method: "GET"
 
-                }).then(r => {
+                // }).then(r => {
                     
-                    const administrador: Administrador = testAdministrador[id] //r.data
+                //     const administrador: Administrador = r.data
 
-                    const i = this.store.state.administradores.findIndex(a => a.idAdministrador == id)
+                //     const i = this.store.state.administradores.findIndex(a => a.idAdministrador == id)
 
-                    if (i != -1) { this.store.state.administradores[i] = administrador }
-                    else { this.store.state.administradores.push(administrador) }
+                //     if (i != -1) { this.store.state.administradores[i] = administrador }
+                //     else { this.store.state.administradores.push(administrador) }
 
-                })
+                // })
+
+                const administrador: Administrador = testAdministrador[id]
+
+                const i = this.store.state.administradores.findIndex(a => a.idAdministrador == id)
+
+                if (i != -1) { this.store.state.administradores[i] = administrador }
+                else { this.store.state.administradores.push(administrador) }
 
             }
             else {
 
-                await this.axios({
+                // await this.axios({
 
-                    url: `${this.baseUrl}/administradores`,
-                    method: "GET"
+                //     url: `${this.baseUrl}/administradores`,
+                //     method: "GET"
 
-                }).then(r => {
+                // }).then(r => {
 
-                    const administradores: Administrador[] = testAdministrador //r.data
+                //     const administradores: Administrador[] = r.data
 
-                    this.store.state.administradores = administradores
+                //     this.store.state.administradores = administradores
 
-                })
+                // })
+
+                this.store.state.administradores = testAdministrador
 
             }
 
         },
 
-        create: async (administrador: Administrador) => {
+        create: (administrador: Administrador) : Promise<Administrador> => {
 
-            await this.axios({
+            return new Promise(async resolve => {
 
-                url: `${this.baseUrl}/administrador`,
-                method: "POST",
-                data: administrador
+                await this.axios({
 
-            }).then(r => {
-                
-                const i = this.store.state.administradores.findIndex(a => a.idAdministrador == administrador.idAdministrador)
+                    url: `${this.baseUrl}/administrador`,
+                    method: "POST",
+                    data: administrador
+    
+                }).then(r => {
+                    
+                    const adm = r.data
 
-                if (i != -1) { this.store.state.administradores[i] = administrador }
-                else { this.store.state.administradores.push(administrador) }
+                    const i = this.store.state.administradores.findIndex(a => a.idAdministrador == administrador.idAdministrador)
+    
+                    if (i != -1) { this.store.state.administradores[i] = adm }
+                    else { this.store.state.administradores.push(adm) }
+
+                    resolve(adm)
+    
+                })
 
             })
 
         },
 
         update: async (administrador: Administrador) => {
+
+            // console.log("UPDATO administrador", administrador)
 
             await this.axios({
 
@@ -1888,38 +2058,38 @@ export class DB {
 
         },
 
-        create: async (aula: Aula) => {
+        create: async (atividade: Atividade) => {
 
             await this.axios({
 
-                url: `${this.baseUrl}/aula`,
+                url: `${this.baseUrl}/atividade`,
                 method: "POST",
-                data: aula
+                data: atividade
 
             }).then(r => {
                 
-                const i = this.store.state.aulas.findIndex(a => a.idAula == aula.idAula)
+                const i = this.store.state.atividades.findIndex(a => a.idAtividade == atividade.idAtividade)
 
-                if (i != -1) { this.store.state.aulas[i] = aula }
-                else { this.store.state.aulas.push(aula) }
+                if (i != -1) { this.store.state.atividades[i] = atividade }
+                else { this.store.state.atividades.push(atividade) }
 
             })
 
         },
 
-        update: async (aula: Aula) => {
+        update: async (atividade: Atividade) => {
 
             await this.axios({
 
-                url: `${this.baseUrl}/aula/${aula.idAula}`,
+                url: `${this.baseUrl}/atividade/${atividade.idAtividade}`,
                 method: "PUT",
-                data: aula
+                data: atividade
 
             }).then(r => {
                 
-                const atividade: Atividade = testAtividade[aula.idAula] //r.data
+                const atividade: Atividade = r.data
 
-                const i = this.store.state.atividades.findIndex(a => a.idAtividade == aula.idAula)
+                const i = this.store.state.atividades.findIndex(a => a.idAtividade == atividade.idAtividade)
 
                 if (i != -1) { this.store.state.atividades[i] = atividade }
                 else { this.store.state.atividades.push(atividade) }
@@ -1932,14 +2102,14 @@ export class DB {
 
             await this.axios({
 
-                url: `${this.baseUrl}/aula/${id}`,
+                url: `${this.baseUrl}/atividade/${id}`,
                 method: "DELETE"
 
             }).then(r => {
                 
-                const i = this.store.state.aulas.findIndex(a => a.idAula == id)
+                const i = this.store.state.atividades.findIndex(a => a.idAtividade == id)
 
-                if (i != -1) { this.store.state.aulas.splice(i, 1) }
+                if (i != -1) { this.store.state.atividades.splice(i, 1) }
 
             })
 
@@ -1997,20 +2167,24 @@ export class DB {
 
         },
 
-        create: async (trabalho: Trabalho) => {
+        create: (trabalho: Trabalho): Promise<Trabalho> => {
 
-            await this.axios({
+            return new Promise(async resolve => {
 
-                url: `${this.baseUrl}/trabalho`,
-                method: "POST",
-                data: trabalho
+                await this.axios({
 
-            }).then(r => {
-                
-                const i = this.store.state.trabalhos.findIndex(a => a.idTrabalho == trabalho.idTrabalho)
+                    url: `${this.baseUrl}/trabalho`,
+                    method: "POST",
+                    data: trabalho
 
-                if (i != -1) { this.store.state.trabalhos[i] = trabalho }
-                else { this.store.state.trabalhos.push(trabalho) }
+                }).then(r => {
+                    
+                    const i = this.store.state.trabalhos.findIndex(a => a.idTrabalho == trabalho.idTrabalho)
+
+                    if (i != -1) { this.store.state.trabalhos[i] = r.data }
+                    else { this.store.state.trabalhos.push(r.data) }
+
+                })
 
             })
 
@@ -2101,20 +2275,24 @@ export class DB {
 
         },
 
-        create: async (prova: Prova) => {
+        create: (prova: Prova): Promise<Prova> => {
 
-            await this.axios({
+            return new Promise(async resolve => {
 
-                url: `${this.baseUrl}/prova`,
-                method: "POST",
-                data: prova
+                await this.axios({
 
-            }).then(r => {
-                
-                const i = this.store.state.provas.findIndex(a => a.idProva == prova.idProva)
+                    url: `${this.baseUrl}/prova`,
+                    method: "POST",
+                    data: prova
 
-                if (i != -1) { this.store.state.provas[i] = prova }
-                else { this.store.state.provas.push(prova) }
+                }).then(r => {
+                    
+                    const i = this.store.state.provas.findIndex(a => a.idProva == prova.idProva)
+
+                    if (i != -1) { this.store.state.provas[i] = r.data }
+                    else { this.store.state.provas.push(r.data) }
+
+                })
 
             })
 
@@ -2204,39 +2382,45 @@ export class DB {
 
         },
 
-        create: async (materia: Materia) => {
+        create: (turma: Turma): Promise<Turma> => {
 
-            await this.axios({
+            return new Promise(async resolve => {
 
-                url: `${this.baseUrl}/turma`,
-                method: "POST",
-                data: materia
+                await this.axios({
 
-            }).then(r => {
-                
-                const i = this.store.state.provas.findIndex(a => a.idProva == materia.idMateria)
+                    url: `${this.baseUrl}/turma`,
+                    method: "POST",
+                    data: turma
 
-                if (i != -1) { this.store.state.materias[i] = materia }
-                else { this.store.state.materias.push(materia) }
+                }).then(r => {
+                    
+                    const i = this.store.state.turmas.findIndex(a => a.idTurma == turma.idTurma)
+
+                    if (i != -1) { this.store.state.turmas[i] = r.data }
+                    else { this.store.state.turmas.push(r.data) }
+
+                    resolve(r.data)
+
+                })
 
             })
 
         },
 
-        update: async (materia: Materia) => {
+        update: async (turma: Turma) => {
 
             await this.axios({
 
-                url: `${this.baseUrl}/trabalho/${materia.idMateria}`,
+                url: `${this.baseUrl}/turma/${turma.idTurma}`,
                 method: "PUT",
-                data: materia
+                data: turma
 
             }).then(r => {
 
-                const i = this.store.state.provas.findIndex(a => a.idProva == materia.idMateria)
+                const i = this.store.state.provas.findIndex(a => a.idProva == turma.idTurma)
 
-                if (i != -1) { this.store.state.materias[i] = materia }
-                else { this.store.state.materias.push(materia) }
+                if (i != -1) { this.store.state.turmas[i] = turma }
+                else { this.store.state.turmas.push(turma) }
 
             })
 
@@ -2246,7 +2430,7 @@ export class DB {
 
             await this.axios({
 
-                url: `${this.baseUrl}/materia/${id}`,
+                url: `${this.baseUrl}/turma/${id}`,
                 method: "DELETE"
 
             }).then(r => {

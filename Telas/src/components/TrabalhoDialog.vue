@@ -24,14 +24,14 @@
 
             </div>
 
-            <q-tab-panels v-if="!vEdit" v-model="tab" animated swipeable vertical transition-prev="jump-up" transition-next="jump-up" class="bg-transparent">
+            <q-tab-panels v-if="!vEdit && !vAdd && vTurma" v-model="tab" animated swipeable vertical transition-prev="jump-up" transition-next="jump-up" class="bg-transparent">
 
                 <q-tab-panel name="i">
 
                     <div class="column text-bold text-h4 text-white q-gutter-y-md">
 
                         <span>Trabalho: {{vNome}}</span>
-                        <span>Materia: {{vMateria.nome}}</span>
+                        <span>Turma: {{vTurma.nome}} - {{vTurma.materia.nome}}</span>
                         <span>Data: {{vStart}} a {{vFinish}}</span>
                         <span v-if="vMaxTentativas > 0">
                             
@@ -44,6 +44,7 @@
 
                         </span>
                         <span>Tempo maximo para resolver: {{vMaxTempo}}</span>
+                        <span>Anexos: <a v-for="f in vTrabalho.arquivo" :key="uid()" :href="f.link">{{f.link}}</a> </span>
                         <span>Descrição:</span>
                         <div class="descricao br-20">{{vDescricao}}</div>        
 
@@ -53,7 +54,7 @@
 
                 <q-tab-panel name="t">
 
-                    <ListTentativas :idNegocio="id" :respostas="respostas" />
+                    <ListTentativas :idNegocio="vTrabalho.idTrabalho" :respostas="vTrabalho.resposta" />
 
                 </q-tab-panel>
 
@@ -66,17 +67,8 @@
                     <div class="column text-bold text-h4 q-gutter-y-md">
 
                         <q-input outlined v-model="modelNome" label-color="white" input-class="text-white" label="Trabalho" placeholder="Digite o nome do trabalho" required/>
-                        <q-select outlined input-class="text-white" label-color="white" v-model="modelMateria" :options="optionsMateria" label="Materia" required>
-
-                            <template v-slot:no-option>
-                                <q-item>
-                                    <q-item-section class="text-grey">
-                                    No results
-                                    </q-item-section>
-                                </q-item>
-                            </template>
-
-                        </q-select>
+                        <q-select outlined input-class="text-white" label-color="white" v-model="modelTurma" placeholder="Digite a turma do trabalho" :options="optionsTurmas" label="Turma" use-chips use-input />
+                        <q-select outlined input-class="text-white" label-color="white" v-model="modelProfessores" placeholder="Digite o(s) nome(s) dos professor(es)" :options="optionsProfessores" label="Professores" use-chips use-input multiple />
                         <div class="fit row wrap justify-evenly">
 
                             <q-input ref="inpSDate" outlined label-color="white" input-class="text-white" v-model="sDate" :rules="[patthenTime]" label="Data inicio" required>
@@ -134,6 +126,13 @@
                         </div>
                         <q-select outlined input-class="text-white" label-color="white" v-model="modelMaxTempo" :options="optionsMaxTempo" label="Limite de tempo" required />
                         <q-input ref="inpTentativas" outlined v-model="vMaxTentativas" label-color="white" input-class="text-white" label="Maximo de tenativas (0 = sem limite)" type="number" :rules="[val => val >= 0 && val <= 99]" required />
+                        <q-file v-model="modelFiles" label-color="white" label="Adicione o(s) anexo(s)" outlined counter use-chips append multiple>
+
+                            <template v-slot:prepend>
+                                <q-icon color="white" name="fas fa-upload" />
+                            </template>
+
+                        </q-file>
                         <q-input outlined v-model="modelDescricao" label-color="white" input-class="text-white" label="Descrição" type="textarea" placeholder="Digite a descrição do trabalho" required/>
 
                     </div>
@@ -149,7 +148,7 @@
 
                     <q-list>
 
-                        <ItemQuestao v-for="(q, i) in questoes" :key="q.idQuestao" :question="q.pergunta" :type="q.tipo" :alternativas="q.questaoAlternativa" :correta="q.questaoCorreta" :id="q.idQuestao" :number="i+1"/>
+                        <ItemQuestao v-for="(q, i) in vTrabalho.questao" :key="q.idQuestao" :question="q.pergunta" :type="q.tipo" :alternativas="q.questaoAlternativa" :correta="q.questaoCorreta" :id="q.idQuestao" :number="i+1"/>
 
                     </q-list>
 
@@ -179,6 +178,8 @@ import moment from 'moment';
 
 import ItemQuestao from 'components/ItemQuestao.vue'
 import ListTentativas from 'components/ListTentativas.vue'
+import { DB } from 'src/middlewares/DBContector';
+import { uid } from 'quasar';
 
 @Component({
 
@@ -187,30 +188,28 @@ import ListTentativas from 'components/ListTentativas.vue'
 })
 export default class TrabalhoDialog extends Vue {
 
-    @Prop() id!: string
-    @Prop() nome!: string
-    @Prop() materia!: DBTypes.Materia
-    @Prop() start!: Date
-    @Prop() finish!: Date
-    @Prop() descricao!: string
-    @Prop() maxTentativas!: number
-    @Prop() maxTempo!: number
-    @Prop() questoes!: DBTypes.Questao[]
-    @Prop() respostas!: DBTypes.Resposta[]
+    @Prop() trabalho!: DBTypes.Trabalho
     @Prop() editProp!: boolean
+    @Prop() add!: boolean
 
-    vNome = this.nome
+    uid = uid
+
+    db = new DB(this.$axios, this.$store)
+
+    vTrabalho = this.trabalho
+
+    vNome = this.trabalho.nome
     modelNome = this.vNome
 
-    vStart = moment(this.start).format("DD/MM/YYYY hh:mm A")
+    vStart = moment(this.trabalho.inicio).format("DD/MM/YYYY hh:mm A")
     sDate = this.vStart
 
-    vFinish = moment(this.finish).format("DD/MM/YYYY hh:mm A")
+    vFinish = moment(this.trabalho.prazo).format("DD/MM/YYYY hh:mm A")
     fDate = this.vFinish
 
-    vMaxTentativas = this.maxTentativas
+    vMaxTentativas = this.trabalho.tentativas
 
-    vMaxTempo = (this.maxTempo > 0) ? `${moment.duration(this.maxTempo, "seconds").hours()} h ${moment.duration(this.maxTempo, "seconds").minutes()} m` : 'Sem tempo maximo'
+    vMaxTempo = (this.trabalho.tempo > 0) ? `${moment.duration(this.trabalho.tempo, "seconds").hours()} h ${moment.duration(this.trabalho.tempo, "seconds").minutes()} m` : 'Sem tempo maximo'
     optionsMaxTempo: qSelectOptions[] = [
         
         { label: "Sem Limite", value: 0},
@@ -221,18 +220,29 @@ export default class TrabalhoDialog extends Vue {
         { label: "3h", value: 60*60*3},
         
     ]
-    modelMaxTempo = this.optionsMaxTempo.filter(v => { return v.value == this.maxTempo })[0]
+    modelMaxTempo = this.optionsMaxTempo.filter(v => { return v.value == this.trabalho.tempo })[0]
 
-    vDescricao = this.descricao
+    vDescricao = this.trabalho.descricao
     modelDescricao = this.vDescricao
 
-    vMateria = this.materia
+    vMateria = this.trabalho.materia
     modelMateria: qSelectOptions = { label: this.vMateria.nome, value: this.vMateria.idMateria }
     optionsMateria: qSelectOptions[] = []
 
+    vTurma = (this.$store.state.turmas as DBTypes.Turma[]).find(t => t.idTurma == this.trabalho.idTurma)
+    modelTurma: qSelectOptions | null = (this.vTurma != undefined) ? { label: `${this.vTurma?.nome} - ${this.vTurma?.materia.nome}`, value: this.vTurma as DBTypes.Turma} : null
+    optionsTurmas: qSelectOptions[] = []
+
+    vProfessores = this.trabalho.professor
+    modelProfessores: qSelectOptions[] = []
+    optionsProfessores: qSelectOptions[] = []
+
+    modelFiles = this.trabalho.arquivo 
+
     tab = "i"
 
-    vEdit = (this.editProp != true) ? false : true
+    vEdit = this.editProp
+    vAdd = this.add
 
     optionsFDate(date: any) { 
     
@@ -244,15 +254,14 @@ export default class TrabalhoDialog extends Vue {
         
     }
 
-    created() { 
+    async created() { 
 
-        for (let mat in this.$store.state.materiasProfessor) {
+        await this.db.professor.get()
 
-            const materia: DBTypes.Materia = this.$store.state.materiasProfessor[mat]
+        this.vProfessores.forEach(p => { this.modelProfessores.push({ label: p.nome, value: p }) })
+        this.$store.state.professores.forEach((p: DBTypes.Professor) => { this.optionsProfessores.push({ label: p.nome, value: p }) })
 
-            this.optionsMateria.push({label: materia.nome, value: materia.idMateria})
-
-        }
+        this.$store.state.turmas.forEach((t: DBTypes.Turma) => { this.optionsTurmas.push({ label: t.nome, value: t }) })
 
     }
 
@@ -262,7 +271,7 @@ export default class TrabalhoDialog extends Vue {
 
     }
 
-    save() {
+    async save() {
 
         if (this.tab == "i") {
 
@@ -276,8 +285,6 @@ export default class TrabalhoDialog extends Vue {
 
             if (inpSDate.hasError || inpFDate.hasError || inpTentativas.hasError ) { return }           
 
-            // SALVA NO BD
-
             this.vStart = this.sDate
             this.vFinish = this.fDate
 
@@ -285,16 +292,70 @@ export default class TrabalhoDialog extends Vue {
 
             this.vMaxTempo = (this.modelMaxTempo.value > 0) ? `${moment.duration(this.modelMaxTempo.value, "seconds").hours()} h ${moment.duration(this.modelMaxTempo.value, "seconds").minutes()} m` : 'Sem tempo maximo'
 
-            console.log("salvou Informaçoes")
+            this.vTurma = this.modelTurma?.value as DBTypes.Turma
+
+            this.vProfessores = this.modelProfessores.map(p => p.value as DBTypes.Professor)
+
+            if (this.vAdd) {
+
+                const trabalho: DBTypes.Trabalho = {
+
+                    idTrabalho: -1,
+                    nome: this.vNome,
+                    prazo: moment(this.vFinish, "DD-MM-YYYY").toDate(),
+                    descricao: this.vDescricao,
+                    inicio: moment(this.vStart, "DD-MM-YYYY").toDate(),
+                    tempo: (parseInt(this.vMaxTempo) != NaN) ? parseInt(this.vMaxTempo) : 0,
+                    tentativas: this.vMaxTentativas,
+                    tipo: 0,
+                    professor: this.vProfessores,
+                    administrador: [],
+                    arquivo: [],
+                    questao: this.trabalho.questao,
+                    materia: this.vTurma.materia,
+                    resposta: [],
+                    idTurma: this.vTurma.idTurma
+
+                }
+
+                this.vTrabalho = await this.db.trabalho.create(trabalho)
+
+            }
+            else {
+
+                const trabalho: DBTypes.Trabalho = {
+
+                    idTrabalho: this.trabalho.idTrabalho,
+                    nome: this.vNome,
+                    prazo: moment(this.vFinish, "DD-MM-YYYY").toDate(),
+                    descricao: this.vDescricao,
+                    inicio: moment(this.vStart, "DD-MM-YYYY").toDate(),
+                    tempo: (parseInt(this.vMaxTempo) != NaN) ? parseInt(this.vMaxTempo) : 0,
+                    tentativas: this.vMaxTentativas,
+                    tipo: 0,
+                    professor: this.vProfessores,
+                    administrador: [],
+                    arquivo: [],
+                    questao: this.trabalho.questao,
+                    materia: this.vTurma.materia,
+                    resposta: [],
+                    idTurma: this.vTurma.idTurma
+
+                }
+
+                this.db.trabalho.update(trabalho)
+
+            }
 
         }
         else {
 
-            
+            // SALVA QUESTOES DB
 
         }
 
         this.vEdit = false
+        this.vAdd = false
 
     }
 
@@ -304,7 +365,7 @@ export default class TrabalhoDialog extends Vue {
 
             title: "Excluir?",
             icon: "question",
-            html: `tem certeza que deseja excluir o trabalho '${this.nome}'?<br>(Essa ação não pode ser desfeita)`,
+            html: `tem certeza que deseja excluir o trabalho '${this.vTrabalho.nome}'?<br>(Essa ação não pode ser desfeita)`,
             target: '.contentTrabalho',
             backdrop: false,
             showConfirmButton: true,
@@ -321,13 +382,11 @@ export default class TrabalhoDialog extends Vue {
             }
 
         })
-        .then(r => {
+        .then(async r => {
 
             if (r.isConfirmed) {
 
-                // EXCLUI NO DB
-
-                console.log("Exclui Trabalho")
+                await this.db.trabalho.delete(this.vTrabalho.idTrabalho)
 
                 this.$router.go(0)
 
@@ -344,7 +403,7 @@ export default class TrabalhoDialog extends Vue {
 
     addQuestão() {
 
-        this.questoes.push({idQuestao: -(Math.floor(Math.random() * 9999) + 1), pergunta: "", tipo: 0, questaoCorreta: { idQuestaoCorreta: -1, questaoAlternativa: [] }, questaoAlternativa: []})
+        this.vTrabalho.questao.push({idQuestao: -(Math.floor(Math.random() * 9999) + 1), pergunta: "", tipo: 0, questaoCorreta: { idQuestaoCorreta: -1, questaoAlternativa: [] }, questaoAlternativa: []})
 
     }
 

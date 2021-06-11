@@ -10,7 +10,7 @@
 
         </div>
 
-        <q-dialog v-model="open" full-width> <AtividadeDialog :nome="event.nome" :materia="event.materia" :dia="event.inicio" :descricao="event.descricao"/> </q-dialog>
+        <q-dialog v-model="open" full-width> <AtividadeDialog :atividade="event" :add="false" :editProp="false"/> </q-dialog>
 
     </div>
 

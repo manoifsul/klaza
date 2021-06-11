@@ -10,7 +10,7 @@
 
         </div>
 
-        <q-dialog v-model="open" full-width> <TrabalhoDialog :nome="event.nome" :materia="event.materia" :finish="event.prazo" :id="event.idTrabalho" :maxTempo="event.tempo" :descricao="event.descricao" :maxTentativas="event.tentativas" :start="event.inicio" :questoes="event.questao" :respostas="event.resposta"/> </q-dialog>
+        <q-dialog v-model="open" full-width> <TrabalhoDialog :trabalho="event" :editProp="false" :add="false" /> </q-dialog>
 
     </div>
 

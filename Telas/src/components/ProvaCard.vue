@@ -10,7 +10,7 @@
 
         </div>
 
-        <q-dialog v-model="open" full-width> <ProvaDialog :nome="event.nome" :materia="event.materia" :finish="event.prazo" :id="event.idProva" :maxTempo="event.tempo" :descricao="event.descricao" :maxTentativas="event.tentativas" :start="event.inicio" :questoes="event.questao" :respostas="event.resposta" /> </q-dialog>
+        <q-dialog v-model="open" full-width> <ProvaDialog :prova="event" :editProp="false" :add="false" /> </q-dialog>
 
     </div>
 

@@ -184,7 +184,6 @@ export interface Atividade {
     arquivo: Arquivo[]
     administrador: Administrador[]
     professor: Professor[]
-    resposta: Resposta[]
     materia: Materia
     idTurma: number
 

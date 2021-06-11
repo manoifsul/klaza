@@ -30,47 +30,17 @@
 
                 </q-item>
 
-                <q-item to="/atividades" class="text-strike" active-class="bg-white text-primary text-bold" clickable>
+                <q-item v-if="$store.state.typeUser != 'aluno'" to="/admin" active-class="bg-white text-primary text-bold" clickable>
 
                     <q-item-section avatar>
-                        <q-icon name="fas fa-file-alt"/>
+                        <q-icon name="fas fa-user-shield"/>
                     </q-item-section>
 
-                    <q-item-section>Atividades</q-item-section>
+                    <q-item-section>Administração</q-item-section>
 
                 </q-item>
 
-                <q-item to="/trabalhos" class="text-strike" active-class="bg-white text-primary text-bold" clickable>
-
-                    <q-item-section avatar>
-                        <q-icon name="fas fa-newspaper"/>
-                    </q-item-section>
-
-                    <q-item-section>Trabalhos</q-item-section>
-
-                </q-item>
-
-                <q-item to="/provas" class="text-strike" active-class="bg-white text-primary text-bold" clickable>
-
-                    <q-item-section avatar>
-                        <q-icon name="fas fa-scroll"/>
-                    </q-item-section>
-
-                    <q-item-section>Provas</q-item-section>
-
-                </q-item>
-
-                <q-item to="/aulas" class="text-strike" active-class="bg-white text-primary text-bold" clickable>
-
-                    <q-item-section avatar>
-                        <q-icon name="fas fa-book-open"/>
-                    </q-item-section>
-
-                    <q-item-section>Aulas</q-item-section>
-
-                </q-item>
-
-                <q-item to="/notas" active-class="bg-white text-primary text-bold" clickable>
+                <q-item v-if="$store.state.typeUser == 'aluno'" to="/notas" active-class="bg-white text-primary text-bold" clickable>
 
                     <q-item-section avatar>
                         <q-icon name="fas fa-clipboard-list"/>
