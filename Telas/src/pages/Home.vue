@@ -130,7 +130,7 @@ export default class Home extends Vue {
     trabalhoNull: Trabalho = { idTrabalho: -1, nome: "", prazo: new Date(), descricao: "", inicio: new Date(), tempo: 0, tentativas: 0, tipo: 0, professor: [], administrador: [], arquivo: [], questao: [], materia: { idMateria: -1, nome: "", idProfessor: [] }, resposta: [], idTurma: -1 }
     provaNull: Prova = { idProva: -1, nome: "", prazo: new Date(), descricao: "", inicio: new Date(), tempo: 0, tentativas: 0, professor: [], administrador: [], arquivo: [], questao: [], materia: { idMateria: -1, nome: "", idProfessor: [] }, resposta: [], idTurma: -1 }
 
-    created() {
+    async created() {
 
         const db = new DB(this.$axios, this.$store)
 

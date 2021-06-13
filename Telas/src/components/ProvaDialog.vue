@@ -180,6 +180,7 @@ import ItemQuestao from 'components/ItemQuestao.vue'
 import ListTentativas from 'components/ListTentativas.vue'
 import { DB } from 'src/middlewares/DBContector';
 import { uid } from 'quasar';
+import { Discord } from 'src/middlewares/DiscordConector';
 
 @Component({
 
@@ -312,6 +313,8 @@ export default class ProvaDialog extends Vue {
 
                 this.vProva = await this.db.prova.create(prova)
 
+                new Discord((this.modelTurma?.value as DBTypes.Turma).discord.provasTrabalhos, this.$store).prova.add(this.vProva)
+
             }
             else {
 
@@ -335,6 +338,8 @@ export default class ProvaDialog extends Vue {
                 }
 
                 this.db.prova.update(prova)
+
+                new Discord((this.modelTurma?.value as DBTypes.Turma).discord.provasTrabalhos, this.$store).prova.update(this.vProva)
 
             }
 
@@ -373,11 +378,13 @@ export default class ProvaDialog extends Vue {
             }
 
         })
-        .then(r => {
+        .then(async r => {
 
             if (r.isConfirmed) {
 
-                // EXCLUI NO DB
+                await this.db.prova.delete(this.vProva.idProva)
+
+                new Discord((this.modelTurma?.value as DBTypes.Turma).discord.provasTrabalhos, this.$store).prova.delete(this.vProva)
 
                 console.log("Exclui Trabalho")
 

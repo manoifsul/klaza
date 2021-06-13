@@ -84,6 +84,7 @@ import moment from 'moment';
 import { Atividade, Materia, Professor, Turma } from 'src/@types/DB';
 import { DB } from 'src/middlewares/DBContector';
 import { uid } from 'quasar';
+import { Discord } from 'src/middlewares/DiscordConector';
 
 @Component({
 
@@ -167,6 +168,8 @@ export default class AtividadeDialog extends Vue {
 
             this.db.atividade.create(atividade)
 
+            new Discord((this.modelTurma?.value as Turma).discord.provasTrabalhos, this.$store).atividade.add(atividade)
+
         }
         else {
 
@@ -187,6 +190,8 @@ export default class AtividadeDialog extends Vue {
             this.atividade.idAtividade = atividade.idAtividade
 
             this.db.atividade.update(atividade)
+
+            new Discord((this.modelTurma?.value as Turma).discord.provasTrabalhos, this.$store).atividade.update(atividade)
 
         }
 
@@ -223,6 +228,8 @@ export default class AtividadeDialog extends Vue {
             if (r.isConfirmed) {
 
                 this.db.atividade.delete(this.atividade.idAtividade)
+
+                new Discord((this.modelTurma?.value as Turma).discord.provasTrabalhos, this.$store).atividade.delete(this.vAtividade)
 
                 this.$router.go(0)
 

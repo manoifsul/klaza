@@ -85,6 +85,7 @@ import moment from 'moment';
 import { Aula, Materia, Turma } from 'src/@types/DB';
 import { DB } from 'src/middlewares/DBContector';
 import { uid } from 'quasar';
+import { Discord } from 'src/middlewares/DiscordConector';
 
 @Component({
 
@@ -139,7 +140,7 @@ export default class AulaDialog extends Vue {
 
     }
 
-    save() {
+    async save() {
 
         this.vDia = this.date
         this.vHora = moment().set({ hour: parseInt(this.time.split(":")[0]), minute: parseInt(this.time.split(":")[1]) }).format("LT")
@@ -162,8 +163,10 @@ export default class AulaDialog extends Vue {
                 idTurma: this.vTurma.idTurma,
 
             }
-            
-            this.db.aula.create(aula)
+
+            this.aula = await this.db.aula.create(aula)
+
+            new Discord((this.modelTurma?.value as Turma).discord.provasTrabalhos, this.$store).aula.add(aula)
 
         }
         else {
@@ -184,6 +187,8 @@ export default class AulaDialog extends Vue {
             this.aula.idAula = aula.idAula
 
             this.db.aula.update(aula)
+
+            new Discord((this.modelTurma?.value as Turma).discord.provasTrabalhos, this.$store).aula.update(aula)
 
         }
 
@@ -219,7 +224,9 @@ export default class AulaDialog extends Vue {
 
             if (r.isConfirmed) {
 
-                // EXCLUI NO DB
+                this.db.aula.delete(this.vAula.idAula)
+
+                new Discord((this.modelTurma?.value as Turma).discord.provasTrabalhos, this.$store).aula.delete(this.vAula)
 
                 console.log("Exclui Aula")
 
