@@ -52,7 +52,7 @@ export default store(function ({ Vue }) {
             materias: [],
             materiasProfessor: [],
 
-            turmas: []
+            turmas: [],
 
         }
 

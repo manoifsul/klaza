@@ -1959,20 +1959,24 @@ export class DB {
 
         },
 
-        create: async (aula: Aula) => {
+        create: (aula: Aula): Promise<Aula> => {
 
-            await this.axios({
+            return new Promise(async resolve => {
 
-                url: `${this.baseUrl}/aula`,
-                method: "POST",
-                data: aula
+                await this.axios({
 
-            }).then(r => {
-                
-                const i = this.store.state.aulas.findIndex(a => a.idAula == aula.idAula)
+                    url: `${this.baseUrl}/aula`,
+                    method: "POST",
+                    data: aula
 
-                if (i != -1) { this.store.state.aulas[i] = aula }
-                else { this.store.state.aulas.push(aula) }
+                }).then(r => {
+                    
+                    const i = this.store.state.aulas.findIndex(a => a.idAula == aula.idAula)
+
+                    if (i != -1) { this.store.state.aulas[i] = r.data }
+                    else { this.store.state.aulas.push(r.data) }
+
+                })
 
             })
 
@@ -2758,57 +2762,68 @@ export class DB {
 
     }
 
-    login = (tipo: "aluno" | "professor" | "administrador", login: string, senha: string) => {
+    login = (tipo: "aluno" | "professor" | "administrador", login: string, senha: string): Promise<boolean> => {
 
-        this.axios({
+        return new Promise(resolve => {
 
-            url: `${this.baseUrl}/login`,
-            method: 'POST',
-            data: { login: login, senha: senha, tipo: tipo }
+            this.axios({
 
-        }).then(r => {
+                url: `${this.baseUrl}/login/${tipo}`,
+                method: 'POST',
+                data: { login: login, senha: senha }
 
-            if (tipo == "aluno") {
+            }).then(r => {
 
-                const aluno: Aluno = testAluno[0] //r.data
+                if (tipo == "aluno") {
 
-                const i = this.store.state.alunos.findIndex(a => a.idAluno == aluno.idAluno)
+                    const aluno: Aluno = r.data
 
-                this.store.state.idUser = aluno.idAluno
-                this.store.state.typeUser = tipo
+                    const i = this.store.state.alunos.findIndex(a => a.idAluno == aluno.idAluno)
 
-                if (i != -1) { this.store.state.alunos[i] = aluno }
-                else { this.store.state.alunos.push(aluno) }
+                    this.store.state.idUser = aluno.idAluno
+                    this.store.state.typeUser = tipo
 
-            }
+                    if (i != -1) { this.store.state.alunos[i] = aluno }
+                    else { this.store.state.alunos.push(aluno) }
 
-            if (tipo == "professor") {
+                    resolve(true)
 
-                const professor: Professor = testProfessor[0] //r.data
+                }
 
-                const i = this.store.state.professores.findIndex(p => p.idProfessor == professor.idProfessor)
+                if (tipo == "professor") {
 
-                this.store.state.idUser = professor.idProfessor
-                this.store.state.typeUser = tipo
+                    const professor: Professor = r.data
 
-                if (i != -1) { this.store.state.professores[i] = professor }
-                else { this.store.state.professores.push(professor) }
+                    const i = this.store.state.professores.findIndex(p => p.idProfessor == professor.idProfessor)
 
-            }
+                    this.store.state.idUser = professor.idProfessor
+                    this.store.state.typeUser = tipo
 
-            if (tipo == "administrador") {
+                    if (i != -1) { this.store.state.professores[i] = professor }
+                    else { this.store.state.professores.push(professor) }
 
-                const administrador: Administrador = testAdministrador[0] //r.data
+                    resolve(true)
 
-                const i = this.store.state.administradores.findIndex(a => a.idAdministrador == administrador.idAdministrador)
+                }
 
-                this.store.state.idUser = administrador.idAdministrador
-                this.store.state.typeUser = tipo
+                if (tipo == "administrador") {
 
-                if (i != -1) { this.store.state.administradores[i] = administrador }
-                else { this.store.state.administradores.push(administrador) }
+                    const administrador: Administrador = r.data
 
-            }
+                    const i = this.store.state.administradores.findIndex(a => a.idAdministrador == administrador.idAdministrador)
+
+                    this.store.state.idUser = administrador.idAdministrador
+                    this.store.state.typeUser = tipo
+
+                    if (i != -1) { this.store.state.administradores[i] = administrador }
+                    else { this.store.state.administradores.push(administrador) }
+
+                    resolve(true)
+
+                }
+
+            })
+            .catch(e => { resolve(false) })
 
         })
 

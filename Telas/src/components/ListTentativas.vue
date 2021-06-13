@@ -20,7 +20,7 @@
 
                 <q-item v-if="sortTentativas[i][x] != undefined && sortTentativas[i][x][0] != undefined">
 
-                    <a :href="`/tentativas/${negocio}/${idNegocio}/${sortTentativas[i][x][0].idAluno}/${sortTentativas[i][x][0].nroTentativa}`">Tentativa: {{sortTentativas[i][x][0].nroTentativa}}</a>
+                    <span class="text-white cursor-pointer" style="text-decoration: underline;" @click="goToTentativa(`/tentativas/${negocio}/${idNegocio}/${sortTentativas[i][x][0].idAluno}/${sortTentativas[i][x][0].nroTentativa}`)">Tentativa: {{sortTentativas[i][x][0].nroTentativa}}</span>
                     
                 </q-item>
 
@@ -80,6 +80,12 @@ export default class ListTentativas extends Vue {
             })
 
         }
+
+    }
+
+    goToTentativa(link: string) {
+
+        this.$router.push(link)
 
     }
 

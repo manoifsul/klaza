@@ -54,7 +54,7 @@
 
                 <q-tab-panel name="t">
 
-                    <ListTentativas :idNegocio="vTrabalho.idTrabalho" :respostas="vTrabalho.resposta" />
+                    <ListTentativas :idNegocio="vTrabalho.idTrabalho" :respostas="vTrabalho.resposta" negocio="trabalho" />
 
                 </q-tab-panel>
 
@@ -180,6 +180,7 @@ import ItemQuestao from 'components/ItemQuestao.vue'
 import ListTentativas from 'components/ListTentativas.vue'
 import { DB } from 'src/middlewares/DBContector';
 import { uid } from 'quasar';
+import { Discord } from 'src/middlewares/DiscordConector';
 
 @Component({
 
@@ -320,6 +321,8 @@ export default class TrabalhoDialog extends Vue {
 
                 this.vTrabalho = await this.db.trabalho.create(trabalho)
 
+                new Discord((this.modelTurma?.value as DBTypes.Turma).discord.provasTrabalhos, this.$store).trabalho.add(this.vTrabalho)
+
             }
             else {
 
@@ -344,6 +347,8 @@ export default class TrabalhoDialog extends Vue {
                 }
 
                 this.db.trabalho.update(trabalho)
+
+                new Discord((this.modelTurma?.value as DBTypes.Turma).discord.provasTrabalhos, this.$store).trabalho.update(this.vTrabalho)
 
             }
 
@@ -387,6 +392,8 @@ export default class TrabalhoDialog extends Vue {
             if (r.isConfirmed) {
 
                 await this.db.trabalho.delete(this.vTrabalho.idTrabalho)
+
+                new Discord((this.modelTurma?.value as DBTypes.Turma).discord.provasTrabalhos, this.$store).trabalho.delete(this.vTrabalho)
 
                 this.$router.go(0)
 
