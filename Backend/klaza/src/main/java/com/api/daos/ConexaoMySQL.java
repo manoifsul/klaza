@@ -20,7 +20,7 @@ public class ConexaoMySQL {
 			Class.forName("com.mysql.cj.jdbc.Driver");
 			String url = "jdbc:mysql://localhost:3306/klaza";
 			String usuario = "root";
-			String senha = "root";
+			String senha = "";
 
 
 		    this.conexao = DriverManager.getConnection(url, usuario, senha);

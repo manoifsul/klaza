@@ -2,6 +2,7 @@ package com.api.daos;
 
 
 import com.api.entities.Materia;
+import com.api.entities.MateriaProfessor;
 import org.springframework.stereotype.Repository;
 import org.springframework.stereotype.Service;
 
@@ -77,17 +78,45 @@ public class MateriaDao {
             PreparedStatement st = conexao.getConexao().prepareStatement(sql);
             st.setLong(1, idMateria);
             ResultSet rs = st.executeQuery();
+
             if(rs.next()){
                 materia = new Materia();
                 materia.setIdMateria(rs.getLong("id_materia"));
                 materia.setNome(rs.getString("nome"));
+                materia.setIdProfessor(new MateriaProfessorDao().buscarProfessorPorIdMateria(materia.getIdMateria()).stream().map(p -> p.getIdProfessor()).toList());
             }
+
         } catch (SQLException e) {
             e.printStackTrace();
         } finally {
             conexao.closeConnection();
         }
         return materia;
+    }
+
+    public Materia buscarPorIdSemProfessor(long idMateria) {
+
+        conexao = new ConexaoMySQL();
+        Materia materia = null;
+        String sql = "SELECT * FROM materia WHERE id_materia=?;";
+        try {
+            PreparedStatement st = conexao.getConexao().prepareStatement(sql);
+            st.setLong(1, idMateria);
+            ResultSet rs = st.executeQuery();
+
+            if(rs.next()){
+                materia = new Materia();
+                materia.setIdMateria(rs.getLong("id_materia"));
+                materia.setNome(rs.getString("nome"));
+            }
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } finally {
+            conexao.closeConnection();
+        }
+        return materia;
+
     }
 
     public List<Materia> buscar() {
@@ -101,10 +130,12 @@ public class MateriaDao {
                 Materia materia = new Materia();
                 materia.setIdMateria(rs.getLong("id_materia"));
                 materia.setNome(rs.getString("nome"));
+                materia.setIdProfessor(new MateriaProfessorDao().buscarPorIdMateria(materia.getIdMateria()).stream().map(materiaProfessor -> materiaProfessor.getProfessor().getIdProfessor()).toList());
                 listMateria.add(materia);
             }
         } catch(SQLException e) {
         }
         return listMateria;
     }
+
 }

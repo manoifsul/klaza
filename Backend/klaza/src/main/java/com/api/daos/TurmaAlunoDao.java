@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
 @Service
@@ -18,24 +19,30 @@ public class TurmaAlunoDao {
     private ConexaoMySQL conexao;
 
     public TurmaAluno adicionar(TurmaAluno turmaAluno) {
-        conexao = new ConexaoMySQL();
 
-        String sql = "INSERT INTO turma_aluno VALUES(null, ?, ?);";
-        try{
-            PreparedStatement st = conexao.getConexao().prepareStatement(sql);
-            st.setLong(1, turmaAluno.getTurma().getIdTurma());
-            st.setLong(2, turmaAluno.getAluno().getIdAluno());
-            st.executeUpdate();
+        if (this.buscarTurmaPorIdAluno(turmaAluno.getAluno().getIdAluno()).isEmpty()) {
 
-            ResultSet rs = st.getGeneratedKeys();
-            if(rs.next()) {
-                turmaAluno = this.buscarPorId(rs.getLong(1));
+            conexao = new ConexaoMySQL();
+
+            String sql = "INSERT INTO turma_aluno VALUES(null, ?, ?);";
+            try {
+                PreparedStatement st = conexao.getConexao().prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
+                st.setLong(1, turmaAluno.getTurma().getIdTurma());
+                st.setLong(2, turmaAluno.getAluno().getIdAluno());
+                st.executeUpdate();
+
+                ResultSet rs = st.getGeneratedKeys();
+                if (rs.next()) {
+                    turmaAluno.setIdTurmaAluno(rs.getLong(1));
+                }
+            } catch (SQLException e) {
+                e.printStackTrace();
+            } finally {
+                this.conexao.closeConnection();
             }
-        } catch (SQLException e) {
-            e.printStackTrace();
-        } finally {
-            this.conexao.closeConnection();
+
         }
+
         return turmaAluno;
     }
 
@@ -115,5 +122,147 @@ public class TurmaAlunoDao {
         }
         return listTurmaAluno;
     }
+
+    public List<TurmaAluno> buscarPorIdAluno(long idAluno) {
+        conexao = new ConexaoMySQL();
+        List<TurmaAluno> listTurmaAluno = new ArrayList();
+        String sql = "SELECT * FROM turma_aluno WHERE id_aluno=?;";
+        try {
+            PreparedStatement st = conexao.getConexao().prepareStatement(sql);
+            st.setLong(1, idAluno);
+            ResultSet rs = st.executeQuery();
+            while(rs.next()) {
+                TurmaAluno turmaAluno = new TurmaAluno();
+                turmaAluno.setIdTurmaAluno(rs.getLong("id_turma_aluno"));
+                Turma turma = new TurmaDao().buscarPorId(rs.getLong("id_turma"));
+                turmaAluno.setTurma(turma);
+                Aluno aluno = new AlunoDao().buscarPorId(rs.getLong("id_aluno"));
+                turmaAluno.setAluno(aluno);
+                listTurmaAluno.add(turmaAluno);
+            }
+        } catch(SQLException e) {
+        }
+        return listTurmaAluno;
+    }
+
+    public List<TurmaAluno> buscarPorIdTurma(long idTurma) {
+        conexao = new ConexaoMySQL();
+        List<TurmaAluno> listTurmaAluno = new ArrayList();
+        String sql = "SELECT * FROM turma_aluno WHERE id_turma=?;";
+        try {
+            PreparedStatement st = conexao.getConexao().prepareStatement(sql);
+            st.setLong(1, idTurma);
+            ResultSet rs = st.executeQuery();
+            while(rs.next()) {
+                TurmaAluno turmaAluno = new TurmaAluno();
+                turmaAluno.setIdTurmaAluno(rs.getLong("id_turma_aluno"));
+                Turma turma = new TurmaDao().buscarPorId(rs.getLong("id_turma"));
+                turmaAluno.setTurma(turma);
+                Aluno aluno = new AlunoDao().buscarPorId(rs.getLong("id_aluno"));
+                turmaAluno.setAluno(aluno);
+                listTurmaAluno.add(turmaAluno);
+            }
+        } catch(SQLException e) {
+            e.printStackTrace();
+        }
+        finally {
+            conexao.closeConnection();
+        }
+
+        return listTurmaAluno;
+    }
+
+    public List<Aluno> buscarAlunoPorIdTurma(long idTurma) {
+
+        conexao = new ConexaoMySQL();
+        List<Aluno> listAluno = new ArrayList();
+        String sql = "SELECT * FROM turma_aluno WHERE id_turma=?;";
+        try {
+            PreparedStatement st = conexao.getConexao().prepareStatement(sql);
+            st.setLong(1, idTurma);
+            ResultSet rs = st.executeQuery();
+
+            while(rs.next()) {
+
+                listAluno.add(new AlunoDao().buscarPorId(rs.getLong("id_aluno")));
+
+            }
+
+        } catch(SQLException e) {
+        }
+
+        return listAluno;
+
+    }
+
+    public List<Aluno> buscarAlunoPorIdTurmaSemTurma(long idTurma) {
+
+        conexao = new ConexaoMySQL();
+        List<Aluno> listAluno = new ArrayList();
+        String sql = "SELECT * FROM turma_aluno WHERE id_turma=?;";
+        try {
+            PreparedStatement st = conexao.getConexao().prepareStatement(sql);
+            st.setLong(1, idTurma);
+            ResultSet rs = st.executeQuery();
+
+            while(rs.next()) {
+
+                listAluno.add(new AlunoDao().buscarPorIdSemTurma(rs.getLong("id_aluno")));
+
+            }
+
+        } catch(SQLException e) {
+        }
+
+        return listAluno;
+
+    }
+
+    public List<Turma> buscarTurmaPorIdAluno(long idAluno) {
+
+        conexao = new ConexaoMySQL();
+        List<Turma> listTurma = new ArrayList();
+        String sql = "SELECT * FROM turma_aluno WHERE id_aluno=?;";
+        try {
+            PreparedStatement st = conexao.getConexao().prepareStatement(sql);
+            st.setLong(1, idAluno);
+            ResultSet rs = st.executeQuery();
+
+            while(rs.next()) {
+
+                listTurma.add(new TurmaDao().buscarPorId(rs.getLong("id_aluno")));
+
+            }
+
+        } catch(SQLException e) {
+        }
+
+        return listTurma;
+
+    }
+
+    public List<Turma> buscarTurmaPorIdAlunoSemAluno(long idAluno) {
+
+        conexao = new ConexaoMySQL();
+        List<Turma> listTurma = new ArrayList();
+        String sql = "SELECT * FROM turma_aluno WHERE id_aluno=?;";
+        try {
+            PreparedStatement st = conexao.getConexao().prepareStatement(sql);
+            st.setLong(1, idAluno);
+            ResultSet rs = st.executeQuery();
+
+            while(rs.next()) {
+
+                listTurma.add(new TurmaDao().buscarPorIdSemAluno(rs.getLong("id_turma")));
+
+            }
+
+        } catch(SQLException e) {
+        }
+
+        return listTurma;
+
+    }
+
 }
 

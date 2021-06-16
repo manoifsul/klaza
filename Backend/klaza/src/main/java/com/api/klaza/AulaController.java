@@ -7,11 +7,13 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
 import java.util.List;
 
+@Controller
 public class AulaController {
 
 
@@ -33,6 +35,7 @@ public class AulaController {
             a.setDescricao(dto.getDescricao());
             a.setInicio(dto.getInicio());
             a.setLink(dto.getLink());
+            a.setIdturma(dto.getIdTurma());
 
             Aula aulaRetorno = aulaDao.adicionar(a);
 
@@ -42,9 +45,9 @@ public class AulaController {
     }
 
     // Buscar por todos os Usuarios
-    @GetMapping(path = "/aula/{id:[0-9]+}")
+    @GetMapping(path = "/aulas")
     public ResponseEntity<List<AulaDto>> getAll() {
-        log.info("GET /aula");
+        log.info("GET /aulas");
 
         List<Aula> allAulas = aulaDao.buscar();
         List<AulaDto> allAulasDto = new ArrayList<AulaDto>();
@@ -70,8 +73,8 @@ public class AulaController {
 
     // atualizar Usuario pelo id
     @PutMapping(path = "/aula/{id:[0-9]+}")
-    public ResponseEntity<Void> put(@PathVariable("id") long id, @RequestBody Aula a) {
-        log.info("PUT /aula/" + id);
+    public ResponseEntity<Void> put(@RequestBody Aula a) {
+        log.info("PUT /aula/" + a.getIdAula());
 
             aulaDao.editar(a);
             return new ResponseEntity<>(HttpStatus.OK);

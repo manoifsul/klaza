@@ -7,11 +7,13 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
 import java.util.List;
 
+@Controller
 public class AtividadeController {
 
     private static final Logger log = LoggerFactory.getLogger(AtividadeController.class);
@@ -25,22 +27,24 @@ public class AtividadeController {
     public ResponseEntity<Atividade> post(@RequestBody AtividadeDto dto) {
         log.info("POST /atividade");
 
-            Atividade a = new Atividade();
+        Atividade a = new Atividade();
 
-            a.setNome(dto.getNome());
-            a.setDescricao(dto.getDescricao());
-            a.setInicio(dto.getInicio());
-            a.setIdTurma(dto.getIdTurma());
+        a.setNome(dto.getNome());
+        a.setDescricao(dto.getDescricao());
+        a.setInicio(dto.getInicio());
+        a.setIdTurma(dto.getIdTurma());
+        a.setProfessor(dto.getProfessor());
+        a.setMateria(dto.getMateria());
 
-            Atividade atividadeRetorno = atividadeDao.adicionar(a);
+        Atividade atividadeRetorno = atividadeDao.adicionar(a);
 
-            log.info(atividadeRetorno.toString());
-            log.info("Atividade " + dto.getNome() + " criada");
-            return new ResponseEntity<>(atividadeRetorno, HttpStatus.OK);
+        log.info(atividadeRetorno.toString());
+        log.info("Atividade " + dto.getNome() + " criada");
+        return new ResponseEntity<>(atividadeRetorno, HttpStatus.OK);
     }
 
     // Buscar por todos os Usuarios
-    @GetMapping(path = "/atividade/{id:[0-9]+}")
+    @GetMapping(path = "/atividades")
     public ResponseEntity<List<AtividadeDto>> getAll() {
         log.info("GET /atividade");
 

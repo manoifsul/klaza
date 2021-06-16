@@ -7,11 +7,13 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
 import java.util.List;
 
+@Controller
 public class TrabalhoController {
 
     private static final Logger log = LoggerFactory.getLogger(TrabalhoController.class);
@@ -27,6 +29,8 @@ public class TrabalhoController {
 
             Trabalho t = new Trabalho();
 
+            log.info(dto.getNome());
+
             t.setNome(dto.getNome());
             t.setPrazo(dto.getPrazo());
             t.setDescricao(dto.getDescricao());
@@ -35,6 +39,7 @@ public class TrabalhoController {
             t.setTentativas(dto.getTentativas());
             t.setTipo(dto.getTipo());
             t.setIdTurma(dto.getIdTurma());
+            t.setProfessor(dto.getProfessor());
 
             Trabalho trabalhoRetorno = trabalhoDao.adicionar(t);
 
@@ -44,9 +49,9 @@ public class TrabalhoController {
     }
 
     // Buscar por todos os Usuarios
-    @GetMapping(path = "/trabalho/{id:[0-9]+}")
+    @GetMapping(path = "/trabalhos")
     public ResponseEntity<List<TrabalhoDto>> getAll() {
-        log.info("GET /trabalho");
+        log.info("GET /trabalhos");
 
         List<Trabalho> allTrabalhos = trabalhoDao.buscar();
         List<TrabalhoDto> allTrabalhosDto = new ArrayList<TrabalhoDto>();

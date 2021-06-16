@@ -122,7 +122,7 @@ export default class Login extends Vue {
 
         const ok = await this.db.login(this.tipoLogin, login.login, login.senha)
 
-        this.$store.state.typeUser = "aluno"
+        // this.$store.state.typeUser = "aluno"
 
         if (ok) { return this.$router.push('home') }
         else {
@@ -144,7 +144,7 @@ export default class Login extends Vue {
 
         }
 
-        return this.$router.push('home')
+        // return this.$router.push('home')
         
     }
 

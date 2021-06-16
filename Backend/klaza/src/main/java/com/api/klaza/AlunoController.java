@@ -23,36 +23,38 @@ public class AlunoController {
         this.alunoDao = alunoDao;
     }
 
-
     @PostMapping(path = "/aluno", consumes = "application/json", produces = "application/json")
     public ResponseEntity<Aluno> post(@RequestBody AlunoDto dto) {
         log.info("POST /aluno");
 
-        if (alunoDao.buscarPorMatricula(dto.getMatricula()).getMatricula() != "") {
-            log.warn("Aluno com matricula " + dto.getMatricula() + " ja existe");
-            return new ResponseEntity<>(HttpStatus.CONFLICT);
-        } else {
+        if (alunoDao.buscarPorMatricula(dto.getMatricula()) == null) {
+
             Aluno a = new Aluno();
 
             a.setNome(dto.getNome());
             a.setMatricula(dto.getMatricula());
             a.setSenha(dto.getSenha());
             a.setEmail(dto.getEmail());
+            a.setIdTurmas(dto.getIdTurmas());
 
             Aluno alunoRetorno = alunoDao.adicionar(a);
 
             log.info(alunoRetorno.toString());
             log.info("Aluno " + dto.getNome() + " criado");
             return new ResponseEntity<>(alunoRetorno, HttpStatus.OK);
+
+        } else {
+            log.warn("Aluno com matricula " + dto.getMatricula() + " ja existe");
+            return new ResponseEntity<>(HttpStatus.CONFLICT);
         }
     }
 
     // Buscar por todos os Usuarios
-    @GetMapping(path = "/aluno")
+    @GetMapping(path = "/alunos")
     public ResponseEntity<List<AlunoDto>> getAll() {
-        log.info("GET /aluno");
+        log.info("GET /alunos");
 
-        List<Aluno> allAlunos = alunoDao.buscar();
+        List<Aluno> allAlunos = alunoDao.buscarSemTurma();
         List<AlunoDto> allAlunosDto = new ArrayList<AlunoDto>();
 
         for (Aluno a : allAlunos) {
@@ -75,11 +77,11 @@ public class AlunoController {
     }
 
     // atualizar Usuario pelo id
-    @PutMapping("aluno/{id:[0-9]+")
+    @PutMapping(path = "aluno/{id:[0-9]+}")
     public ResponseEntity<Void> put(@PathVariable("id") long id, @  RequestBody Aluno a) {
         log.info("PUT /aluno/" + id);
 
-        if (alunoDao.buscarPorMatricula(a.getMatricula()) != null) {
+        if (alunoDao.buscarPorMatricula(a.getMatricula()) == null) {
             log.warn("Professor com matricula " + a.getMatricula() + " ja existe");
             return new ResponseEntity<>(HttpStatus.CONFLICT);
         } else {

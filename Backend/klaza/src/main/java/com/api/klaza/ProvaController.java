@@ -7,11 +7,13 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
 import java.util.List;
 
+@Controller
 public class ProvaController {
 
     private static final Logger log = LoggerFactory.getLogger(ProvaController.class);
@@ -34,6 +36,8 @@ public class ProvaController {
             p.setTempo(dto.getTempo());
             p.setTentativas(dto.getTentativas());
             p.setIdTurma(dto.getIdTurma());
+            p.setProfessor(dto.getProfessor());
+            p.setMateria(dto.getMateria());
 
             Prova provaRetorno = provaDao.adicionar(p);
 
@@ -43,9 +47,9 @@ public class ProvaController {
     }
 
     // Buscar por todos os Usuarios
-    @GetMapping(path = "/prova/{id:[0-9]+}")
+    @GetMapping(path = "/provas")
     public ResponseEntity<List<ProvaDto>> getAll() {
-        log.info("GET /prova");
+        log.info("GET /provas");
 
         List<Prova> allProvas = provaDao.buscar();
         List<ProvaDto> allProvasDto = new ArrayList<ProvaDto>();
@@ -75,6 +79,8 @@ public class ProvaController {
     @PutMapping(path = "/prova/{id:[0-9]+}")
     public ResponseEntity<Void> put(@PathVariable("id") long id, @RequestBody Prova p) {
         log.info("PUT /prova/" + id);
+
+
 
             provaDao.editar(p);
             return new ResponseEntity<>(HttpStatus.OK);

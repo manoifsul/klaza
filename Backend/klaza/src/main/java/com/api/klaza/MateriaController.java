@@ -7,11 +7,13 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
 import java.util.List;
 
+@Controller
 public class MateriaController {
 
     private static final Logger log = LoggerFactory.getLogger(MateriaController.class);
@@ -37,9 +39,9 @@ public class MateriaController {
     }
 
     // Buscar por todos os Usuarios
-    @GetMapping(path = "/materia/{id:[0-9]+}")
+    @GetMapping(path = "/materias")
     public ResponseEntity<List<MateriaDto>> getAll() {
-        log.info("GET /materia");
+        log.info("GET /materias");
 
         List<Materia> allMaterias = materiaDao.buscar();
         List<MateriaDto> allMateriasDto = new ArrayList<MateriaDto>();

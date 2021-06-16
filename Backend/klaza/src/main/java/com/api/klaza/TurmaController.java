@@ -8,11 +8,13 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
 import java.util.List;
 
+@Controller
 public class TurmaController {
 
     private static final Logger log = LoggerFactory.getLogger(TurmaController.class);
@@ -31,6 +33,8 @@ public class TurmaController {
             t.setNome(dto.getNome());
             t.setMateria(dto.getMateria());
             t.setDiscord(dto.getDiscord());
+            t.setAluno(dto.getAluno());
+            t.setProfessor(dto.getProfessor());
             Turma turmaRetorno = turmaDao.adicionar(t);
 
             log.info(turmaRetorno.toString());
@@ -39,15 +43,15 @@ public class TurmaController {
     }
 
     // Buscar por todos os Usuarios
-    @GetMapping(path = "/turma/{id:[0-9]+}")
+    @GetMapping(path = "/turmas")
     public ResponseEntity<List<TurmaDto>> getAll() {
-        log.info("GET /turma");
+        log.info("GET /turmas");
 
         List<Turma> allTurmas = turmaDao.buscar();
         List<TurmaDto> allTurmasDto = new ArrayList<TurmaDto>();
 
         for (Turma t : allTurmas) {
-            TurmaDto dto = new TurmaDto(t.getIdTurma(), t.getNome(), t.getAula(), t.getTrabalho(), t.getAtividade(), t.getProva(), t.getAluno(), t.getMateria(), t.getDiscord());
+            TurmaDto dto = new TurmaDto(t.getIdTurma(), t.getNome(), t.getAula(), t.getTrabalho(), t.getAtividade(), t.getProva(), t.getAluno(), t.getProfessor(), t.getMateria(), t.getDiscord());
 
             allTurmasDto.add(dto);
         }
@@ -60,7 +64,7 @@ public class TurmaController {
         log.info("GET /turma/" + id);
 
         Turma t = turmaDao.buscarPorId(id);
-        TurmaDto dto = new TurmaDto(t.getIdTurma(), t.getNome(), t.getAula(), t.getTrabalho(), t.getAtividade(), t.getProva(), t.getAluno(), t.getMateria(), t.getDiscord());
+        TurmaDto dto = new TurmaDto(t.getIdTurma(), t.getNome(), t.getAula(), t.getTrabalho(), t.getAtividade(), t.getProva(), t.getAluno(), t.getProfessor(), t.getMateria(), t.getDiscord());
 
         return new ResponseEntity<>(dto, HttpStatus.OK);
     }
@@ -68,7 +72,7 @@ public class TurmaController {
     // atualizar Usuario pelo id
     @PutMapping(path = "/turma/{id:[0-9]+}")
     public ResponseEntity<Void> put(@PathVariable("id") long id, @RequestBody Turma t) {
-        log.info("PUT /trabalho/" + id);
+        log.info("PUT /turma/" + id);
 
             turmaDao.editar(t);
             return new ResponseEntity<>(HttpStatus.OK);

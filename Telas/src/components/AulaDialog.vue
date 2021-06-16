@@ -6,8 +6,8 @@
 
             <div class="q-gutter-x-sm row wrap justify-end q-mb-md ">
 
-                <q-btn v-if="$store.state.typeUser != 'aluno' && editProp != true" @click="edit()" class="br-10" padding="sm" color="primary" icon="fas fa-pen"/>
-                <q-btn v-if="$store.state.typeUser != 'aluno' && editProp != true" @click="remove()" class="br-10" padding="sm" color="primary" icon="fas fa-trash"/>
+                <q-btn v-if="$store.state.typeUser != 'aluno' && vEdit != true" @click="edit()" class="br-10" padding="sm" color="primary" icon="fas fa-pen"/>
+                <q-btn v-if="$store.state.typeUser != 'aluno' && vEdit != true" @click="remove()" class="br-10" padding="sm" color="primary" icon="fas fa-trash"/>
                 <q-btn class="br-10" padding="sm" color="primary" icon="fas fa-times" v-close-popup/>
 
             </div>
@@ -23,7 +23,6 @@
                 <div class="descricao br-20">{{vDescricao}}</div>        
 
             </div>
-
             <div v-else class="column text-bold text-h4 q-gutter-y-md">
 
                 <q-input outlined v-model="modelNome" label-color="white" input-class="text-white" label="Aula" placeholder="Digite o nome da aula"/>
@@ -116,7 +115,7 @@ export default class AulaDialog extends Vue {
     vHora = moment(this.aula.inicio).format("hh:mm A")
     time = this.vHora
 
-    vTurma = (this.$store.state.turmas as Turma[]).find(t => t.idTurma == this.aula.idTurma)
+    vTurma = (this.$store.state.turmas as Turma[]).find(t => t.aula.includes(this.aula))
     modelTurma: qSelectOptions | null = (this.vTurma != undefined) ? { label: `${this.vTurma?.nome} - ${this.vTurma?.materia.nome}`, value: this.vTurma as Turma} : null
     optionsTurmas: qSelectOptions[] = []
 
@@ -149,7 +148,7 @@ export default class AulaDialog extends Vue {
         this.vTurma = this.modelTurma?.value as Turma
         this.vLink = this.modelLink
 
-       if (this.add) {
+       if (this.vAdd) {
 
             const aula: Aula = {
 
@@ -186,7 +185,9 @@ export default class AulaDialog extends Vue {
             
             this.aula.idAula = aula.idAula
 
-            this.db.aula.update(aula)
+            console.log("aaaaaa")
+
+            await this.db.aula.update(aula)
 
             new Discord((this.modelTurma?.value as Turma).discord.provasTrabalhos, this.$store).aula.update(aula)
 

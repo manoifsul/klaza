@@ -7,11 +7,13 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
 import java.util.List;
 
+@Controller
 public class AdministradorController {
 
     private static final Logger log = LoggerFactory.getLogger(AdministradorController.class);
@@ -25,7 +27,7 @@ public class AdministradorController {
     public ResponseEntity<Administrador> post(@RequestBody AdministradorDto dto) {
         log.info("POST /administrador");
 
-        if (administradorDao.buscarPorLogin(dto.getLogin()).getLogin() != "") {
+        if (administradorDao.buscarPorLogin(dto.getLogin()) != null) {
             log.warn("Administrador com login " + dto.getLogin() + " ja existe");
             return new ResponseEntity<>(HttpStatus.CONFLICT);
         } else {
@@ -45,7 +47,7 @@ public class AdministradorController {
     }
 
     // Buscar por todos os Administradores
-    @GetMapping(path = "/administrador")
+    @GetMapping(path = "/administradores")
     public ResponseEntity<List<AdministradorDto>> getAll() {
         log.info("GET /administrador");
 

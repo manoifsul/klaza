@@ -12,6 +12,7 @@ public class Turma {
 	private List<Atividade> atividade;
 	private List<Prova> prova;
 	private List<Aluno> aluno;
+	private List<Professor> professor;
 	private Materia materia;
 	private Discord discord;
 
@@ -24,11 +25,12 @@ public class Turma {
 		this.atividade = new ArrayList<Atividade>();
 		this.prova = new ArrayList<Prova>();
 		this.aluno = new ArrayList<Aluno>();
+		this.professor = new ArrayList<Professor>();
 		this.materia = new Materia();
 		this.discord = new Discord();
 	}
 
-	public Turma(long idTurma, String nome, List<Aula> aula, List<Trabalho> trabalho, List<Atividade> atividade, List<Prova> prova, List<Aluno> aluno, Materia materia, Discord discord) {
+	public Turma(long idTurma, String nome, List<Aula> aula, List<Trabalho> trabalho, List<Atividade> atividade, List<Prova> prova, List<Aluno> aluno, List<Professor> professor, Materia materia, Discord discord) {
 		this.idTurma = idTurma;
 		this.nome = nome;
 		this.aula = aula;
@@ -36,6 +38,7 @@ public class Turma {
 		this.atividade = atividade;
 		this.prova = prova;
 		this.aluno = aluno;
+		this.professor = professor;
 		this.materia = materia;
 		this.discord = discord;
 	}
@@ -110,6 +113,14 @@ public class Turma {
 
 	public void setDiscord(Discord discord) {
 		this.discord = discord;
+	}
+
+	public List<Professor> getProfessor() {
+		return professor;
+	}
+
+	public void setProfessor(List<Professor> professor) {
+		this.professor = professor;
 	}
 
 	@Override

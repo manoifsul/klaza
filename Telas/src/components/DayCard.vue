@@ -47,7 +47,6 @@ export default class Day extends Vue {
     @Prop() provas!: DBTypes.Prova[] 
     @Prop() trabalhos!: DBTypes.Trabalho[] 
 
-
     uid() { return uid() }
 
     get sizeTextNull() { return (this.$q.screen.gt.xs ? 'text-h4 text-bold text-white' : 'text-h5 text-bold text-white') }

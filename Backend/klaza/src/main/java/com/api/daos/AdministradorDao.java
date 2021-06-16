@@ -6,6 +6,7 @@ import org.springframework.stereotype.Service;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
 @Service
@@ -22,7 +23,7 @@ public class AdministradorDao {
 
         String sql = "INSERT INTO administrador VALUES(null, ?, ?, ?, ?);";
         try{
-            PreparedStatement st = conexao.getConexao().prepareStatement(sql);
+            PreparedStatement st = conexao.getConexao().prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
             st.setString(1, administrador.getNome());
             st.setString(2, administrador.getLogin());
             st.setString(3, administrador.getSenha());

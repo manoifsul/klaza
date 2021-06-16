@@ -30,7 +30,7 @@
 
                     <div class="column text-bold text-h4 text-white q-gutter-y-md">
 
-                        <span>Trabalho: {{vNome}}</span>
+                        <span>Prova: {{vNome}}</span>
                         <span>Turma: {{vTurma.nome}} - {{vTurma.materia.nome}}</span>
                         <span>Data: {{vStart}} a {{vFinish}}</span>
                         <span v-if="vMaxTentativas > 0">
@@ -278,6 +278,7 @@ export default class ProvaDialog extends Vue {
 
             if (inpSDate.hasError || inpFDate.hasError || inpTentativas.hasError ) { return }           
 
+            this.vNome = this.modelNome
             
             this.vStart = this.sDate
             this.vFinish = this.fDate

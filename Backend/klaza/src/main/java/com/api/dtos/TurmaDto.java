@@ -1,12 +1,6 @@
 package com.api.dtos;
 
-import com.api.entities.Aluno;
-import com.api.entities.Atividade;
-import com.api.entities.Aula;
-import com.api.entities.Discord;
-import com.api.entities.Materia;
-import com.api.entities.Prova;
-import com.api.entities.Trabalho;
+import com.api.entities.*;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -20,6 +14,7 @@ public class TurmaDto {
 	private List<Atividade> atividade;
 	private List<Prova> prova;
 	private List<Aluno> aluno;
+	private List<Professor> professor;
 	private Materia materia;
 	private Discord discord;
 
@@ -32,12 +27,14 @@ public class TurmaDto {
 		this.atividade = new ArrayList<Atividade>();
 		this.prova = new ArrayList<Prova>();
 		this.aluno = new ArrayList<Aluno>();
+		this.professor = new ArrayList<Professor>();
 		this.materia = new Materia();
 		this.discord = new Discord();
 	}
 
 	public TurmaDto(long idTurma, String nome, List<Aula> aula, List<Trabalho> trabalho, List<Atividade> atividade,
-					List<Prova> prova, List<Aluno> aluno, Materia materia, Discord discord) {
+					List<Prova> prova, List<Aluno> aluno, List<Professor> professor, Materia materia, Discord discord) {
+
 		this.idTurma = idTurma;
 		this.nome = nome;
 		this.aula = aula;
@@ -45,8 +42,10 @@ public class TurmaDto {
 		this.atividade = atividade;
 		this.prova = prova;
 		this.aluno = aluno;
+		this.professor = professor;
 		this.materia = materia;
 		this.discord = discord;
+
 	}
 
 	public long getIdTurma() {
@@ -71,6 +70,14 @@ public class TurmaDto {
 
 	public void setAula(List<Aula> aula) {
 		this.aula = aula;
+	}
+
+	public List<Professor> getProfessor() {
+		return professor;
+	}
+
+	public void setProfessor(List<Professor> professor) {
+		this.professor = professor;
 	}
 
 	public List<Trabalho> getTrabalho() {

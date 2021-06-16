@@ -1,12 +1,16 @@
 package com.api.daos;
 
+import com.api.entities.Aula;
+import com.api.entities.Professor;
 import com.api.entities.ProfessorProva;
+import com.api.entities.Prova;
 import org.springframework.stereotype.Repository;
 import org.springframework.stereotype.Service;
 
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
 @Service
@@ -20,7 +24,7 @@ public class ProfessorProvaDao {
 
         String sql = "INSERT INTO professor_prova VALUES(null, ?, ?);";
         try{
-            PreparedStatement st = conexao.getConexao().prepareStatement(sql);
+            PreparedStatement st = conexao.getConexao().prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
             st.setLong(1, professorProva.getProfessor().getIdProfessor());
             st.setLong(2, professorProva.getProva().getIdProva());
             st.executeUpdate();
@@ -91,6 +95,32 @@ public class ProfessorProvaDao {
         return professorProva;
     }
 
+    public List<ProfessorProva> buscarPorIdProva(long idProva) {
+        conexao = new ConexaoMySQL();
+        List<ProfessorProva> professorProva = new ArrayList<>();
+        String sql = "SELECT * FROM professor_prova WHERE id_prova=?;";
+        try {
+            PreparedStatement st = conexao.getConexao().prepareStatement(sql);
+            st.setLong(1, idProva);
+            ResultSet rs = st.executeQuery();
+            while (rs.next()){
+
+                ProfessorProva pp = new ProfessorProva();
+                pp.setIdProfessorProva(rs.getLong("id_professor_prova"));
+                pp.setProfessor(new ProfessorDao().buscarPorId(rs.getLong("id_professor")));
+                pp.setProva(new ProvaDao().buscarPorId(rs.getLong("id_prova")));
+
+                professorProva.add(pp);
+
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } finally {
+            conexao.closeConnection();
+        }
+        return professorProva;
+    }
+
     public List<ProfessorProva> buscar() {
         conexao = new ConexaoMySQL();
         List<ProfessorProva> listProfessorProva = new ArrayList();
@@ -109,5 +139,28 @@ public class ProfessorProvaDao {
         }
         return listProfessorProva;
     }
+
+    public List<Professor> buscarProfessorPorIdProva(long idProva) {
+
+        conexao = new ConexaoMySQL();
+        List<Professor> list = new ArrayList();
+        String sql = "SELECT * FROM professor_prova WHERE id_prova=?;";
+        try {
+            PreparedStatement st = conexao.getConexao().prepareStatement(sql);
+            st.setLong(1, idProva);
+            ResultSet rs = st.executeQuery();
+
+            while(rs.next()) {
+
+                list.add(new ProfessorDao().buscarPorId(rs.getLong("id_professor")));
+
+            }
+
+        } catch(SQLException e) {}
+
+        return list;
+
+    }
+
 }
 

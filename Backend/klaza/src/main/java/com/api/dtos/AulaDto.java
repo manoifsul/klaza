@@ -16,7 +16,7 @@ public class AulaDto {
 	private LocalDateTime inicio;
 	private String link;
 	private List<Arquivo> arquivo;
-	private long idturma;
+	private long idTurma;
 	
 	public AulaDto() {
 	this.idAula = 0;
@@ -26,7 +26,7 @@ public class AulaDto {
 	this.inicio = null;
 	this.link = "";
 	this.arquivo = new ArrayList<Arquivo>();
-	this.idturma = 0;
+	this.idTurma = 0;
 	}
 
 	public AulaDto(long idAula, String nome, Materia materia, String descricao, LocalDateTime inicio, String link, List<Arquivo> arquivo, long idturma) {
@@ -37,7 +37,7 @@ public class AulaDto {
 		this.inicio = inicio;
 		this.link = link;
 		this.arquivo = arquivo;
-		this.idturma = idturma;
+		this.idTurma = idturma;
 	}
 
 	public long getIdAula() {
@@ -96,12 +96,12 @@ public class AulaDto {
 		this.arquivo = arquivo;
 	}
 
-	public long getIdturma() {
-		return idturma;
+	public long getIdTurma() {
+		return idTurma;
 	}
 
-	public void setIdturma(long idturma) {
-		this.idturma = idturma;
+	public void setIdTurma(long idTurma) {
+		this.idTurma = idTurma;
 	}
 
 	@Override
@@ -114,7 +114,7 @@ public class AulaDto {
 				", inicio=" + inicio +
 				", link='" + link + '\'' +
 				", arquivo=" + arquivo +
-				", idturma=" + idturma +
+				", idturma=" + idTurma +
 				'}';
 	}
 }

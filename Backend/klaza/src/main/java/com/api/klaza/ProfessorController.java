@@ -7,11 +7,13 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
 import java.util.List;
 
+@Controller
 public class ProfessorController {
 
     private static final Logger log = LoggerFactory.getLogger(ProfessorController.class);
@@ -25,7 +27,7 @@ public class ProfessorController {
     public ResponseEntity<Professor> post(@RequestBody ProfessorDto dto) {
         log.info("POST /professor");
 
-        if (professorDao.buscarPorMatricula(dto.getMatricula()).getMatricula() != "") {
+        if (professorDao.buscarPorMatricula(dto.getMatricula()) != null) {
             log.warn("Professor com matricula " + dto.getMatricula() + " ja existe");
             return new ResponseEntity<>(HttpStatus.CONFLICT);
         } else {
@@ -35,6 +37,8 @@ public class ProfessorController {
             p.setMatricula(dto.getMatricula());
             p.setSenha(dto.getSenha());
             p.setEmail(dto.getEmail());
+            p.setIdTurmas(dto.getIdTurmas());
+            p.setMateria(dto.getMateria());
 
             Professor professorRetorno = professorDao.adicionar(p);
 
@@ -45,9 +49,9 @@ public class ProfessorController {
     }
 
     // Buscar por todos os Usuarios
-    @GetMapping(path = "/professor/{id:[0-9]+}")
+    @GetMapping(path = "/professores")
     public ResponseEntity<List<ProfessorDto>> getAll() {
-        log.info("GET /professor");
+        log.info("GET /professores");
 
         List<Professor> allProfessores = professorDao.buscar();
         List<ProfessorDto> allProfessoresDto = new ArrayList<ProfessorDto>();
@@ -77,11 +81,13 @@ public class ProfessorController {
         log.info("PUT /professor/" + id);
 
         if (professorDao.buscarPorMatricula(p.getMatricula()) != null) {
-            log.warn("Professor com matricula " + p.getMatricula() + " ja existe");
-            return new ResponseEntity<>(HttpStatus.CONFLICT);
-        } else {
+
             professorDao.editar(p);
             return new ResponseEntity<>(HttpStatus.OK);
+
+        } else {
+            log.warn("Professor com matricula " + p.getMatricula() + " não existe");
+            return new ResponseEntity<>(HttpStatus.CONFLICT);
         }
     }
 

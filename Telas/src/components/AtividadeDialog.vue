@@ -141,7 +141,7 @@ export default class AtividadeDialog extends Vue {
  
     edit() { this.vEdit = !this.vEdit }
 
-    save() {
+    async save() {
 
         this.vDia = this.date
         this.vHora = moment().set({ hour: parseInt(this.time.split(":")[0]), minute: parseInt(this.time.split(":")[1]) }).format("LT")
@@ -150,7 +150,7 @@ export default class AtividadeDialog extends Vue {
         this.vProfessores = this.modelProfessores.map(p => p.value as Professor)
         this.vTurma = this.modelTurma?.value as Turma
 
-        if (this.add) {
+        if (this.vAdd) {
 
             const atividade: Atividade = {
 
@@ -166,7 +166,7 @@ export default class AtividadeDialog extends Vue {
 
             }
 
-            this.db.atividade.create(atividade)
+            await this.db.atividade.create(atividade)
 
             new Discord((this.modelTurma?.value as Turma).discord.provasTrabalhos, this.$store).atividade.add(atividade)
 

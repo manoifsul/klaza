@@ -73,15 +73,16 @@ VALUES(null, "2i", 1, 1);
 CREATE TABLE Aula(
 id_aula BIGINT NOT NULL UNIQUE AUTO_INCREMENT,
 nome VARCHAR(60) NOT NULL,
-materia VARCHAR(40) NOT NULL,
+id_materia BIGINT NOT NULL,
 descricao TEXT NOT NULL,
 inicio DATETIME NOT NULL,
 link TEXT NOT NULL,
+FOREIGN KEY(id_materia) REFERENCES Materia(id_materia),
 PRIMARY KEY(id_aula)
 );
 
-INSERT INTO Aula(id_aula, nome, materia, descricao, inicio, link)
-VALUES(null, "Aula de BD/LP", "Portugues", "Professor: Rodrigo Remor, aula sincrona", "2021-01-01 9:30", "https://meet.google.com/hip-vhmk-fjs");
+INSERT INTO Aula(id_aula, nome, id_materia, descricao, inicio, link)
+VALUES(null, "Aula de BD/LP", 1, "Professor: Rodrigo Remor, aula sincrona", "2021-01-01 9:30", "https://meet.google.com/hip-vhmk-fjs");
 
 CREATE TABLE Turma_Aula(
 id_turma_aula BIGINT NOT NULL UNIQUE AUTO_INCREMENT,

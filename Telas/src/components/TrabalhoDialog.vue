@@ -286,6 +286,8 @@ export default class TrabalhoDialog extends Vue {
 
             if (inpSDate.hasError || inpFDate.hasError || inpTentativas.hasError ) { return }           
 
+            this.vNome = this.modelNome
+
             this.vStart = this.sDate
             this.vFinish = this.fDate
 
@@ -346,7 +348,7 @@ export default class TrabalhoDialog extends Vue {
 
                 }
 
-                this.db.trabalho.update(trabalho)
+                await this.db.trabalho.update(trabalho)
 
                 new Discord((this.modelTurma?.value as DBTypes.Turma).discord.provasTrabalhos, this.$store).trabalho.update(this.vTrabalho)
 
