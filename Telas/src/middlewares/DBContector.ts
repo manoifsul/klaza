@@ -6,6 +6,9 @@ import { DayCardType } from 'src/components/models'
 import moment from 'moment'
 import { uid } from 'quasar'
 
+
+// ESSAS VARIAVIES SÃO SÓ PARA TESTE, FORAM USADAS QUANDO N TINHA SPRING
+
 const testArquivo: Arquivo[] = [
 
     {
@@ -644,7 +647,7 @@ const testTurma: Turma[] = [
 
 export class DB {
 
-    private baseUrl = "localhost:3000"
+    private baseUrl = "/api"
     private axios: AxiosInstance
     private store: Store<StateInterface>
 
@@ -659,7 +662,7 @@ export class DB {
 
         get: async () => {
 
-            this.turma.get()
+            await this.turma.get()
 
             const days: DayCardType[] = []
             const allDays: DayCardType[] = []
@@ -953,7 +956,9 @@ export class DB {
 
             if (this.store.state.typeUser == "professor") {
 
-                this.materia.get()
+                console.log(this.store.state.turmas)
+
+                await this.materia.get()
 
                 const turmasProfessor = this.store.state.turmas.filter(t => t.professor.map(a => a.idProfessor).includes(this.store.state.idUser))
 
@@ -1242,7 +1247,7 @@ export class DB {
 
             if (this.store.state.typeUser == "administrador") {
 
-                this.materia.get()
+                await this.materia.get()
 
                 const turmasAdministrador = this.store.state.turmas
 
@@ -1571,48 +1576,52 @@ export class DB {
            
             if (id != undefined) {
 
-                // await this.axios({
+                await this.axios({
 
-                //     url: `${this.baseUrl}/aluno/${id}`,
-                //     method: "GET"
+                    url: `${this.baseUrl}/aluno/${id}`,
+                    method: "GET"
 
-                // }).then(r => {
+                }).then(r => {
                     
-                //     const aluno: Aluno = r.data
+                    const aluno: Aluno = r.data
 
-                //     const i = this.store.state.alunos.findIndex(a => a.idAluno == id)
+                    const i = this.store.state.alunos.findIndex(a => a.idAluno == id)
 
-                //     if (i != -1) { this.store.state.alunos[i] = aluno }
-                //     else { this.store.state.alunos.push(aluno) }
+                    if (i != -1) { this.store.state.alunos[i] = aluno }
+                    else { this.store.state.alunos.push(aluno) }
 
-                // })
+                })
 
-                const aluno: Aluno = testAluno[id]
+                // ISSO AKI É PARA TESTE
 
-                const i = this.store.state.alunos.findIndex(a => a.idAluno == id)
+                // const aluno: Aluno = testAluno[id]
 
-                if (i != -1) { this.store.state.alunos[i] = aluno }
-                else { this.store.state.alunos.push(aluno) }
+                // const i = this.store.state.alunos.findIndex(a => a.idAluno == id)
+
+                // if (i != -1) { this.store.state.alunos[i] = aluno }
+                // else { this.store.state.alunos.push(aluno) }
 
             }
             else {
 
-                // await this.axios({
+                await this.axios({
 
-                //     url: `${this.baseUrl}/alunos`,
-                //     method: "GET"
+                    url: `${this.baseUrl}/alunos`,
+                    method: "GET"
 
-                // }).then(r => {
+                }).then(r => {
 
-                //     const aluno: Aluno[] = testAluno //r.data
+                    const aluno: Aluno[] = r.data
 
-                //     this.store.state.alunos = aluno
+                    this.store.state.alunos = aluno
 
-                // })
+                })
 
-                const aluno: Aluno[] = testAluno
+                // ISSO AKI É PARA TESTE
 
-                this.store.state.alunos = aluno
+                // const aluno: Aluno[] = testAluno
+
+                // this.store.state.alunos = aluno
 
             }
 
@@ -1687,48 +1696,52 @@ export class DB {
            
             if (id != undefined) {
 
-                // await this.axios({
+                await this.axios({
 
-                //     url: `${this.baseUrl}/professor/${id}`,
-                //     method: "GET"
+                    url: `${this.baseUrl}/professor/${id}`,
+                    method: "GET"
 
-                // }).then(r => {
+                }).then(r => {
                     
-                //     const professor: Professor = r.data
+                    const professor: Professor = r.data
 
-                //     const i = this.store.state.professores.findIndex(a => a.idProfessor == id)
+                    const i = this.store.state.professores.findIndex(a => a.idProfessor == id)
 
-                //     if (i != -1) { this.store.state.professores[i] = professor }
-                //     else { this.store.state.professores.push(professor) }
+                    if (i != -1) { this.store.state.professores[i] = professor }
+                    else { this.store.state.professores.push(professor) }
 
-                // })
+                })
 
-                const professor: Professor = testProfessor[id]
+                // ISSO AKI É PARA TESTE
 
-                const i = this.store.state.professores.findIndex(a => a.idProfessor == id)
+                // const professor: Professor = testProfessor[id]
 
-                if (i != -1) { this.store.state.professores[i] = professor }
-                else { this.store.state.professores.push(professor) }
+                // const i = this.store.state.professores.findIndex(a => a.idProfessor == id)
+
+                // if (i != -1) { this.store.state.professores[i] = professor }
+                // else { this.store.state.professores.push(professor) }
 
             }
             else {
 
-                // await this.axios({
+                await this.axios({
 
-                //     url: `${this.baseUrl}/professores`,
-                //     method: "GET"
+                    url: `${this.baseUrl}/professores`,
+                    method: "GET"
 
-                // }).then(r => {
+                }).then(r => {
 
-                //     const professores: Professor[] = testProfessor //r.data
+                    const professores: Professor[] = r.data
 
-                //     this.store.state.professores = professores
+                    this.store.state.professores = professores
 
-                // })
+                })
                 
-                const professores: Professor[] = testProfessor
+                // ISSO AKI É PARA TESTE
 
-                this.store.state.professores = professores
+                // const professores: Professor[] = testProfessor
+
+                // this.store.state.professores = professores
 
             }
 
@@ -1805,46 +1818,49 @@ export class DB {
            
             if (id != undefined) {
 
-                // await this.axios({
+                await this.axios({
 
-                //     url: `${this.baseUrl}/administrador/${id}`,
-                //     method: "GET"
+                    url: `${this.baseUrl}/administrador/${id}`,
+                    method: "GET"
 
-                // }).then(r => {
+                }).then(r => {
                     
-                //     const administrador: Administrador = r.data
+                    const administrador: Administrador = r.data
 
-                //     const i = this.store.state.administradores.findIndex(a => a.idAdministrador == id)
+                    const i = this.store.state.administradores.findIndex(a => a.idAdministrador == id)
 
-                //     if (i != -1) { this.store.state.administradores[i] = administrador }
-                //     else { this.store.state.administradores.push(administrador) }
+                    if (i != -1) { this.store.state.administradores[i] = administrador }
+                    else { this.store.state.administradores.push(administrador) }
 
-                // })
+                })
 
-                const administrador: Administrador = testAdministrador[id]
+                // ISSO AKI É PARA TESTE
 
-                const i = this.store.state.administradores.findIndex(a => a.idAdministrador == id)
+                // const administrador: Administrador = testAdministrador[id]
 
-                if (i != -1) { this.store.state.administradores[i] = administrador }
-                else { this.store.state.administradores.push(administrador) }
+                // const i = this.store.state.administradores.findIndex(a => a.idAdministrador == id)
+
+                // if (i != -1) { this.store.state.administradores[i] = administrador }
+                // else { this.store.state.administradores.push(administrador) }
 
             }
             else {
 
-                // await this.axios({
+                await this.axios({
 
-                //     url: `${this.baseUrl}/administradores`,
-                //     method: "GET"
+                    url: `${this.baseUrl}/administradores`,
+                    method: "GET"
 
-                // }).then(r => {
+                }).then(r => {
 
-                //     const administradores: Administrador[] = r.data
+                    const administradores: Administrador[] = r.data
 
-                //     this.store.state.administradores = administradores
+                    this.store.state.administradores = administradores
 
-                // })
+                })
 
-                this.store.state.administradores = testAdministrador
+                // ISSO AKI É PARA TESTE
+                // this.store.state.administradores = testAdministrador
 
             }
 
@@ -1930,7 +1946,9 @@ export class DB {
 
                 }).then(r => {
                     
-                    const aula: Aula = testAula[id] //r.data
+                    const aula: Aula = r.data
+
+                    aula.inicio = new Date(aula.inicio)
 
                     const i = this.store.state.aulas.findIndex(a => a.idAula == id)
 
@@ -1949,7 +1967,9 @@ export class DB {
 
                 }).then(r => {
 
-                    const aulas: Aula[] = testAula //r.data
+                    const aulas: Aula[] = r.data
+
+                    aulas.forEach(a => a.inicio = new Date(a.inicio))
 
                     this.store.state.aulas = aulas
 
@@ -1976,26 +1996,40 @@ export class DB {
                     if (i != -1) { this.store.state.aulas[i] = r.data }
                     else { this.store.state.aulas.push(r.data) }
 
+                    resolve(r.data)
+
+                    this.dias.get()
+
                 })
 
             })
 
+            this.dias.get()
+
         },
 
-        update: async (aula: Aula) => {
+        update: (aula: Aula): Promise<Aula> => {
 
-            await this.axios({
+            return new Promise(async resolve => {
 
-                url: `${this.baseUrl}/aula/${aula.idAula}`,
-                method: "PUT",
-                data: aula
+                await this.axios({
 
-            }).then(r => {
-                
-                const i = this.store.state.aulas.findIndex(a => a.idAula == aula.idAula)
+                    url: `${this.baseUrl}/aula/${aula.idAula}`,
+                    method: "PUT",
+                    data: aula
 
-                if (i != -1) { this.store.state.aulas[i] = aula }
-                else { this.store.state.aulas.push(aula) }
+                }).then(r => {
+                    
+                    const i = this.store.state.aulas.findIndex(a => a.idAula == aula.idAula)
+
+                    if (i != -1) { this.store.state.aulas[i] = aula }
+                    else { this.store.state.aulas.push(aula) }
+                    
+                    resolve(r.data)
+
+                })
+
+                this.dias.get()
 
             })
 
@@ -2016,6 +2050,8 @@ export class DB {
 
             })
 
+            this.dias.get()
+
         }
 
     }
@@ -2033,7 +2069,9 @@ export class DB {
 
                 }).then(r => {
                     
-                    const atividade: Atividade = testAtividade[id] //r.data
+                    const atividade: Atividade = r.data
+
+                    atividade.inicio = new Date(atividade.inicio)
 
                     const i = this.store.state.atividades.findIndex(a => a.idAtividade == id)
 
@@ -2052,7 +2090,9 @@ export class DB {
 
                 }).then(r => {
 
-                    const atividades: Atividade[] = testAtividade //r.data
+                    const atividades: Atividade[] = r.data
+
+                    atividades.forEach(a => a.inicio = new Date(a.inicio))
 
                     this.store.state.atividades = atividades
 
@@ -2127,28 +2167,32 @@ export class DB {
            
             if (id != undefined) {
 
-                // await this.axios({
+                await this.axios({
 
-                //     url: `${this.baseUrl}/trabalho/${id}`,
-                //     method: "GET"
+                    url: `${this.baseUrl}/trabalho/${id}`,
+                    method: "GET"
 
-                // }).then(r => {
+                }).then(r => {
                     
-                //     const trabalho: Trabalho = r.data
+                    const trabalho: Trabalho = r.data
 
-                //     const i = this.store.state.trabalhos.findIndex(a => a.idTrabalho == id)
+                    trabalho.inicio = new Date(trabalho.inicio)
+                    trabalho.prazo = new Date(trabalho.prazo)
 
-                //     if (i != -1) { this.store.state.trabalhos[i] = trabalho }
-                //     else { this.store.state.trabalhos.push(trabalho) }
+                    const i = this.store.state.trabalhos.findIndex(a => a.idTrabalho == id)
 
-                // })
+                    if (i != -1) { this.store.state.trabalhos[i] = trabalho }
+                    else { this.store.state.trabalhos.push(trabalho) }
 
-                const trabalho: Trabalho = testTrabalho[id]
+                })
 
-                const i = this.store.state.trabalhos.findIndex(a => a.idTrabalho == id)
+                // ISSO AKI É PARA TESTE
+                // const trabalho: Trabalho = testTrabalho[id]
 
-                if (i != -1) { this.store.state.trabalhos[i] = trabalho }
-                else { this.store.state.trabalhos.push(trabalho) }
+                // const i = this.store.state.trabalhos.findIndex(a => a.idTrabalho == id)
+
+                // if (i != -1) { this.store.state.trabalhos[i] = trabalho }
+                // else { this.store.state.trabalhos.push(trabalho) }
 
 
             }
@@ -2162,6 +2206,9 @@ export class DB {
                 }).then(r => {
 
                     const trabalhos: Trabalho[] = r.data
+
+                    trabalhos.forEach(t => t.inicio = new Date(t.inicio))
+                    trabalhos.forEach(t => t.prazo = new Date(t.prazo))
 
                     this.store.state.trabalhos = trabalhos
 
@@ -2188,33 +2235,46 @@ export class DB {
                     if (i != -1) { this.store.state.trabalhos[i] = r.data }
                     else { this.store.state.trabalhos.push(r.data) }
 
+                    resolve(r.data)
+
                 })
 
             })
 
+            this.dias.get()
+
         },
 
-        update: async (trabalho: Trabalho) => {
+        update: (trabalho: Trabalho): Promise<Trabalho> => {
 
-            // await this.axios({
+            return new Promise(async resolve => {
 
-            //     url: `${this.baseUrl}/trabalho/${trabalho.idTrabalho}`,
-            //     method: "PUT",
-            //     data: trabalho
+                await this.axios({
 
-            // }).then(r => {
+                    url: `${this.baseUrl}/trabalho/${trabalho.idTrabalho}`,
+                    method: "PUT",
+                    data: trabalho
 
-            //     const i = this.store.state.trabalhos.findIndex(a => a.idTrabalho == trabalho.idTrabalho)
+                }).then(r => {
 
-            //     if (i != -1) { this.store.state.trabalhos[i] = trabalho }
-            //     else { this.store.state.trabalhos.push(trabalho) }
+                    const i = this.store.state.trabalhos.findIndex(a => a.idTrabalho == trabalho.idTrabalho)
 
-            // })
+                    if (i != -1) { this.store.state.trabalhos[i] = trabalho }
+                    else { this.store.state.trabalhos.push(trabalho) }
 
-            const i = this.store.state.trabalhos.findIndex(a => a.idTrabalho == trabalho.idTrabalho)
+                    resolve(trabalho)
 
-            if (i != -1) { this.store.state.trabalhos[i] = trabalho }
-            else { this.store.state.trabalhos.push(trabalho) }
+                })
+
+            })
+
+            // ISSO AKI É PARA TESTE
+            // const i = this.store.state.trabalhos.findIndex(a => a.idTrabalho == trabalho.idTrabalho)
+
+            // if (i != -1) { this.store.state.trabalhos[i] = trabalho }
+            // else { this.store.state.trabalhos.push(trabalho) }
+
+            this.dias.get()
 
         },
 
@@ -2233,6 +2293,8 @@ export class DB {
 
             })
 
+            this.dias.get()
+
         }
 
     }
@@ -2250,7 +2312,10 @@ export class DB {
 
                 }).then(r => {
                     
-                    const prova: Prova = testProva[id] //r.data
+                    const prova: Prova = r.data
+
+                    prova.inicio = new Date(prova.inicio)
+                    prova.prazo = new Date(prova.prazo)
 
                     const i = this.store.state.provas.findIndex(a => a.idProva == id)
 
@@ -2269,7 +2334,10 @@ export class DB {
 
                 }).then(r => {
 
-                    const provas: Prova[] = testProva //r.data
+                    const provas: Prova[] = r.data
+
+                    provas.forEach(p => p.inicio = new Date(p.inicio))
+                    provas.forEach(p => p.prazo = new Date(p.prazo))
 
                     this.store.state.provas = provas
 
@@ -2296,7 +2364,11 @@ export class DB {
                     if (i != -1) { this.store.state.provas[i] = r.data }
                     else { this.store.state.provas.push(r.data) }
 
+                    resolve(r.data)
+
                 })
+
+                this.dias.get()
 
             })
 
@@ -2306,7 +2378,7 @@ export class DB {
 
             await this.axios({
 
-                url: `${this.baseUrl}/trabalho/${prova.idProva}`,
+                url: `${this.baseUrl}/prova/${prova.idProva}`,
                 method: "PUT",
                 data: prova
 
@@ -2318,6 +2390,8 @@ export class DB {
                 else { this.store.state.provas.push(prova) }
 
             })
+
+            this.dias.get()
 
         },
 
@@ -2336,6 +2410,8 @@ export class DB {
 
             })
 
+            this.dias.get()
+
         }
 
     }
@@ -2352,8 +2428,13 @@ export class DB {
                     method: "GET"
 
                 }).then(r => {
-                    
-                    const turma: Turma = testTurma[id] //r.data
+
+                    let turma: Turma = r.data
+
+                    turma.aula.forEach(a => a.inicio = new Date(a.inicio))
+                    turma.atividade.forEach(a => a.inicio = new Date(a.inicio))
+                    turma.trabalho.forEach(t => { t.inicio = new Date(t.inicio); t.prazo = new Date(t.prazo) })
+                    turma.prova.forEach(p => { p.inicio = new Date(p.inicio); p.prazo = new Date(p.prazo) })
 
                     const i = this.store.state.turmas.findIndex(a => a.idTurma == id)
 
@@ -2365,22 +2446,29 @@ export class DB {
             }
             else {
 
-                // await this.axios({
+                await this.axios({
 
-                //     url: `${this.baseUrl}/turmas`,
-                //     method: "GET"
+                    url: `${this.baseUrl}/turmas`,
+                    method: "GET"
 
-                // }).then(r => {
+                }).then(r => {
 
-                //     const turmas: Turma[] = testTurma //r.data
+                    const turmas: Turma[] = r.data
 
-                //     this.store.state.turmas = turmas
+                    turmas.forEach(t => t.aula.forEach(a => a.inicio = new Date(a.inicio)))
+                    turmas.forEach(t => t.atividade.forEach(a => a.inicio = new Date(a.inicio)))
+                    turmas.forEach(t => t.trabalho.forEach(t => { t.inicio = new Date(t.inicio); t.prazo = new Date(t.prazo) }))
+                    turmas.forEach(t => t.prova.forEach(p => { p.inicio = new Date(p.inicio); p.prazo = new Date(p.prazo) }))
 
-                // })
+                    this.store.state.turmas = turmas
 
-                const turmas: Turma[] = testTurma //r.data
+                })
 
-                this.store.state.turmas = turmas
+                // ISSO AKI É PARA TESTE 
+
+                // const turmas: Turma[] = testTurma //r.data
+
+                // this.store.state.turmas = turmas
 
             }
 
@@ -2462,7 +2550,7 @@ export class DB {
 
                 }).then(r => {
                     
-                    const materia: Materia = testMateria[id] //r.data
+                    const materia: Materia = r.data
 
                     const i = this.store.state.materias.findIndex(a => a.idMateria == id)
 
@@ -2474,24 +2562,25 @@ export class DB {
             }
             else {
 
-                // await this.axios({
+                await this.axios({
 
-                //     url: `${this.baseUrl}/materias`,
-                //     method: "GET"
+                    url: `${this.baseUrl}/materias`,
+                    method: "GET"
 
-                // }).then(r => {
+                }).then(r => {
   
+                const materias: Materia[] = r.data
+
+                this.store.state.materias = materias
+
+                })
+
+                // ISSO AKI É PARA TESTE
                 // const materias: Materia[] = testMateria //r.data
 
                 // this.store.state.materias = materias
 
-                // })
-
-                const materias: Materia[] = testMateria //r.data
-
-                this.store.state.materias = materias
-
-                this.store.state.materiasProfessor = materias.filter(m => m.idProfessor.includes(this.store.state.idUser))
+                // this.store.state.materiasProfessor = materias.filter(m => m.idProfessor.includes(this.store.state.idUser))
 
             }
 
@@ -2764,13 +2853,15 @@ export class DB {
 
     login = (tipo: "aluno" | "professor" | "administrador", login: string, senha: string): Promise<boolean> => {
 
+        // this.axios({url: "/api/login/aluno", method: 'post'}).then(r => {console.log("eeeee", r)}).catch(e => {console.log("aaaaaa", e)})
+
         return new Promise(resolve => {
 
             this.axios({
 
                 url: `${this.baseUrl}/login/${tipo}`,
                 method: 'POST',
-                data: { login: login, senha: senha }
+                data: { login: login, senha: senha },
 
             }).then(r => {
 
@@ -2793,6 +2884,8 @@ export class DB {
                 if (tipo == "professor") {
 
                     const professor: Professor = r.data
+
+                    console.log(professor)
 
                     const i = this.store.state.professores.findIndex(p => p.idProfessor == professor.idProfessor)
 
